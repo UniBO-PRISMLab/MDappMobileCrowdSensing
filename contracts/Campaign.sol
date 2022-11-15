@@ -6,11 +6,11 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 contract Campaign is Ownable,Initializable {
 
     string name;
-    uint256 lat;
-    uint256 lng;
+    int256 lat;
+    int256 lng;
     mapping(uint256 => File) public files; // file hashes stored in IPFS
 
-    function initialize(string memory _name,uint256 _lat, uint _lng) public payable onlyOwner(){
+    function initialize(string memory _name,int256 _lat, int _lng) external  payable onlyOwner(){
         name = _name;
         lat = _lat;
         lng = _lng;
@@ -28,10 +28,8 @@ contract Campaign is Ownable,Initializable {
     uint256 public fileCount = 0; // number of the hashes uploaded
 
     event FileUploaded(uint256 fileId,string filePath,uint256 fileSize,string fileType,string fileName,address payable uploader);
-
-
     
-    function uploadFile(string memory _filePath,uint256 _fileSize,string memory _fileType,string memory _fileName) public {
+    function uploadFile(string memory _filePath, uint256 _fileSize, string memory _fileType, string memory _fileName) public {
         require(bytes(_filePath).length > 0);
         require(bytes(_fileType).length > 0);
         require(bytes(_fileName).length > 0);
@@ -43,5 +41,20 @@ contract Campaign is Ownable,Initializable {
         files[fileCount] = File(fileCount,_filePath,_fileSize,_fileType,_fileName,payable(msg.sender));
         
         emit FileUploaded(fileCount,_filePath,_fileSize,_fileType,_fileName,payable(msg.sender));
+    }
+
+    function _controlDataLocation(int256 _latData,int256 _lngData) internal returns(bool) {
+       require(_latData>0 && _lngData>0);
+       return true;
+       // deve fare solo controllo senza calcoli
+    }
+
+
+    function getFilePaths() public view returns(string[] memory) {
+        string[] memory paths;
+        for (uint256 i= 0; i<fileCount; i++) {
+            paths[i] = (files[i].filePath);
+        }
+        return paths;
     }
 }

@@ -2,25 +2,27 @@
 pragma solidity ^0.8.17;
 
 import "./Campaign.sol";
-import "@openzeppelin/contracts/utils/Create2.sol";
 
 contract CampaignFactory {
   
-  address[] public addressCampaign;
+  Campaign[] campaigns;
   
-  uint256 public fileCount = 0; // number of the hashes uploaded
+  uint256 fileCount = 0; // number of the hashes uploaded
 
+  event CampaignCreated(address addressNewCampaign);
 
-  constructor (address _addressCampaign) {
-    fileCount++;
-    addressCampaign.push(_addressCampaign);
+  function getNumberOfCampaigns() public view returns(uint256) {
+    return fileCount;
   }
 
-  function createCampaign(string memory _name,uint256 _lat,uint _lng) public returns (address){
-    Campaign newCampaign = new Campaign();
-    address newCampaignAddress = address(newCampaign.initialize(_name,_lat,_lng));
-    addressCampaign.push(address(newCampaign));
+  function createCampaign(string memory _name,int256 _lat,int256 _lng) public payable returns (address) {
     require(msg.value >= 1);
-    return address(addressCampaign[fileCount-1]);
+
+    Campaign newCampaign = new Campaign();
+    newCampaign.initialize(_name, _lat, _lng);
+    campaigns.push(newCampaign);
+    fileCount++;
+    emit CampaignCreated(address(newCampaign));
+    return address(newCampaign);
   }
 }
