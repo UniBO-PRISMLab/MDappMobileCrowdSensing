@@ -47,6 +47,7 @@ dependencies:
   flutter_dotenv: ^5.0.2
   flutter_intl: ^0.0.1
   flutter_config: ^2.0.0
+  open_street_map_search_and_pick: ^0.0.15
 
 dev_dependencies:
   flutter_test:

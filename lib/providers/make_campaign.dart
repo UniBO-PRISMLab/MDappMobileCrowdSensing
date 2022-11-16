@@ -13,9 +13,9 @@ class CampaignMaker extends StatefulWidget {
 }
 
 class _CampaignMakerState extends State<CampaignMaker> {
+/*
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     httpClient = Client();
     ethClient = Web3Client(
@@ -32,7 +32,7 @@ class _CampaignMakerState extends State<CampaignMaker> {
   ) async {
     EthereumAddress ethAddress = EthereumAddress.fromHex(targetAddress);
   }
-
+*/
   late Client httpClient;
   late Web3Client ethClient;
 
