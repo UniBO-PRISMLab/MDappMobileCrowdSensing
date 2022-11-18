@@ -1,9 +1,16 @@
+import 'dart:io';
+
+import 'package:flutter_config/flutter_config.dart';
 import 'package:walletconnect_dart/walletconnect_dart.dart';
+import 'package:http/http.dart' as http;
+import 'package:web3dart/web3dart.dart';
 
 class SessionModel {
   static final SessionModel _instance = SessionModel._internal();
 
   dynamic session, uri, signature, connector;
+  http.Client httpClient = http.Client();
+  Web3Client ethClient = Web3Client(FlutterConfig.get('ADDRESS_BLOCK_CHAIN'), http.Client());
 
   SessionModel._internal() {
     connector = WalletConnect(

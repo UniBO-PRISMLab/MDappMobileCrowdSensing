@@ -1,8 +1,13 @@
+import 'package:web3dart/web3dart.dart';
+
 import '../models/session_model.dart';
 
 class SessionViewModel {
   SessionModel _sessionModel = SessionModel();
 
+  Web3Client getEthClient() {
+    return _sessionModel.ethClient;
+  }
 
   dynamic getAccountPrivateKey() {
     return getSession().accounts[0];
