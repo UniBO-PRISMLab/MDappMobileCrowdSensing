@@ -1,0 +1,1 @@
+-keep class mobile_crowd_sensing.BuildConfig { *; }

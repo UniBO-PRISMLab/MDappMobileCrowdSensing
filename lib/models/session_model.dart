@@ -9,10 +9,13 @@ class SessionModel {
   static final SessionModel _instance = SessionModel._internal();
 
   dynamic session, uri, signature, connector;
-  http.Client httpClient = http.Client();
-  Web3Client ethClient = Web3Client(FlutterConfig.get('ADDRESS_BLOCK_CHAIN'), http.Client());
+  late http.Client httpClient;
+  late Web3Client ethClient;
 
   SessionModel._internal() {
+    httpClient = http.Client();
+    ethClient = Web3Client(FlutterConfig.get('ADDRESS_BLOCK_CHAIN'), http.Client());
+
     connector = WalletConnect(
         bridge: 'https://bridge.walletconnect.org',
         clientMeta: const PeerMeta(
