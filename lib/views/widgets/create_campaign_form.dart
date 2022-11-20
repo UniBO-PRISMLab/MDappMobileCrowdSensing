@@ -36,7 +36,7 @@ class CreateCampaignFormState extends State<CreateCampaignForm> {
       print(positionSelectedData);
     }
       return Scaffold(
-          resizeToAvoidBottomInset: false,
+        resizeToAvoidBottomInset: false,
           appBar: AppBar(
             title: Text(createCampaignFormData.appBarTitle),
           ),
@@ -45,7 +45,7 @@ class CreateCampaignFormState extends State<CreateCampaignForm> {
               child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Padding(
-                    padding: const EdgeInsets.all(30),
+                    padding: const EdgeInsets.all(10),
                     child: Column(
                       children: [
                         Text(
@@ -67,7 +67,7 @@ class CreateCampaignFormState extends State<CreateCampaignForm> {
                       ],
                     )),
                 Padding(
-                    padding: const EdgeInsets.all(30),
+                    padding: const EdgeInsets.all(10),
                     child: Column(
                       children: [
                         Text(
@@ -98,7 +98,7 @@ class CreateCampaignFormState extends State<CreateCampaignForm> {
                             },
                             child: const Text('Get a place!')),
                         Padding(
-                          padding: const EdgeInsets.all(30),
+                          padding: const EdgeInsets.all(10),
                           child: Column(
                             children: [
                               Text(
@@ -130,7 +130,7 @@ class CreateCampaignFormState extends State<CreateCampaignForm> {
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.all(30),
+                          padding: const EdgeInsets.all(10),
                           child: Column(
                             children: [
                               Text(
@@ -176,10 +176,7 @@ class CreateCampaignFormState extends State<CreateCampaignForm> {
                             ],
                           ),
                         ),
-
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 16.0),
-                          child: FloatingActionButton(
+                        FloatingActionButton(
                             onPressed: () {
                               // Validate returns true if the form is valid, or false otherwise.
                               if (_formKey.currentState!.validate()) {
@@ -190,9 +187,9 @@ class CreateCampaignFormState extends State<CreateCampaignForm> {
                                       style: GoogleFonts.merriweather(
                                           fontWeight: FontWeight.bold, fontSize: 16),
                                     )));
-                              } else {
+
                                 Navigator.pushNamed(context, '/create_campaign_provider', arguments: {
-                                  'name' : titleController.text,
+                                  'title' : titleController.text,
                                   'lat' : (100 * positionSelectedData['lat']).toInt(),
                                   'lng' : (100 * positionSelectedData['lng']).toInt(),
                                   'payment' : _howMuch,
@@ -202,7 +199,6 @@ class CreateCampaignFormState extends State<CreateCampaignForm> {
                             },
                             child: const Text('GO!'),
                           ),
-                        ),
                       ],
                     ))
               ])));

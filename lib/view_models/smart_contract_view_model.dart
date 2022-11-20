@@ -17,7 +17,12 @@ class SmartContractViewModel {
   Future<List<dynamic>> query(String contractAddress,String functionName, List<dynamic> args) async{
     final contract = await loadContract(contractAddress);
     final ethFunction = contract.function(functionName);
-    final result = await sessionData.getEthClient().call(contract: contract, function: ethFunction, params: args, sender: EthereumAddress.fromHex(sessionData.getUri()));
+    final result = await sessionData.getEthClient().call(
+        contract: contract,
+        function: ethFunction,
+        params: args,
+        sender: EthereumAddress.fromHex(sessionData.getAccountPrivateKey())
+    );
     return result;
   }
 }

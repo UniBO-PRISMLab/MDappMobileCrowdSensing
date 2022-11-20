@@ -6,30 +6,32 @@ import 'package:mobile_crowd_sensing/view_models/session_view_model.dart';
 import 'package:mobile_crowd_sensing/view_models/smart_contract_view_model.dart';
 
 class CampaignCreator extends StatefulWidget {
-
   const CampaignCreator({super.key});
   @override
   _CampaignCreatorState createState() => _CampaignCreatorState();
-
 }
 
 class _CampaignCreatorState extends State<CampaignCreator> {
-  SessionViewModel sessionData = SessionViewModel();
+  late SessionViewModel sessionData;
   Object? parameters;
   dynamic jsonParameters = {};
 
   @override
   void initState() {
     super.initState();
-    createCampaign(jsonParameters['name'],jsonParameters['lat'],jsonParameters['lng'],jsonParameters['range']);
   }
 
   @override
   Widget build(BuildContext context) {
-
+    sessionData = SessionViewModel();
     parameters = ModalRoute.of(context)!.settings.arguments;
     jsonParameters = jsonDecode(jsonEncode(parameters));
-
+    createCampaign(
+        jsonParameters['title'],
+        BigInt.from(jsonParameters['lat']),
+        BigInt.from(jsonParameters['lng']),
+        BigInt.from(jsonParameters['range'])
+    );
     return Scaffold(
         backgroundColor: Colors.blue[900],
         body: const Center(
@@ -39,15 +41,15 @@ class _CampaignCreatorState extends State<CampaignCreator> {
             )));
   }
 
-  Future<void> createCampaign(String name, int lat, int lng, int range) async {
+  Future<void> createCampaign(String name, BigInt lat, BigInt lng, BigInt range) async {
     SmartContractViewModel smartContractViewModel = SmartContractViewModel();
-
-    List<dynamic> result = await smartContractViewModel.query(
-        FlutterConfig.get('MCSfactory_CONTRACT_ADDRESS'),
-        'createCampaign',
-        [name, lat, lng, range]);
-    print('|||||||||||||||||||||||||||||||||||||||||||| DEBUG ||||||||||||||||||||||||||||||||||||');
+    List args = [name, lat, lng, range];
+    print('|||||||||||||||||||||||||||||||||||||||||||| DEBUG INPUT ||||||||||||||||||||||||||||||||||||');
+    print(args);
+    print('|||||||||||||||||||||||||||||||||||||||||||| END INPUT ||||||||||||||||||||||||||||||||||||');
+    List<dynamic> result = await smartContractViewModel.query(FlutterConfig.get('MCSfactory_CONTRACT_ADDRESS'), 'createCampaign', args);
+    print('|||||||||||||||||||||||||||||||||||||||||||| DEBUG OUTPUT ||||||||||||||||||||||||||||||||||||');
     print(result);
-    print('|||||||||||||||||||||||||||||||||||||||||||| END ||||||||||||||||||||||||||||||||||||');
+    print('|||||||||||||||||||||||||||||||||||||||||||| END OUTPUT ||||||||||||||||||||||||||||||||||||');
   }
 }
