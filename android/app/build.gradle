@@ -59,7 +59,7 @@ android {
         Properties properties = new Properties();
         properties.load(project.rootProject.file("local.properties").newDataInputStream())
 
-        buildConfigField "String", "GOOGLE_API_KEY", "\"${properties.getProperty("GOOGLE_API_KEY")}\""
+//        buildConfigField "String", "GOOGLE_API_KEY", "\"${properties.getProperty("GOOGLE_API_KEY")}\""
     }
 
     buildTypes {

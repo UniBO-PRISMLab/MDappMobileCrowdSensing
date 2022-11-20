@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_config/flutter_config.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_api_headers/google_api_headers.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-// ignore: depend_on_referenced_packages
 import 'package:google_maps_webservice/places.dart';
 
 class SearchPlacesViewModel {
@@ -55,18 +53,9 @@ class SearchPlacesViewModel {
     return CameraPosition(target: LatLng(lat, lng), zoom: zoom);
   }
 
-  // getPrediction(context,currentState) async {
-  //   Prediction? p = await PlacesAutocomplete.show(context: context, apiKey: FlutterConfig.get('GOOGLE_API_KEY').toString(), mode: _mode, language: 'en', strictbounds: false, types: [""],
-  //       decoration: InputDecoration(
-  //           hintText: "Search",
-  //           focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(20),borderSide: BorderSide(color: Colors.blueAccent))),
-  //       components: [Component(Component.country, "it"),Component(Component.country, "us"),Component(Component.country, "fr"),Component(Component.country, "de")]
-  //   );
-  //   _displayPrediction(p!,currentState);
-  // }
-
   Future<void> displayPrediction(
       Prediction p, ScaffoldState? currentState) async {
+
     GoogleMapsPlaces places = GoogleMapsPlaces(
         apiKey: FlutterConfig.get('GOOGLE_API_KEY'),
         apiHeaders: await const GoogleApiHeaders().getHeaders());

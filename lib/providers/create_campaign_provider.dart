@@ -1,69 +1,53 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_config/flutter_config.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:mobile_crowd_sensing/view_models/session_view_model.dart';
-import 'package:url_launcher/url_launcher_string.dart';
-import 'package:walletconnect_dart/walletconnect_dart.dart';
-import '../utils/helperfunctions.dart';
+import 'package:mobile_crowd_sensing/view_models/smart_contract_view_model.dart';
 
-class CreateCampaignProvider extends StatefulWidget {
-  const CreateCampaignProvider({Key? key}) : super(key: key);
+class CampaignCreator extends StatefulWidget {
 
+  const CampaignCreator({super.key});
   @override
-  _CreateCampaignProviderState createState() => _CreateCampaignProviderState();
+  _CampaignCreatorState createState() => _CampaignCreatorState();
+
 }
 
-class _CreateCampaignProviderState extends State<CreateCampaignProvider> {
-
+class _CampaignCreatorState extends State<CampaignCreator> {
   SessionViewModel sessionData = SessionViewModel();
-
-  createCampaignWithMetamask(BuildContext context) async {
-    var message = generateSessionMessage(sessionData.getSession().accounts[0]);
-
-    if (sessionData.getConnector().connected) {
-      try {
-
-        EthereumWalletConnectProvider provider = EthereumWalletConnectProvider(sessionData.getConnector());
-
-        launchUrlString(sessionData.getUri(), mode: LaunchMode.externalApplication);
-
-        await provider.sendTransaction(
-            from: sessionData.getUri(),
-            to: FlutterConfig.get('MCSfactory_CONTRACT_ADDRESS')
-        );
-        setState(() {
-          Navigator.pushReplacementNamed(context, '//sourcer');
-        });
-      } catch (exp) {
-        print("Error while sent transaction");
-        print(exp);
-      }
-    } else {
-      // setState(() {
-      Navigator.pushReplacementNamed(context, '/login');
-      // });
-    }
-  }
-
+  Object? parameters;
+  dynamic jsonParameters = {};
 
   @override
   void initState() {
     super.initState();
-    createCampaignWithMetamask(context);
+    createCampaign(jsonParameters['name'],jsonParameters['lat'],jsonParameters['lng'],jsonParameters['range']);
   }
 
   @override
   Widget build(BuildContext context) {
+
+    parameters = ModalRoute.of(context)!.settings.arguments;
+    jsonParameters = jsonDecode(jsonEncode(parameters));
+
     return Scaffold(
         backgroundColor: Colors.blue[900],
         body: const Center(
             child: SpinKitFadingCube(
-              color: Colors.red,
+              color: Colors.green,
               size: 50.0,
-            )
-        )
-    );
+            )));
+  }
+
+  Future<void> createCampaign(String name, int lat, int lng, int range) async {
+    SmartContractViewModel smartContractViewModel = SmartContractViewModel();
+
+    List<dynamic> result = await smartContractViewModel.query(
+        FlutterConfig.get('MCSfactory_CONTRACT_ADDRESS'),
+        'createCampaign',
+        [name, lat, lng, range]);
+    print('|||||||||||||||||||||||||||||||||||||||||||| DEBUG ||||||||||||||||||||||||||||||||||||');
+    print(result);
+    print('|||||||||||||||||||||||||||||||||||||||||||| END ||||||||||||||||||||||||||||||||||||');
   }
 }
-
-

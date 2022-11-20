@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_config/flutter_config.dart';
@@ -17,11 +19,16 @@ class SearchPlacesView extends StatefulWidget {
 
 class _SearchPlacesViewState extends State<SearchPlacesView> {
   final searchPlacesViewScaffoldKey = GlobalKey<ScaffoldState>();
-
+  Object? parameters;
+  dynamic formData = {};
   SearchPlacesViewModel searchPlacesData = SearchPlacesViewModel();
 
   @override
   Widget build(BuildContext context) {
+
+    parameters = ModalRoute.of(context)!.settings.arguments;
+    formData = jsonDecode(jsonEncode(parameters));
+
     return Scaffold(
       key: searchPlacesViewScaffoldKey,
       appBar: AppBar(title: const Text("Where is located you Campaign?")),
@@ -31,7 +38,7 @@ class _SearchPlacesViewState extends State<SearchPlacesView> {
             initialCameraPosition: searchPlacesData.getCameraPosition(),
             markers: searchPlacesData.markersList,
             mapType: MapType.normal,
-            onTap: _handleTap,
+            //onTap: _handleTap,
             onMapCreated: (GoogleMapController controller) {
               searchPlacesData.googleMapController = controller;
               setState(() {
@@ -56,8 +63,12 @@ class _SearchPlacesViewState extends State<SearchPlacesView> {
                           Navigator.pushReplacementNamed(
                               context, '/campaignForm',
                               arguments: {
-                                'address': searchPlacesData
-                                    .selectedPosition.result.formattedAddress,
+                                'address': searchPlacesData.selectedPosition.result.formattedAddress,
+                                'lat': searchPlacesData.selectedPosition.result.geometry?.location.lat,
+                                'lng': searchPlacesData.selectedPosition.result.geometry?.location.lng,
+                                'title' : formData['title'],
+                                'range' : formData['range'],
+                                'payment' : formData['payment'],
                               });
                         },
                         backgroundColor: Colors.blueAccent,
@@ -79,7 +90,7 @@ class _SearchPlacesViewState extends State<SearchPlacesView> {
     //searchPlacesData.getPrediction(context,searchPlacesViewScaffoldKey.currentState);
     Prediction? p = await PlacesAutocomplete.show(
         context: context,
-        apiKey: FlutterConfig.get('GOOGLE_API_KEY').toString(),
+        apiKey: FlutterConfig.get('GOOGLE_API_KEY'),
         onError: onError,
         mode: Mode.overlay,
         language: 'en',
@@ -89,7 +100,7 @@ class _SearchPlacesViewState extends State<SearchPlacesView> {
             hintText: "Search",
             focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(20),
-                borderSide: BorderSide(color: Colors.blueAccent))),
+                borderSide: const BorderSide(color: Colors.blueAccent))),
         components: [
           Component(Component.country, "it"),
           //Component(Component.country, "us"),
@@ -100,7 +111,7 @@ class _SearchPlacesViewState extends State<SearchPlacesView> {
         p!, searchPlacesViewScaffoldKey.currentState);
   }
 
-  _handleTap(LatLng point) {
+/*  _handleTap(LatLng point) {
     setState(() {
       searchPlacesData.markersList.add(Marker(
         markerId: MarkerId(point.toString()),
@@ -112,7 +123,7 @@ class _SearchPlacesViewState extends State<SearchPlacesView> {
             BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueMagenta),
       ));
     });
-  }
+  }*/
 
   void onError(PlacesAutocompleteResponse response) {
     searchPlacesViewScaffoldKey.currentState!.showBottomSheet(
