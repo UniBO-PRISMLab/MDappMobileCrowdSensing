@@ -4,7 +4,8 @@ import 'package:google_fonts/google_fonts.dart';
 
 class DialogView extends StatefulWidget {
   final String message;
-  const DialogView({Key? key, required this.message}) : super(key: key);
+  final String? goTo;
+  const DialogView({Key? key, required this.message, this.goTo}) : super(key: key);
 
   @override
   State<DialogView> createState() => _DialogViewState();
@@ -32,7 +33,7 @@ class _DialogViewState extends State<DialogView> {
             Padding(padding: EdgeInsets.only(top: 50.0)),
             TextButton(
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  widget.goTo != null ? Navigator.of(context).pop() : Navigator.pushReplacementNamed(context, '/${widget.goTo}');
                 },
                 child: Text(
                   'Got It!',

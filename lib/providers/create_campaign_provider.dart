@@ -32,7 +32,8 @@ class _CampaignCreatorState extends State<CampaignCreator> {
         jsonParameters['title'],
         BigInt.from(jsonParameters['lat']),
         BigInt.from(jsonParameters['lng']),
-        BigInt.from(jsonParameters['range'])
+        BigInt.from(jsonParameters['range']),
+        BigInt.from(jsonParameters['payment']),
     );
     return Scaffold(
         key: createCampaignProvider,
@@ -44,13 +45,13 @@ class _CampaignCreatorState extends State<CampaignCreator> {
             )));
   }
 
-  Future<void> createCampaign(String name, BigInt lat, BigInt lng, BigInt range) async {
+  Future<void> createCampaign(String name, BigInt lat, BigInt lng, BigInt range, BigInt value) async {
     SmartContractViewModel smartContractViewModel = SmartContractViewModel();
     List args = [name, lat, lng, range];
     print('|||||||||||||||||||||||||||||||||||||||||||| DEBUG INPUT ||||||||||||||||||||||||||||||||||||');
     print(args);
     print('|||||||||||||||||||||||||||||||||||||||||||| END INPUT ||||||||||||||||||||||||||||||||||||');
-    List<dynamic> result = await smartContractViewModel.query(FlutterConfig.get('MCSfactory_CONTRACT_ADDRESS'), 'createCampaign', args);
+    List<dynamic> result = await smartContractViewModel.query(context,FlutterConfig.get('MCSfactory_CONTRACT_ADDRESS'), 'createCampaign', args, value);
     print('|||||||||||||||||||||||||||||||||||||||||||| DEBUG OUTPUT ||||||||||||||||||||||||||||||||||||');
     print(result);
     print('|||||||||||||||||||||||||||||||||||||||||||| END OUTPUT ||||||||||||||||||||||||||||||||||||');
