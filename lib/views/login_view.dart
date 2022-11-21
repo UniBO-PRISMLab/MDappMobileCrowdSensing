@@ -29,7 +29,7 @@ class _LoginViewState extends State<LoginView> {
         'session_update',
             (payload) => setState(() {
               sessionData.setSession(payload);
-          print(sessionData.getAccountPrivateKey());
+          print(sessionData.getAccountAddress());
           print(sessionData.getSession().chainId);
         }));
     sessionData.getConnector().on(
@@ -62,7 +62,7 @@ class _LoginViewState extends State<LoginView> {
                           fontWeight: FontWeight.bold, fontSize: 16),
                     ),
                     Text(
-                      '${sessionData.getAccountPrivateKey()}',
+                      '${sessionData.getAccountAddress()}',
                       style: GoogleFonts.inconsolata(fontSize: 16),
                     ),
                     const SizedBox(height: 20),

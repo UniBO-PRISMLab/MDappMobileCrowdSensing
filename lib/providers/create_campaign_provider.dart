@@ -12,6 +12,8 @@ class CampaignCreator extends StatefulWidget {
 }
 
 class _CampaignCreatorState extends State<CampaignCreator> {
+  final createCampaignProvider = GlobalKey<ScaffoldState>();
+
   late SessionViewModel sessionData;
   Object? parameters;
   dynamic jsonParameters = {};
@@ -33,6 +35,7 @@ class _CampaignCreatorState extends State<CampaignCreator> {
         BigInt.from(jsonParameters['range'])
     );
     return Scaffold(
+        key: createCampaignProvider,
         backgroundColor: Colors.blue[900],
         body: const Center(
             child: SpinKitFadingCube(

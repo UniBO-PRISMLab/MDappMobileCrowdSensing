@@ -10,7 +10,7 @@ class SessionViewModel {
     return _sessionModel.ethClient;
   }
 
-  dynamic getAccountPrivateKey() {
+  dynamic getAccountAddress() {
     return getSession().accounts[0];
   }
 

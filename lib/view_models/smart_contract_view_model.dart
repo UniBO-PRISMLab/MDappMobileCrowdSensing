@@ -1,8 +1,10 @@
 import 'package:flutter/services.dart';
-import 'package:flutter_config/flutter_config.dart';
-import 'package:http/http.dart' as http;
 import 'package:mobile_crowd_sensing/view_models/session_view_model.dart';
+import 'package:url_launcher/url_launcher_string.dart';
+import 'package:walletconnect_dart/walletconnect_dart.dart';
 import 'package:web3dart/web3dart.dart';
+
+import '../views/dialog_view.dart';
 
 class SmartContractViewModel {
 
@@ -15,14 +17,48 @@ class SmartContractViewModel {
   }
 
   Future<List<dynamic>> query(String contractAddress,String functionName, List<dynamic> args) async{
+
     final contract = await loadContract(contractAddress);
     final ethFunction = contract.function(functionName);
-    final result = await sessionData.getEthClient().call(
-        contract: contract,
-        function: ethFunction,
-        params: args,
-        sender: EthereumAddress.fromHex(sessionData.getAccountPrivateKey())
-    );
-    return result;
+
+    EthereumWalletConnectProvider provider = EthereumWalletConnectProvider(sessionData.getConnector());
+    launchUrlString(sessionData.getUri(), mode: LaunchMode.externalApplication);
+    
+    Transaction transaction = Transaction.callContract(contract: contract, function: ethFunction, parameters: args);
+
+    //final result1 = await sessionData.getEthClient().sendTransaction(private key,Transaction.callContract(contract: contract, function: function, parameters: parameters))
+    final result = await provider.signTransaction(
+      from: sessionData.getAccountAddress(),
+      to: contractAddress,
+      value: BigInt.from(1), //esempio
+      data: b170ad41,
+    )
+    List<dynamic> res = result;
+    print('\x1B[31m$res\x1B[0m');
+    return res[0];
+
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
