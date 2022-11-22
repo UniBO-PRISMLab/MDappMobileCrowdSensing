@@ -98,15 +98,56 @@ class _SourcerCampaignViewState extends State<SourcerCampaignView> {
           title: const Text('Your Campaigns'),
           centerTitle: true,
         ),
-        body: (widget.contractAddress != null)
-            ?
+        body: (widget.contractAddress != null) ?
         Container(
                 padding: const EdgeInsets.fromLTRB(10, 30, 10, 10),
                 width: double.maxFinite,
                 child: ListView.builder(
                     itemCount: widget.contractAddress!.length,
                     itemBuilder: (context, index) {
-                      return Card(
+                      return Dismissible(
+                        direction: DismissDirection.startToEnd,
+                        confirmDismiss: (direction) {
+                          return showDialog(
+                          context: context,
+                          builder: (ctx) => AlertDialog(
+                            title: Text('Are you sure?'),
+                            content: Text('Do you want to close this campaign?'),
+                            actions: <Widget>[
+                              TextButton(child: const Text('No'),onPressed: () {Navigator.of(ctx).pop(false);}),
+                              TextButton(child: const Text('Yes'),onPressed: () {Navigator.of(ctx).pop(true);}),
+                              ],
+                          ),);
+                        },
+                        background: Container(
+                          color: Colors.redAccent,
+                          child: Row(
+                            
+                            children: [
+                              Text(
+                              'CLOSE\nCAMPAIGN',
+                              style: GoogleFonts.spaceMono(
+                                  textStyle: const TextStyle(color: Colors.black87, letterSpacing: .5),
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 40),
+                            ),
+                            ]),
+                        ),
+                        key: Key(index.toString()),
+                        onDismissed: (direction) {
+                          setState(() {
+                            widget.contractAddress!.removeAt(index);
+                            names.removeAt(index);
+                            latitude.removeAt(index);
+                            longitude.removeAt(index);
+                            range.removeAt(index);
+                            addressCrowdSourcer.removeAt(index);
+                            fileCount.removeAt(index);
+                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Campaign closed')));
+                          });
+                        },
+                        child: Card(
+                          shadowColor: Colors.blue[600],
                         color: Colors.white54,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20.0),
@@ -117,7 +158,7 @@ class _SourcerCampaignViewState extends State<SourcerCampaignView> {
                             children: <Widget>[
                               Align(
                                 alignment: Alignment.topLeft,
-                                child: Padding(padding: const EdgeInsets.only(left: 10, top: 5),
+
                                       child: Column(children: <Widget>[
                                         Row(children: <Widget>[
                                           //loop
@@ -244,10 +285,11 @@ class _SourcerCampaignViewState extends State<SourcerCampaignView> {
                                         ])
                                       ])
                                   ),
-                              ),
+
                             ],
                           ),
                         ),
+                      ),
                       );
                     }),
               ) : const Center(child: Text('No active campaign at the moment...'))
