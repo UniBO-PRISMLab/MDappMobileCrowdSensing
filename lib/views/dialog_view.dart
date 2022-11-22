@@ -33,7 +33,7 @@ class _DialogViewState extends State<DialogView> {
             Padding(padding: EdgeInsets.only(top: 50.0)),
             TextButton(
                 onPressed: () {
-                  widget.goTo != null ? Navigator.of(context).pop() : Navigator.pushReplacementNamed(context, '/${widget.goTo}');
+                  (widget.goTo != null)? Navigator.pushReplacementNamed(context, '/${widget.goTo}') : Navigator.of(context).pop();
                 },
                 child: Text(
                   'Got It!',

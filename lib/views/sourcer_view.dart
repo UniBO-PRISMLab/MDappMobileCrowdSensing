@@ -28,7 +28,7 @@ class _SourcerViewState extends State<SourcerView> {
                 onPressed: () {
                   sourcerData.goToCreateCampaignForm(context);
                 },
-                icon: Icon(Icons.create),
+                icon: const Icon(Icons.create),
                 label: Text(
                   sourcerData.title_1,
                   style: GoogleFonts.spaceMono(
@@ -38,8 +38,10 @@ class _SourcerViewState extends State<SourcerView> {
                 const Padding(padding: EdgeInsets.all(50)),
 
                 TextButton.icon(
-                onPressed: () {},
-                icon: Icon(Icons.dataset_rounded),
+                onPressed: () {
+                  sourcerData.goToMyCampaign(context);
+                },
+                icon: const Icon(Icons.dataset_rounded),
                 label: Text(
                   sourcerData.title_2,
                   style: GoogleFonts.spaceMono(
