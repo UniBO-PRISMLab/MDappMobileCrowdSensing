@@ -21,7 +21,7 @@ class HomeViewModel {
   }
 
   String getTitle3() {
-    return homeModel.title_1;
+    return homeModel.title_3;
   }
 
   setTitle3(String newTitle) {

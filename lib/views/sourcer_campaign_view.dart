@@ -122,7 +122,7 @@ class _SourcerCampaignViewState extends State<SourcerCampaignView> {
                         background: Container(
                           color: Colors.redAccent,
                           child: Row(
-                            
+
                             children: [
                               Text(
                               'CLOSE\nCAMPAIGN',

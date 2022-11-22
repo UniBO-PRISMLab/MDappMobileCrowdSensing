@@ -9,7 +9,7 @@ class WorkerView extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.blue[900],
-          title: const Text('Camapaign List'),
+          title: const Text('Campaign List'),
           centerTitle: true,
         ),
         body: Container(

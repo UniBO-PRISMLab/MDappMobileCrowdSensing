@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_config/flutter_config.dart';
+import 'package:mobile_crowd_sensing/providers/all_campaign_provider.dart';
 import 'package:mobile_crowd_sensing/providers/create_campaign_provider.dart';
 import 'package:mobile_crowd_sensing/providers/my_campaign_provider.dart';
 import 'package:mobile_crowd_sensing/views/login_view.dart';
@@ -27,7 +28,7 @@ class MyApp extends StatelessWidget {
         '/login': (context) => const LoginView(),
         '/campaignForm': (context) => const CreateCampaignForm(),
         '/sourcer': (context) => const SourcerView(),
-        '/worker': (context) => const WorkerView(),
+        '/worker': (context) => const AllCampaignProvider(),
         '/create_campaign_provider': (context) => const CampaignCreator(),
         '/map': (context) => const SearchPlacesView(),
         '/sourcer_campaigns': (context) => const SourcerCampaignView(contractAddress: [],),
