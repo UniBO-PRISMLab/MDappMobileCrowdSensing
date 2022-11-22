@@ -76,7 +76,6 @@ class SmartContractViewModel {
 
       print('DEBUG:::::::::::::::::::::::::::[queryCall]:  $result');
       List<dynamic> res = result;
-      print('DEBUG:::::::::::::::::::::::::::[List<dynamic> res =]:  ${res[0]}');
       return res;
     } catch (error) {
       print('\x1B[31m$error\x1B[0m');
