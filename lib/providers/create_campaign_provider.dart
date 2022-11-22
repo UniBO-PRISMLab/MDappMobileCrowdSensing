@@ -5,6 +5,8 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:mobile_crowd_sensing/view_models/session_view_model.dart';
 import 'package:mobile_crowd_sensing/view_models/smart_contract_view_model.dart';
 
+import '../views/dialog_view.dart';
+
 class CampaignCreator extends StatefulWidget {
   const CampaignCreator({super.key});
   @override
@@ -32,7 +34,8 @@ class _CampaignCreatorState extends State<CampaignCreator> {
         jsonParameters['title'],
         BigInt.from(jsonParameters['lat']),
         BigInt.from(jsonParameters['lng']),
-        BigInt.from(jsonParameters['range'])
+        BigInt.from(jsonParameters['range']),
+        BigInt.from(jsonParameters['payment']),
     );
     return Scaffold(
         key: createCampaignProvider,
@@ -44,15 +47,23 @@ class _CampaignCreatorState extends State<CampaignCreator> {
             )));
   }
 
-  Future<void> createCampaign(String name, BigInt lat, BigInt lng, BigInt range) async {
-    SmartContractViewModel smartContractViewModel = SmartContractViewModel();
-    List args = [name, lat, lng, range];
-    print('|||||||||||||||||||||||||||||||||||||||||||| DEBUG INPUT ||||||||||||||||||||||||||||||||||||');
-    print(args);
-    print('|||||||||||||||||||||||||||||||||||||||||||| END INPUT ||||||||||||||||||||||||||||||||||||');
-    List<dynamic> result = await smartContractViewModel.query(FlutterConfig.get('MCSfactory_CONTRACT_ADDRESS'), 'createCampaign', args);
-    print('|||||||||||||||||||||||||||||||||||||||||||| DEBUG OUTPUT ||||||||||||||||||||||||||||||||||||');
-    print(result);
-    print('|||||||||||||||||||||||||||||||||||||||||||| END OUTPUT ||||||||||||||||||||||||||||||||||||');
+  Future<void> createCampaign(String name, BigInt lat, BigInt lng, BigInt range, BigInt value) async {
+    try {
+
+      SmartContractViewModel smartContractViewModel = SmartContractViewModel(
+          FlutterConfig.get('MCSfactory_CONTRACT_ADDRESS'), 'MCSfactory',
+          'assets/abi.json');
+      List args = [name, lat, lng, range];
+      List<dynamic> result = await smartContractViewModel.queryTransaction(
+          context, 'createCampaign', args, value, 'sourcer');
+
+    } catch(error){
+      print('\x1B[31m$error\x1B[0m');
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) =>
+                  DialogView(message: error.toString())));
+    }
   }
 }
