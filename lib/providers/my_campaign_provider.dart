@@ -45,7 +45,7 @@ class _MyCampaignProviderState extends State<MyCampaignProvider> {
     try {
       SmartContractViewModel smartContractViewModel = SmartContractViewModel(FlutterConfig.get('MCSfactory_CONTRACT_ADDRESS'),'MCSfactory','assets/abi.json');
       EthereumAddress address = EthereumAddress.fromHex(sourcerAddress);
-      List<dynamic> result = await smartContractViewModel.queryCall(context, 'campaigns',[address],null,null);
+      List? result = await smartContractViewModel.queryCall(context, 'campaigns',[address],null,null);
       Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) => SourcerCampaignView(contractAddress: result,)));
     } catch (error) {
       print('\x1B[31m$error\x1B[0m');

@@ -58,7 +58,7 @@ class SmartContractViewModel {
     }
   }
 
-  Future<dynamic> queryCall(
+  Future<List<dynamic>?> queryCall(
       BuildContext context,
       String functionName,
       List<dynamic> args,
@@ -75,8 +75,9 @@ class SmartContractViewModel {
           params: args);
 
       print('DEBUG:::::::::::::::::::::::::::[queryCall]:  $result');
-
-      return result;
+      List<dynamic> res = result;
+      print('DEBUG:::::::::::::::::::::::::::[List<dynamic> res =]:  ${res[0]}');
+      return res;
     } catch (error) {
       print('\x1B[31m$error\x1B[0m');
       Navigator.pushReplacement(
@@ -85,5 +86,6 @@ class SmartContractViewModel {
               builder: (BuildContext context) =>
                   DialogView(goTo: goToOnFail, message: error.toString())));
     }
+    return null;
   }
 }
