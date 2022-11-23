@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_config/flutter_config.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:mobile_crowd_sensing/view_models/session_view_model.dart';
-import 'package:mobile_crowd_sensing/view_models/smart_contract_view_model.dart';
+import 'package:mobile_crowd_sensing/providers/smart_contract_provider.dart';
 
 import '../views/dialog_view.dart';
 
@@ -50,7 +50,7 @@ class _CampaignCreatorState extends State<CampaignCreator> {
   Future<void> createCampaign(String name, BigInt lat, BigInt lng, BigInt range, BigInt value) async {
     try {
 
-      SmartContractViewModel smartContractViewModel = SmartContractViewModel(
+      SmartContractProvider smartContractViewModel = SmartContractProvider(
           FlutterConfig.get('MCSfactory_CONTRACT_ADDRESS'), 'MCSfactory',
           'assets/abi.json');
       List args = [name, lat, lng, range];

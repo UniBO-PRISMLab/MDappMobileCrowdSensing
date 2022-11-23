@@ -6,11 +6,11 @@ import 'package:web3dart/web3dart.dart';
 
 import '../views/dialog_view.dart';
 
-class SmartContractViewModel {
+class SmartContractProvider {
   final String contractAddress;
   final String abiName;
   final String abiFileRoot;
-  SmartContractViewModel(this.contractAddress, this.abiName, this.abiFileRoot);
+  SmartContractProvider(this.contractAddress, this.abiName, this.abiFileRoot);
   SessionViewModel sessionData = SessionViewModel();
 
   Future<DeployedContract> loadContractFactory(String contractAddress) async {
