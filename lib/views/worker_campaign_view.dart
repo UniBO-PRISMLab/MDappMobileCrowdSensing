@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../view_models/smart_contract_view_model.dart';
+import '../providers/smart_contract_provider.dart';
 
 class WorkerCampaignView extends StatefulWidget {
   final List<dynamic>? contractAddress;
@@ -24,7 +24,7 @@ class _WorkerCampaignViewState extends State<WorkerCampaignView> {
   initState() {
     if (widget.contractAddress != null) {
       for (int i = 0; i < widget.contractAddress!.length; i++) {
-        SmartContractViewModel smartContractViewModel = SmartContractViewModel(
+        SmartContractProvider smartContractViewModel = SmartContractProvider(
             widget.contractAddress![i].toString(),
             'Campaign',
             'assets/abi_campaign.json');
@@ -105,185 +105,164 @@ class _WorkerCampaignViewState extends State<WorkerCampaignView> {
                 child: ListView.builder(
                     itemCount: widget.contractAddress!.length,
                     itemBuilder: (context, index) {
-                      return Dismissible(
-                        key: Key(index.toString()),
-                        background: Container(
-                          color: Colors.redAccent,
-                          child: Row(
-                              children: [
-                                Text(
-                                  'CLOSE\nCAMPAIGN',
-                                  style: GoogleFonts.spaceMono(
-                                      textStyle: const TextStyle(color: Colors.black87, letterSpacing: .5),
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 40),
-                                ),
-                              ]),
-                        ),
-                        secondaryBackground: Container(
-                          color: Colors.lightGreen,
-                          child: Row(
-                              children: [
-                                Text('CLOSE\nCAMPAIGN',style: GoogleFonts.spaceMono(textStyle: const TextStyle(color: Colors.black87, letterSpacing: .5),fontWeight: FontWeight.bold,fontSize: 40),),
-                              ]
+                      return GestureDetector(
+                        onTap: (){
+                          Navigator.pushNamed(context,'join_campaign', arguments: {
+                            // controllo in base al tipo di contratto cliccato
+
+                          });
+                        },
+                        child: Card(
+                          shadowColor: Colors.blue[600],
+                          color: Colors.white54,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0),
                           ),
-                        ),
-                        child: InkWell(
-                          onTap: () {
-                            print("clicked");
-                          },
-                          child: Card(
-                            shadowColor: Colors.blue[600],
-                            color: Colors.white54,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20.0),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(20),
-                              child: Stack(
-                                children: <Widget>[
-                                  Align(
-                                      alignment: Alignment.topLeft,
-                                      child: Column(children: <Widget>[
-                                        Row(children: <Widget>[
-                                          //loop
-                                          (names.length !=
-                                                  widget
-                                                      .contractAddress!.length)
-                                              ? loadingText
-                                              : Text(
-                                                  "Name: ${names[index]}",
-                                                  style: GoogleFonts.spaceMono(
-                                                      textStyle:
-                                                          const TextStyle(
-                                                              color: Colors
-                                                                  .black87,
-                                                              letterSpacing:
-                                                                  .5),
-                                                      fontWeight:
-                                                          FontWeight.normal,
-                                                      fontSize: 16),
-                                                ),
-                                        ]),
-                                        Row(children: <Widget>[
-                                          (latitude.length !=
-                                                  widget
-                                                      .contractAddress!.length)
-                                              ? loadingText
-                                              : Text(
-                                                  "Latitude: ${latitude[index]}",
-                                                  style: GoogleFonts.spaceMono(
-                                                      textStyle:
-                                                          const TextStyle(
-                                                              color: Colors
-                                                                  .black87,
-                                                              letterSpacing:
-                                                                  .5),
-                                                      fontWeight:
-                                                          FontWeight.normal,
-                                                      fontSize: 16),
-                                                ),
-                                        ]),
-                                        Row(children: <Widget>[
-                                          (longitude.length !=
-                                                  widget
-                                                      .contractAddress!.length)
-                                              ? loadingText
-                                              : Text(
-                                                  "Longitude: ${longitude[index]}",
-                                                  style: GoogleFonts.spaceMono(
-                                                      textStyle:
-                                                          const TextStyle(
-                                                              color: Colors
-                                                                  .black87,
-                                                              letterSpacing:
-                                                                  .5),
-                                                      fontWeight:
-                                                          FontWeight.normal,
-                                                      fontSize: 16),
-                                                ),
-                                        ]),
-                                        Row(children: <Widget>[
-                                          (range.length !=
-                                                  widget
-                                                      .contractAddress!.length)
-                                              ? loadingText
-                                              : Text(
-                                                  "Range: ${range[index]}",
-                                                  style: GoogleFonts.spaceMono(
-                                                      textStyle:
-                                                          const TextStyle(
-                                                              color: Colors
-                                                                  .black87,
-                                                              letterSpacing:
-                                                                  .5),
-                                                      fontWeight:
-                                                          FontWeight.normal,
-                                                      fontSize: 16),
-                                                ),
-                                        ]),
-                                        Row(children: <Widget>[
-                                          (addressCrowdSourcer.length !=
-                                                  widget
-                                                      .contractAddress!.length)
-                                              ? loadingText
-                                              : Column(
-                                                  //mainAxisAlignment: MainAxisAlignment.end,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      "crowdsourcer:",
-                                                      style: GoogleFonts.spaceMono(
-                                                          textStyle:
-                                                              const TextStyle(
-                                                                  color: Colors
-                                                                      .black87,
-                                                                  letterSpacing:
-                                                                      .5),
-                                                          fontWeight:
-                                                              FontWeight.normal,
-                                                          fontSize: 16),
-                                                    ),
-                                                    Text(
-                                                      addressCrowdSourcer[
-                                                          index],
-                                                      style: GoogleFonts.spaceMono(
-                                                          textStyle:
-                                                              const TextStyle(
-                                                                  color: Colors
-                                                                      .black87,
-                                                                  letterSpacing:
-                                                                      .5),
-                                                          fontWeight:
-                                                              FontWeight.normal,
-                                                          fontSize: 10),
-                                                    )
-                                                  ],
-                                                ),
-                                        ]),
-                                        Row(children: <Widget>[
-                                          (fileCount.length !=
-                                                  widget
-                                                      .contractAddress!.length)
-                                              ? loadingText
-                                              : Text(
-                                                  "fileCount: ${fileCount[index]}",
-                                                  style: GoogleFonts.spaceMono(
-                                                      textStyle:
-                                                          const TextStyle(
-                                                              color: Colors
-                                                                  .black87,
-                                                              letterSpacing:
-                                                                  .5),
-                                                      fontWeight:
-                                                          FontWeight.normal,
-                                                      fontSize: 16),
-                                                ),
-                                        ])
-                                      ])),
-                                ],
-                              ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(20),
+                            child: Stack(
+                              children: <Widget>[
+                                Align(
+                                    alignment: Alignment.topLeft,
+                                    child: Column(children: <Widget>[
+                                      Row(children: <Widget>[
+                                        //loop
+                                        (names.length !=
+                                                widget
+                                                    .contractAddress!.length)
+                                            ? loadingText
+                                            : Text(
+                                                "Name: ${names[index]}",
+                                                style: GoogleFonts.spaceMono(
+                                                    textStyle:
+                                                        const TextStyle(
+                                                            color: Colors
+                                                                .black87,
+                                                            letterSpacing:
+                                                                .5),
+                                                    fontWeight:
+                                                        FontWeight.normal,
+                                                    fontSize: 16),
+                                              ),
+                                      ]),
+                                      Row(children: <Widget>[
+                                        (latitude.length !=
+                                                widget
+                                                    .contractAddress!.length)
+                                            ? loadingText
+                                            : Text(
+                                                "Latitude: ${latitude[index]}",
+                                                style: GoogleFonts.spaceMono(
+                                                    textStyle:
+                                                        const TextStyle(
+                                                            color: Colors
+                                                                .black87,
+                                                            letterSpacing:
+                                                                .5),
+                                                    fontWeight:
+                                                        FontWeight.normal,
+                                                    fontSize: 16),
+                                              ),
+                                      ]),
+                                      Row(children: <Widget>[
+                                        (longitude.length !=
+                                                widget
+                                                    .contractAddress!.length)
+                                            ? loadingText
+                                            : Text(
+                                                "Longitude: ${longitude[index]}",
+                                                style: GoogleFonts.spaceMono(
+                                                    textStyle:
+                                                        const TextStyle(
+                                                            color: Colors
+                                                                .black87,
+                                                            letterSpacing:
+                                                                .5),
+                                                    fontWeight:
+                                                        FontWeight.normal,
+                                                    fontSize: 16),
+                                              ),
+                                      ]),
+                                      Row(children: <Widget>[
+                                        (range.length !=
+                                                widget
+                                                    .contractAddress!.length)
+                                            ? loadingText
+                                            : Text(
+                                                "Range: ${range[index]}",
+                                                style: GoogleFonts.spaceMono(
+                                                    textStyle:
+                                                        const TextStyle(
+                                                            color: Colors
+                                                                .black87,
+                                                            letterSpacing:
+                                                                .5),
+                                                    fontWeight:
+                                                        FontWeight.normal,
+                                                    fontSize: 16),
+                                              ),
+                                      ]),
+                                      Row(children: <Widget>[
+                                        (addressCrowdSourcer.length !=
+                                                widget
+                                                    .contractAddress!.length)
+                                            ? loadingText
+                                            : Column(
+                                                //mainAxisAlignment: MainAxisAlignment.end,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    "crowdsourcer:",
+                                                    style: GoogleFonts.spaceMono(
+                                                        textStyle:
+                                                            const TextStyle(
+                                                                color: Colors
+                                                                    .black87,
+                                                                letterSpacing:
+                                                                    .5),
+                                                        fontWeight:
+                                                            FontWeight.normal,
+                                                        fontSize: 16),
+                                                  ),
+                                                  Text(
+                                                    addressCrowdSourcer[
+                                                        index],
+                                                    style: GoogleFonts.spaceMono(
+                                                        textStyle:
+                                                            const TextStyle(
+                                                                color: Colors
+                                                                    .black87,
+                                                                letterSpacing:
+                                                                    .5),
+                                                        fontWeight:
+                                                            FontWeight.normal,
+                                                        fontSize: 10),
+                                                  )
+                                                ],
+                                              ),
+                                      ]),
+                                      Row(children: <Widget>[
+                                        (fileCount.length !=
+                                                widget
+                                                    .contractAddress!.length)
+                                            ? loadingText
+                                            : Text(
+                                                "fileCount: ${fileCount[index]}",
+                                                style: GoogleFonts.spaceMono(
+                                                    textStyle:
+                                                        const TextStyle(
+                                                            color: Colors
+                                                                .black87,
+                                                            letterSpacing:
+                                                                .5),
+                                                    fontWeight:
+                                                        FontWeight.normal,
+                                                    fontSize: 16),
+                                              ),
+                                      ])
+                                    ])),
+                              ],
                             ),
                           ),
                         ),

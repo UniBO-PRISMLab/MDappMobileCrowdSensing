@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../view_models/create_campaign_form_view_model.dart';
+import '../view_models/create_campaign_form_view_model.dart';
 
 class CreateCampaignForm extends StatefulWidget {
   const CreateCampaignForm({super.key});

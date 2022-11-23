@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../view_models/smart_contract_view_model.dart';
+import '../providers/smart_contract_provider.dart';
 
 class SourcerCampaignView extends StatefulWidget {
   final List<dynamic>? contractAddress;
@@ -24,7 +24,7 @@ class _SourcerCampaignViewState extends State<SourcerCampaignView> {
   initState() {
     if (widget.contractAddress != null) {
       for (int i = 0; i < widget.contractAddress!.length; i++) {
-        SmartContractViewModel smartContractViewModel = SmartContractViewModel(
+        SmartContractProvider smartContractViewModel = SmartContractProvider(
             widget.contractAddress![i].toString(),
             'Campaign',
             'assets/abi_campaign.json');
