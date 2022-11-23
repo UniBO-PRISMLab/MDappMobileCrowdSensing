@@ -4,7 +4,6 @@ import '../providers/smart_contract_provider.dart';
 
 class WorkerCampaignView extends StatefulWidget {
   final List<dynamic>? contractAddress;
-
   const WorkerCampaignView({Key? key, required this.contractAddress})
       : super(key: key);
 
@@ -19,7 +18,7 @@ class _WorkerCampaignViewState extends State<WorkerCampaignView> {
   late List<String> range = [];
   late List<String> addressCrowdSourcer = [];
   late List<String> fileCount = [];
-
+  String goToJoinCampaign = 'photo';
   @override
   initState() {
     if (widget.contractAddress != null) {
@@ -107,9 +106,11 @@ class _WorkerCampaignViewState extends State<WorkerCampaignView> {
                     itemBuilder: (context, index) {
                       return GestureDetector(
                         onTap: (){
-                          Navigator.pushNamed(context,'join_campaign', arguments: {
-                            // controllo in base al tipo di contratto cliccato
-
+                          Navigator.pushNamed(context,'/join_campaign', arguments: {
+                            'name': names[index],
+                            'lat': latitude[index].toString(),
+                            'lng': longitude[index].toString(),
+                            'range': range[index].toString()
                           });
                         },
                         child: Card(
