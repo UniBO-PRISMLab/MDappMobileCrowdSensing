@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 // A screen that allows users to take a picture using a given camera.
 class CameraViewModel extends StatefulWidget {
@@ -17,12 +18,15 @@ class CameraViewModelState extends State<CameraViewModel> {
   late dynamic camera;
   late CameraController _controller;
   Future<void>? _initializeControllerFuture;
-
-  void getDeviceCamera() async{
+  List<Image> pictures = [];
+  void getDeviceCamera() async {
     cameras = await availableCameras();
     camera = cameras.first;
-    _controller = CameraController(camera, ResolutionPreset.medium,);
-    setState((){
+    _controller = CameraController(
+      camera,
+      ResolutionPreset.medium,
+    );
+    setState(() {
       _initializeControllerFuture = _controller.initialize();
     });
   }
@@ -41,46 +45,68 @@ class CameraViewModelState extends State<CameraViewModel> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-      appBar: AppBar(title: const Text('Take a picture')),
-      body: FutureBuilder<void>(
-        future: _initializeControllerFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            return CameraPreview(_controller);
-          } else {
-            return const Center(child: CircularProgressIndicator());
-          }
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        // Provide an onPressed callback.
-        onPressed: () async {
-          try {
-            await _initializeControllerFuture;
-            final image = await _controller.takePicture();
+        appBar: AppBar(title: const Text('Take a picture')),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () async {
+            try {
+              await _initializeControllerFuture;
+              _controller
+                ..setExposureMode(ExposureMode.auto)
+                ..setFlashMode(FlashMode.off);
+              final image = await _controller.takePicture();
+              if (!mounted) return;
+              Image? res = await Navigator.of(context).push(MaterialPageRoute(builder: (context) => DisplayPictureScreen(imagePath: image.path,)));
 
-            if (!mounted) return;
+              if (res != null) {
+                setState(() {
+                  pictures.add(res);
+                  print('____________________YES___PHOTO_________________');
+                  print('____________________${pictures.length}_________________');
 
-            // If the picture was taken, display it on a new screen.
-            await Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => DisplayPictureScreen(
-                  // Pass the automatically generated path to
-                  // the DisplayPictureScreen widget.
-                  imagePath: image.path,
-                ),
-              ),
-            );
-          } catch (e) {
-            // If an error occurs, log the error to the console.
-            print(e);
-          }
-        },
-        child: const Icon(Icons.camera_alt),
-      ),
-    );
+                });
+              } else {
+                print('____________________NO___PHOTO_________________');
+              }
+            } catch (e) {
+              print(e);
+            }
+          },
+          child: const Icon(Icons.camera_alt),
+        ),
+        body: WillPopScope(
+          onWillPop: () async {
+            Navigator.pop(context, pictures);
+            return false;
+          },
+          child: FutureBuilder<void>(
+            future: _initializeControllerFuture,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                return Column(
+                  children: [
+                    CameraPreview(_controller),
+                    Row(
+                      children: [
+                        Text(
+                          ' Photos taken: ',
+                          style: GoogleFonts.merriweather(
+                              fontWeight: FontWeight.bold, fontSize: 16),
+                        ),
+                        Text(
+                          '${pictures.length}',
+                          style: GoogleFonts.inconsolata(fontSize: 16),
+                        ),
+                      ],
+                    ),
+                  ],
+                );
+              } else {
+                return const Center(child: CircularProgressIndicator());
+              }
+            },
+          ),
+        ));
   }
 }
 
@@ -94,7 +120,41 @@ class DisplayPictureScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Display the Picture')),
-      body: Image.file(File(imagePath)),
+      body: Column(
+        children: [
+          Image.file(File(imagePath)),
+          Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                FloatingActionButton(
+                  heroTag: "addImg",
+                  backgroundColor: Colors.green,
+                  onPressed: () {
+                    Navigator.pop(context, Image.file(File(imagePath)));
+                  },
+                  child: const Icon(
+                    Icons.add_circle_outline,
+                    color: Colors.white,
+                  ),
+                ),
+                FloatingActionButton(
+                  heroTag: "discardImg",
+                  backgroundColor: Colors.red,
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Icon(
+                    Icons.dangerous_outlined,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
+            ),
+          )
+        ],
+      ),
     );
   }
 }
