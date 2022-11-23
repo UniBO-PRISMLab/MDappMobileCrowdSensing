@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../utils/join_campaign_factory.dart';
+import '../../view_models/camera_view_model.dart';
 import '../../view_models/session_view_model.dart';
 
 class PhotoJoinCampaignView extends JoinCampaignFactory {
@@ -18,13 +19,15 @@ class TemperatureJoinCampaignViewState extends State<PhotoJoinCampaignView> {
 
   dynamic campaignSelectedData = {};
   Object? parameters;
+  List<Image> pictures = [];
 
   @override
   Widget build(BuildContext context) {
-    int counterFiles = 0;
+    int counterFiles = pictures.length;
     parameters = ModalRoute.of(context)!.settings.arguments;
     campaignSelectedData = jsonDecode(jsonEncode(parameters));
     SessionViewModel sessionData = SessionViewModel();
+    int _index = 0;
 
     return  Scaffold(
       resizeToAvoidBottomInset: false,
@@ -103,8 +106,14 @@ class TemperatureJoinCampaignViewState extends State<PhotoJoinCampaignView> {
                         ],),
 
                       ElevatedButton.icon(
-                        onPressed: () {
-                          Navigator.pushNamed(context, '/camera');
+                        onPressed: () async {
+
+                            pictures = await Navigator.of(context).push(
+                                MaterialPageRoute(builder: (
+                                    context) => const CameraViewModel()));
+                            setState(()  {
+                            print("DEBUG::::::::::::::::::::::::::::::::::::: NUMBER OF PHOTOS: ${pictures.length}");
+                          });
                         },
                         icon: const Icon(
                           Icons.camera_alt_outlined,
@@ -114,7 +123,11 @@ class TemperatureJoinCampaignViewState extends State<PhotoJoinCampaignView> {
                       ),
                       ElevatedButton.icon(
                         onPressed: () {
-                         // Navigator.pushNamed(context, '/camera');
+                          pictures.clear();
+                          setState(() {
+                            print("DEBUG::::::::::::::::::::::::::::::::::::: PHOTOS CLEARED: ${pictures.length}");
+                          });
+
                         },
                         icon: const Icon(
                           Icons.delete_forever_outlined,
@@ -125,7 +138,7 @@ class TemperatureJoinCampaignViewState extends State<PhotoJoinCampaignView> {
                       Row(
                         children: [
                           Text(
-                            'Uploaded Files: ',
+                            'Waiting Files: ',
                             style: GoogleFonts.merriweather(
                                 fontWeight: FontWeight.bold, fontSize: 16),
                           ),
@@ -139,6 +152,26 @@ class TemperatureJoinCampaignViewState extends State<PhotoJoinCampaignView> {
                            FloatingActionButton(onPressed: (){}, child: const Icon(Icons.file_upload_sharp)),
 
                        ),
+
+                      Center(
+                        child: SizedBox(
+                          height: 200, // card height
+                          child: PageView.builder(
+                            itemCount: pictures.length,
+                            controller: PageController(viewportFraction: 0.7),
+                            onPageChanged: (int index) => setState(() => _index = index),
+                            itemBuilder: (_, i) {
+                              return Transform.scale(
+                                scale: i == _index ? 1 : 0.9,
+                                child: Card(
+                                        elevation: 6,
+                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                                        child: Center(child: pictures[i])
+                                      ),
+                              );}
+                          ),
+                        ),
+                      ),
                     ])
             )
           ],
