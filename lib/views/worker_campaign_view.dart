@@ -16,6 +16,7 @@ class _WorkerCampaignViewState extends State<WorkerCampaignView> {
   late List<String> latitude = [];
   late List<String> longitude = [];
   late List<String> range = [];
+  late List<String> type = [];
   late List<String> addressCrowdSourcer = [];
   late List<String> fileCount = [];
   String goToJoinCampaign = 'photo';
@@ -59,6 +60,14 @@ class _WorkerCampaignViewState extends State<WorkerCampaignView> {
                     range.add(value![0].toString());
                   })
                 });
+
+        smartContractViewModel
+            .queryCall(context, 'campaignType', [], null, null)
+            .then((value) => {
+          setState(() {
+            type.add(value![0].toString());
+          })
+        });
 
         smartContractViewModel
             .queryCall(context, 'addressCrowdSourcer', [], null, null)
@@ -110,7 +119,8 @@ class _WorkerCampaignViewState extends State<WorkerCampaignView> {
                             'name': names[index],
                             'lat': latitude[index].toString(),
                             'lng': longitude[index].toString(),
-                            'range': range[index].toString()
+                            'range': range[index].toString(),
+                            'type' : type[index],
                           });
                         },
                         child: Card(
@@ -203,6 +213,24 @@ class _WorkerCampaignViewState extends State<WorkerCampaignView> {
                                                     fontSize: 16),
                                               ),
                                       ]),
+
+                                      Row(children: <Widget>[
+                                        (range.length !=
+                                            widget
+                                                .contractAddress!.length)
+                                            ? loadingText
+                                            : Text(
+                                          "Type: ${type[index]}",
+                                          style: GoogleFonts.spaceMono(
+                                              textStyle:
+                                              const TextStyle(color: Colors.black87, letterSpacing: .5),
+                                              fontWeight:
+                                              FontWeight.normal,
+                                              fontSize: 16),
+                                        ),
+                                      ]),
+
+
                                       Row(children: <Widget>[
                                         (addressCrowdSourcer.length !=
                                                 widget

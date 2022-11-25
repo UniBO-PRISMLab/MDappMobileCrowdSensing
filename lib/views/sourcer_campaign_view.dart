@@ -63,7 +63,7 @@ class _SourcerCampaignViewState extends State<SourcerCampaignView> {
                 });
 
         smartContractViewModel
-            .queryCall(context, 'type', [], null, null)
+            .queryCall(context, 'campaignType', [], null, null)
             .then((value) => {
           setState(() {
             type.add(value![0]);
@@ -293,11 +293,8 @@ class _SourcerCampaignViewState extends State<SourcerCampaignView> {
                                               ),
                                         ]),
                                         Row(children: <Widget>[
-                                          (fileCount.length !=
-                                                  widget.contractAddress!
-                                                      .length)
-                                              ? loadingText
-                                              : Text(
+                                          (fileCount.length != widget.contractAddress!.length) ? loadingText :
+                                          Text(
                                                   "fileCount: ${fileCount[index]}",
                                                   style: GoogleFonts.spaceMono(
                                                       textStyle:

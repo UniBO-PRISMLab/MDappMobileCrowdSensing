@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
         '/map': (context) => const SearchPlacesView(),
         '/sourcer_campaigns': (context) => const SourcerCampaignView(contractAddress: [],),
         '/sourcer_campaigns_provider': (context) => const MyCampaignProvider(),
-        '/join_campaign':(context) => JoinCampaignFactory.fromTypeName('photo'),
+        '/join_campaign':(context) => JoinCampaignFactory.fromTypeName(context),
         '/camera':(context) => const CameraViewModel(),
       },
     );

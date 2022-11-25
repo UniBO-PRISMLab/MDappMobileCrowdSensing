@@ -13,6 +13,25 @@
     "type": "event"
   },
   {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "activeCampaigns",
+    "outputs": [
+      {
+        "internalType": "contract Campaign",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "campaignCount",
     "outputs": [
@@ -26,6 +45,13 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "closeCampaign",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "address",
@@ -33,7 +59,7 @@
         "type": "address"
       }
     ],
-    "name": "campaigns",
+    "name": "closedCampaigns",
     "outputs": [
       {
         "internalType": "contract Campaign",
@@ -65,6 +91,11 @@
         "internalType": "int256",
         "name": "_range",
         "type": "int256"
+      },
+      {
+        "internalType": "string",
+        "name": "_type",
+        "type": "string"
       }
     ],
     "name": "createCampaign",
@@ -81,6 +112,19 @@
   {
     "inputs": [],
     "name": "getAllCampaigns",
+    "outputs": [
+      {
+        "internalType": "contract Campaign[]",
+        "name": "",
+        "type": "address[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getClosedCampaigns",
     "outputs": [
       {
         "internalType": "contract Campaign[]",
