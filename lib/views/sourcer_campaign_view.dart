@@ -17,6 +17,7 @@ class _SourcerCampaignViewState extends State<SourcerCampaignView> {
   late List<String> latitude = [];
   late List<String> longitude = [];
   late List<String> range = [];
+  late List<String> type = [];
   late List<String> addressCrowdSourcer = [];
   late List<String> fileCount = [];
 
@@ -60,6 +61,14 @@ class _SourcerCampaignViewState extends State<SourcerCampaignView> {
                     range.add(value![0].toString());
                   })
                 });
+
+        smartContractViewModel
+            .queryCall(context, 'type', [], null, null)
+            .then((value) => {
+          setState(() {
+            type.add(value![0]);
+          })
+        });
 
         smartContractViewModel
             .queryCall(context, 'addressCrowdSourcer', [], null, null)
@@ -229,6 +238,25 @@ class _SourcerCampaignViewState extends State<SourcerCampaignView> {
                                                       fontSize: 16),
                                                 ),
                                         ]),
+
+                                        Row(children: <Widget>[
+                                          (type.length != widget.contractAddress!.length) ? loadingText
+                                              : Text(
+                                            "Type: ${type[index]}",
+                                            style: GoogleFonts.spaceMono(
+                                                textStyle:
+                                                const TextStyle(
+                                                    color: Colors
+                                                        .black87,
+                                                    letterSpacing:
+                                                    .5),
+                                                fontWeight:
+                                                FontWeight.normal,
+                                                fontSize: 16),
+                                          ),
+                                        ]),
+
+
                                         Row(children: <Widget>[
                                           (addressCrowdSourcer.length != widget.contractAddress!.length)
                                               ? loadingText

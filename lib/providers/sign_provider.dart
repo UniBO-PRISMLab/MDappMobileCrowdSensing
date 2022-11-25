@@ -29,9 +29,16 @@ class _SignProviderState extends State<SignProvider> {
         launchUrlString(sessionData.getUri(), mode: LaunchMode.externalApplication);
 
         sessionData.setSignature(await provider.personalSign( message: message, address: sessionData.getSession().accounts[0], password: ""));
-        // setState(() {
+
+        print('\x1B[33m------------------------------------------------------------------------------------------------------------------------------------\x1B[0m');
+        print('\x1B[33m${sessionData.getSession()}\x1B[0m');
+        print('\x1B[33m${sessionData.getUri()}\x1B[0m');
+        print('\x1B[33m${sessionData.getSignature()}\x1B[0m');
+        print('\x1B[33m------------------------------------------------------------------------------------------------------------------------------------\x1B[0m');
+
+        setState(() {
           Navigator.pushReplacementNamed(context, '/login');
-        // });
+         });
       } catch (exp) {
         print("Error while signing transaction");
         print(exp);

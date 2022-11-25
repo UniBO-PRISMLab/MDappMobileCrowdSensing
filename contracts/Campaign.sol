@@ -8,6 +8,7 @@ contract Campaign is Ownable, Initializable {
     int256 public lat;
     int256 public lng;
     int256 public range;
+    string public campaignType;
     address public addressCrowdSourcer;
     mapping(uint256 => File) public files; // file hashes stored in IPFS
     uint256 public fileCount = 0; // number of the hashes uploaded
@@ -23,11 +24,12 @@ contract Campaign is Ownable, Initializable {
         address payable uploader;
     }
 
-    function initialize(string memory _name,int256 _lat,int256 _lng,int256 _range,address _addressCrowdSourcer) external payable onlyOwner initializer {
+    function initialize(string memory _name,int256 _lat,int256 _lng,int256 _range,string memory _type,address _addressCrowdSourcer) external payable onlyOwner initializer {
         name = _name;
         lat = _lat;
         lng = _lng;
         range = _range;
+        campaignType = _type;
         addressCrowdSourcer = _addressCrowdSourcer;
     }
 

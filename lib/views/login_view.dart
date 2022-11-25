@@ -29,8 +29,6 @@ class _LoginViewState extends State<LoginView> {
         'session_update',
             (payload) => setState(() {
               sessionData.setSession(payload);
-          print(sessionData.getAccountAddress());
-          print(sessionData.getSession().chainId);
         }));
     sessionData.getConnector().on(
         'disconnect',

@@ -31,6 +31,7 @@ class CreateCampaignFormState extends State<CreateCampaignForm> {
 
     String? _address = '';
     if(positionSelectedData.runtimeType != Null) {
+      selectedValue = positionSelectedData['type'];
       _address = positionSelectedData['address'];
       titleController.text = positionSelectedData['title'];
       print(positionSelectedData);
@@ -94,6 +95,7 @@ class CreateCampaignFormState extends State<CreateCampaignForm> {
                                 'title' : titleController.text,
                                 'range' : _howFar,
                                 'payment' : _howMuch,
+                                'type' : selectedValue
                               });
                             },
                             child: const Text('Get a place!')),

@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_config/flutter_config.dart';
 import 'package:mobile_crowd_sensing/view_models/session_view_model.dart';
 import 'package:web3dart/web3dart.dart';
-
 import '../views/dialog_view.dart';
 
 class SmartContractProvider {
@@ -30,11 +28,10 @@ class SmartContractProvider {
       final contract = await loadContractFactory(contractAddress);
       final ethFunction = contract.function(functionName);
 
-      // EthereumWalletConnectProvider provider = EthereumWalletConnectProvider(sessionData.getConnector());
-      // launchUrlString(sessionData.getUri(), mode: LaunchMode.externalApplication);
 
-      Credentials credentials =
-          EthPrivateKey.fromHex(FlutterConfig.get('PRIVATE_KEY_METAMASK'));
+      Credentials credentials = EthPrivateKey.fromHex(sessionData.getSignature());//FlutterConfig.get('PRIVATE_KEY_METAMASK'));
+      //final credentials = WalletConnectEthereumCredentials(provider: _provider);
+
 
       final result = await sessionData.getEthClient().sendTransaction(
           credentials,

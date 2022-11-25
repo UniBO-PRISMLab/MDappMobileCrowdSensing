@@ -21,10 +21,10 @@ class _LoginProviderState extends State<LoginProvider> {
           sessionData.setUri(uri);
           await launchUrlString(uri, mode: LaunchMode.externalApplication);
         });
-        print(session.accounts[0]);
-        print(session.chainId);
+
+        sessionData.setSession(session);
+
         setState(() {
-          sessionData.setSession(session);
           Navigator.pushReplacementNamed(context, '/login');
         });
       } catch (exp) {
