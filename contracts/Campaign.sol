@@ -4,6 +4,7 @@ import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract Campaign is Ownable, Initializable {
+    bool public isClosed;
     string public name;
     int256 public lat;
     int256 public lng;
@@ -24,6 +25,10 @@ contract Campaign is Ownable, Initializable {
         address payable uploader;
     }
 
+    function closeCampaign() external onlyOwner{
+        isClosed = true;
+    }
+
     function initialize(string memory _name,int256 _lat,int256 _lng,int256 _range,string memory _type,address _addressCrowdSourcer) external payable onlyOwner initializer {
         name = _name;
         lat = _lat;
@@ -31,12 +36,14 @@ contract Campaign is Ownable, Initializable {
         range = _range;
         campaignType = _type;
         addressCrowdSourcer = _addressCrowdSourcer;
+        isClosed = false;
     }
 
     event FileUploaded(uint256 fileId,string filePath,uint256 fileSize,string fileType,string fileName,address payable uploader);
 
     function uploadFile(string memory _filePath,uint256 _fileSize,string memory _fileType,string memory _fileName,int256 _fileLat,int256 _fileLng) public {
         require(msg.sender != address(0));
+        require(isClosed == false,'The campaign is closed by sourcer');
         require(bytes(_filePath).length > 0);
         require(bytes(_fileType).length > 0);
         require(bytes(_fileName).length > 0);
