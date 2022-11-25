@@ -11,12 +11,12 @@ contract CampaignFactory {
 
     event CampaignCreated(address addressNewCampaign);
 
-    function createCampaign(string memory _name,int256 _lat,int256 _lng, int256 _range) public payable returns (address payable) {
+    function createCampaign(string memory _name,int256 _lat,int256 _lng, int256 _range, string memory _type) public payable returns (address payable) {
         require(msg.sender != address(0), "invalid address provided");
         require(msg.value >= 1, "not enough found");
         require(!searchSourcerAddress(msg.sender),"this sourcer already has an active campaign");
         Campaign newCampaign = new Campaign();
-        newCampaign.initialize(_name, _lat, _lng,_range,msg.sender);
+        newCampaign.initialize(_name, _lat, _lng,_range,_type,msg.sender);
         campaigns[msg.sender] = newCampaign;
         addressKeyLUT.push(msg.sender);
         campaignCount++;

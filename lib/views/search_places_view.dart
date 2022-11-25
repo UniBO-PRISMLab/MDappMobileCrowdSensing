@@ -65,6 +65,7 @@ class _SearchPlacesViewState extends State<SearchPlacesView> {
                                 'title' : formData['title'],
                                 'range' : formData['range'],
                                 'payment' : formData['payment'],
+                                'type' : formData['type']
                               });
                         },
                         backgroundColor: Colors.blueAccent,

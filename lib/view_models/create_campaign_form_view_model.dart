@@ -7,5 +7,4 @@ class CreateCampaignFormViewModel {
   String snackBarText = 'Processing Data';
   String title_2 = 'Campaign Results';
   SessionViewModel sessionData = SessionViewModel();
-
 }

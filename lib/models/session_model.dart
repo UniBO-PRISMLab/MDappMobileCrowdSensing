@@ -8,7 +8,9 @@ import 'package:web3dart/web3dart.dart';
 class SessionModel {
   static final SessionModel _instance = SessionModel._internal();
 
-  dynamic session, uri, signature, connector;
+  dynamic session, uri, signature;
+  late WalletConnect  connector;
+
   late http.Client httpClient;
   late Web3Client ethClient;
 
@@ -28,6 +30,7 @@ class SessionModel {
   }
 
   factory SessionModel() {
+
     return _instance;
   }
 }
