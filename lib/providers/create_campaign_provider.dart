@@ -35,6 +35,7 @@ class _CampaignCreatorState extends State<CampaignCreator> {
         BigInt.from(jsonParameters['lat']),
         BigInt.from(jsonParameters['lng']),
         BigInt.from(jsonParameters['range']),
+        jsonParameters['type'],
         BigInt.from(jsonParameters['payment']),
     );
     return Scaffold(
@@ -47,13 +48,13 @@ class _CampaignCreatorState extends State<CampaignCreator> {
             )));
   }
 
-  Future<void> createCampaign(String name, BigInt lat, BigInt lng, BigInt range, BigInt value) async {
+  Future<void> createCampaign(String name, BigInt lat, BigInt lng, BigInt range,String type, BigInt value) async {
     try {
 
       SmartContractProvider smartContractViewModel = SmartContractProvider(
           FlutterConfig.get('MCSfactory_CONTRACT_ADDRESS'), 'MCSfactory',
           'assets/abi.json');
-      List args = [name, lat, lng, range];
+      List args = [name, lat, lng, range,type];
       List<dynamic> result = await smartContractViewModel.queryTransaction(
           context, 'createCampaign', args, value, 'sourcer');
 
