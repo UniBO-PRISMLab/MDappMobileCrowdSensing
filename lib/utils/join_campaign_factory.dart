@@ -8,7 +8,7 @@ abstract class JoinCampaignFactory extends StatefulWidget{
   const JoinCampaignFactory({super.key});
 
   factory JoinCampaignFactory.fromTypeName(BuildContext context) {
-    String typeName = jsonDecode(jsonEncode(ModalRoute.of(context)!.settings.arguments))['campaignType'].toLowerCase();
+    String typeName = jsonDecode(jsonEncode(ModalRoute.of(context)!.settings.arguments))['type'];
 
     if (typeName == 'photo') return const PhotoJoinCampaignView();
     if (typeName == 'temperature') return const TemperatureJoinCampaignView();

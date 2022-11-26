@@ -17,7 +17,7 @@ class CreateCampaignFormState extends State<CreateCampaignForm> {
   dynamic positionSelectedData = {};
   Object? parameters;
   final _formKey = GlobalKey<FormState>();
-  int? selectedValue = 1;
+  String? selectedValue = 'photo';
   CreateCampaignFormViewModel createCampaignFormData = CreateCampaignFormViewModel();
   double _howMuch = 5;
   int _howFar = 10;
@@ -115,17 +115,17 @@ class CreateCampaignFormState extends State<CreateCampaignForm> {
                                   value: selectedValue,
                                   items: const [
                                     DropdownMenuItem(
-                                      value: 1,
+                                      value: 'photo',
                                       child: Text("Photos"),
                                     ),
                                     DropdownMenuItem(
-                                      value: 2,
+                                      value: 'temperature',
                                       child: Text("Temperature"),
                                     ),
                                   ],
                                   onChanged: (value) {
                                     setState(() {
-                                      selectedValue = value as int?;
+                                      selectedValue = value as String?;
                                     });
                                   }),
                             ],
@@ -196,6 +196,7 @@ class CreateCampaignFormState extends State<CreateCampaignForm> {
                                   'lng' : (100 * positionSelectedData['lng']).toInt(),
                                   'payment' : _howMuch,
                                   'range' : _howFar,
+                                  'type' : selectedValue,
                                 });
                               }
                             },

@@ -4,15 +4,19 @@ import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract Campaign is Ownable, Initializable {
-    bool public isClosed;
-    string public name;
-    int256 public lat;
-    int256 public lng;
-    int256 public range;
-    string public campaignType;
-    address public addressCrowdSourcer;
+    bool internal isClosed;
+    string internal name;
+    int256 internal lat;
+    int256 internal lng;
+    int256 internal range;
+    string internal campaignType;
+    address internal addressCrowdSourcer;
     mapping(uint256 => File) public files; // file hashes stored in IPFS
-    uint256 public fileCount = 0; // number of the hashes uploaded
+    uint256 internal fileCount = 0; // number of the hashes uploaded
+
+    function getInfo() public view returns(string memory,int256,int256,int256,string memory,address,uint256) {
+        return(name,lat,lng,range,campaignType,addressCrowdSourcer,fileCount);
+    }
 
     struct File {
         uint256 fileId;

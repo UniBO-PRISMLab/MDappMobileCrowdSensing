@@ -57,6 +57,11 @@
         "internalType": "address",
         "name": "",
         "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
       }
     ],
     "name": "closedCampaigns",
@@ -128,6 +133,19 @@
     "outputs": [
       {
         "internalType": "contract Campaign[]",
+        "name": "",
+        "type": "address[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getLUT",
+    "outputs": [
+      {
+        "internalType": "address[]",
         "name": "",
         "type": "address[]"
       }
