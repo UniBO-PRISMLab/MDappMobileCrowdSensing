@@ -31,60 +31,18 @@ class _SourcerCampaignViewState extends State<SourcerCampaignView> {
             'assets/abi_campaign.json');
 
         smartContractViewModel
-            .queryCall(context, 'name', [], null, null)
-            .then((value) => {
-                  setState(() {
-                    names.add(value![0]);
-                  })
-                });
-
-        smartContractViewModel
-            .queryCall(context, 'lat', [], null, null)
-            .then((value) => {
-                  setState(() {
-                    latitude.add((value![0]).toString());
-                  })
-                });
-
-        smartContractViewModel
-            .queryCall(context, 'lng', [], null, null)
-            .then((value) => {
-                  setState(() {
-                    longitude.add((value![0]).toString());
-                  })
-                });
-
-        smartContractViewModel
-            .queryCall(context, 'range', [], null, null)
-            .then((value) => {
-                  setState(() {
-                    range.add(value![0].toString());
-                  })
-                });
-
-        smartContractViewModel
-            .queryCall(context, 'campaignType', [], null, null)
+            .queryCall(context, 'getAllCampaigns', [], null, null)
             .then((value) => {
           setState(() {
-            type.add(value![0]);
+            names.add(value![0]);
+            latitude.add(value[1].toString());
+            longitude.add(value[2].toString());
+            range.add(value[3].toString());
+            type.add(value[4]);
+            addressCrowdSourcer.add(value[5].toString());
+            fileCount.add(value[6].toString());
           })
         });
-
-        smartContractViewModel
-            .queryCall(context, 'addressCrowdSourcer', [], null, null)
-            .then((value) => {
-                  setState(() {
-                    addressCrowdSourcer.add(value![0].toString());
-                  })
-                });
-
-        smartContractViewModel
-            .queryCall(context, 'fileCount', [], null, null)
-            .then((value) => {
-                  setState(() {
-                    fileCount.add(value![0].toString());
-                  })
-                });
       }
 
       super.initState();
