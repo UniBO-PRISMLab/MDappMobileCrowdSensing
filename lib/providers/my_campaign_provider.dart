@@ -47,7 +47,7 @@ class _MyCampaignProviderState extends State<MyCampaignProvider> {
     try {
       SmartContractProvider smartContractViewModel = SmartContractProvider(FlutterConfig.get('MCSfactory_CONTRACT_ADDRESS'),'MCSfactory','assets/abi.json');
       EthereumAddress address = EthereumAddress.fromHex(sourcerAddress);
-      List? result = await smartContractViewModel.queryCall(context, 'campaigns',[address],null,null);
+      List? result = await smartContractViewModel.queryCall(context, 'activeCampaigns',[address],null,null);
       // ignore: unnecessary_non_null_assertion
       Navigator.pushReplacement(context!,MaterialPageRoute(builder: (context) => SourcerCampaignView(contractAddress: result!,)));
     } catch (error) {

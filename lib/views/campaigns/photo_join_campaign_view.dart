@@ -10,12 +10,12 @@ class PhotoJoinCampaignView extends JoinCampaignFactory {
   const PhotoJoinCampaignView({super.key});
 
   @override
-  TemperatureJoinCampaignViewState createState() {
-    return TemperatureJoinCampaignViewState();
+  PhotoJoinCampaignViewState createState() {
+    return PhotoJoinCampaignViewState();
   }
 }
 
-class TemperatureJoinCampaignViewState extends State<PhotoJoinCampaignView> {
+class PhotoJoinCampaignViewState extends State<PhotoJoinCampaignView> {
 
   dynamic campaignSelectedData = {};
   Object? parameters;

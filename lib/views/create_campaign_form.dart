@@ -119,8 +119,8 @@ class CreateCampaignFormState extends State<CreateCampaignForm> {
                                       child: Text("Photos"),
                                     ),
                                     DropdownMenuItem(
-                                      value: 'temperature',
-                                      child: Text("Temperature"),
+                                      value: 'light',
+                                      child: Text("Ambient Light"),
                                     ),
                                   ],
                                   onChanged: (value) {

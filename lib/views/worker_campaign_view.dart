@@ -12,6 +12,7 @@ class WorkerCampaignView extends StatefulWidget {
 }
 
 class _WorkerCampaignViewState extends State<WorkerCampaignView> {
+
   late List<String> names = [];
   late List<String> latitude = [];
   late List<String> longitude = [];
@@ -19,7 +20,7 @@ class _WorkerCampaignViewState extends State<WorkerCampaignView> {
   late List<String> type = [];
   late List<String> addressCrowdSourcer = [];
   late List<String> fileCount = [];
-  String goToJoinCampaign = 'photo';
+
   @override
   initState() {
     if (widget.contractAddress != null) {
@@ -30,60 +31,18 @@ class _WorkerCampaignViewState extends State<WorkerCampaignView> {
             'assets/abi_campaign.json');
 
         smartContractViewModel
-            .queryCall(context, 'name', [], null, null)
+            .queryCall(context, 'getInfo', [], null, null)
             .then((value) => {
                   setState(() {
                     names.add(value![0]);
+                    latitude.add(value[1].toString());
+                    longitude.add(value[2].toString());
+                    range.add(value[3].toString());
+                    type.add(value[4]);
+                    addressCrowdSourcer.add(value[5].toString());
+                    fileCount.add(value[6].toString());
                   })
-                });
-
-        smartContractViewModel
-            .queryCall(context, 'lat', [], null, null)
-            .then((value) => {
-                  setState(() {
-                    latitude.add((value![0]).toString());
-                  })
-                });
-
-        smartContractViewModel
-            .queryCall(context, 'lng', [], null, null)
-            .then((value) => {
-                  setState(() {
-                    longitude.add((value![0]).toString());
-                  })
-                });
-
-        smartContractViewModel
-            .queryCall(context, 'range', [], null, null)
-            .then((value) => {
-                  setState(() {
-                    range.add(value![0].toString());
-                  })
-                });
-
-        smartContractViewModel
-            .queryCall(context, 'campaignType', [], null, null)
-            .then((value) => {
-          setState(() {
-            type.add(value![0].toString());
-          })
-        });
-
-        smartContractViewModel
-            .queryCall(context, 'addressCrowdSourcer', [], null, null)
-            .then((value) => {
-                  setState(() {
-                    addressCrowdSourcer.add(value![0].toString());
-                  })
-                });
-
-        smartContractViewModel
-            .queryCall(context, 'fileCount', [], null, null)
-            .then((value) => {
-                  setState(() {
-                    fileCount.add(value![0].toString());
-                  })
-                });
+            });
       }
 
       super.initState();
