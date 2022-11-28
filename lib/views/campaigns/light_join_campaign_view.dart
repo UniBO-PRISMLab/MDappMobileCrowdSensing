@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile_crowd_sensing/view_models/session_view_model.dart';
 
+import '../../models/ipfs_client_model.dart';
+import '../../providers/upload_light_ipfs_privider.dart';
+import '../../utils/helperfunctions.dart';
 import '../../utils/join_campaign_factory.dart';
 import '../dialog_view.dart';
 
@@ -20,17 +23,19 @@ class LightJoinCampaignViewState
     extends State<LightJoinCampaignView> {
   dynamic campaignSelectedData = {};
   Object? parameters;
-  final environmentSensors = EnvironmentSensors();
+  EnvironmentSensors environmentSensors = EnvironmentSensors();
+  bool activeSensor = false;
+  double sum = 0;
+
+  List<double>lights = [];
+  double averageRelevation = 0;
 
   @override
   Widget build(BuildContext context) {
     parameters = ModalRoute.of(context)!.settings.arguments;
     campaignSelectedData = jsonDecode(jsonEncode(parameters));
     SessionViewModel sessionData = SessionViewModel();
-    List<double> ligths = [];
-    int numberOfRelevations = 10;
-    double avreageRelevation = 0;
-    bool activeSensor = false;
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -111,51 +116,67 @@ class LightJoinCampaignViewState
                       ),
                       TextButton(
                           onPressed: () async {
-                            bool lightAvailable = await environmentSensors
-                                .getSensorAvailable(SensorType.Light);
-
+                            bool lightAvailable = await environmentSensors.getSensorAvailable(SensorType.Light);
                             if (lightAvailable) {
-                              setState(() {
-                                activeSensor = true;
-                              });
+                                setState(() {
+                                  activeSensor = true;
+                                });
                             } else {
                               setState(() {
                                 Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (BuildContext context) => const DialogView(message: "This device doesen't integrate the appropriate sensor")));
+                                        builder: (BuildContext context) =>
+                                const DialogView(message: "This device doesen't integrate the appropriate sensor")));
                               });
                             }
                           },
-                          child: const Text('Take data')),
-                      (activeSensor == true)?
-                        StreamBuilder<double>(
-                            stream: environmentSensors.light,
-                            builder: (context, snapshot) {
-
-                              if (!snapshot.hasData) {
-                                return const CircularProgressIndicator();
-                              } else {
-                                return Row(children: [
-                                  Text(
-                                    'Average Ambient Light: ',
+                          child: const Text('Take data')
+                      ),
+                activeSensor?
+                StreamBuilder<double>(
+                    stream: environmentSensors.light,
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return const CircularProgressIndicator();
+                      } else {
+                        lights.add(snapshot.data!);
+                        sum += lights.last;
+                        averageRelevation = double.parse((sum / lights.length).toStringAsFixed(2));
+                        return Column(
+                            children: [
+                              Row(children: [
+                                Text('Average Ambient Light: ',
                                     style: GoogleFonts.merriweather(
                                         fontWeight: FontWeight.bold,
-                                        fontSize: 16),
-                                  ),
-                                  Text(
-                                    '$avreageRelevation',
+                                        fontSize: 16)),
+                                Text('$averageRelevation',
                                     style: GoogleFonts.inconsolata(
-                                        fontSize: 16),
-                                  )
-                                ]);
-                              }
-                            }) : Text(
-                                  'Sensor deactivated',
-                                  style: GoogleFonts.merriweather(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16),
-                                  ),
+                                        fontSize: 16))
+                              ]),
+                              Row(children: [
+                                Text('Number of relevations: ',
+                                    style: GoogleFonts.merriweather(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16)),
+                                Text('${lights.length}',
+                                    style: GoogleFonts.inconsolata(
+                                        fontSize: 16))
+                              ]),
+                              FloatingActionButton(
+                                  onPressed: () {
+                                    Navigator.push(context,MaterialPageRoute(builder: (context) =>  UploadLightIpfsProvider(lights,averageRelevation)));
+                                    setState(() {
+                                      lights.clear();
+                                      averageRelevation = 0;
+                                      sum = 0;
+                                      activeSensor = false;
+                                    });
+                                  }, child: const Icon(Icons.file_upload_sharp)),
+                            ]);
+                      }
+                    }) :
+                    const Text("NO DATA FOR THE MOMENT")
                 ])
             )]
         )
