@@ -10,6 +10,7 @@ import 'package:mobile_crowd_sensing/views/sourcer_campaign_view.dart';
 import 'package:mobile_crowd_sensing/views/sourcer_view.dart';
 import 'package:mobile_crowd_sensing/views/create_campaign_form.dart';
 import 'package:mobile_crowd_sensing/views/search_places_view.dart';
+import 'package:mobile_crowd_sensing/views/worker_campaign_view.dart';
 import 'package:mobile_crowd_sensing/views/worker_view.dart';
 
 
@@ -37,6 +38,7 @@ class MyApp extends StatelessWidget {
         '/sourcer_campaigns_provider': (context) => const MyCampaignProvider(),
         '/join_campaign':(context) => JoinCampaignFactory.fromTypeName(context),
         '/camera':(context) => const CameraViewModel(),
+
       },
     );
   }
