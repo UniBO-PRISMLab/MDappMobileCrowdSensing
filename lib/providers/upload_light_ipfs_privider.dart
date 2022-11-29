@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:ipfs_client_flutter/ipfs_client_flutter.dart';
 import '../utils/helperfunctions.dart';
 import '../views/dialog_view.dart';
+import 'package:http/http.dart' as http;
 
 class UploadLightIpfsProvider extends StatefulWidget {
 
@@ -39,25 +42,13 @@ class _UploadLightIpfsProviderState extends State<UploadLightIpfsProvider> {
   }
 
   Future<void> uploadLight() async {
-    try {
+
       path = await localPath;
       await writeLightRelevation(widget.averageRelevation.toString());
-      //IpfsClientModel ipfs = IpfsClientModel();
-      IpfsClient ipfsClient = IpfsClient(url:"https://gateway.ipfs.io/ipfs/");
-
-      var res = await ipfsClient.mkdir(dir: 'testDir');
-      print("\n MAKEDIR : $res\n");
-
-      // var res1 = await ipfsClient.write(
-      //     dir: 'sensingDir/light.txt',
-      //     filePath: "$path/light.txt",
-      //     fileName: "light.txt"
-      // );
-      // print("\n UPLOAD : $res1\n");
+      try {
+        upload(await localFile);
     } catch (error) {
-      if (kDebugMode) {
-        print('\x1B[31m$error\x1B[0m');
-      }
+      print('\x1B[31m$error\x1B[0m');
       Future.delayed(Duration.zero, () {
         Navigator.pushReplacement(
             context,
