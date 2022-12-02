@@ -4,36 +4,6 @@
     "inputs": [
       {
         "indexed": false,
-        "internalType": "uint256",
-        "name": "fileId",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "filePath",
-        "type": "string"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "fileSize",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "fileType",
-        "type": "string"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "fileName",
-        "type": "string"
-      },
-      {
-        "indexed": false,
         "internalType": "address payable",
         "name": "uploader",
         "type": "address"
@@ -84,38 +54,13 @@
   {
     "inputs": [
       {
-        "internalType": "uint256",
+        "internalType": "string",
         "name": "",
-        "type": "uint256"
+        "type": "string"
       }
     ],
     "name": "files",
     "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "fileId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "string",
-        "name": "filePath",
-        "type": "string"
-      },
-      {
-        "internalType": "uint256",
-        "name": "fileSize",
-        "type": "uint256"
-      },
-      {
-        "internalType": "string",
-        "name": "fileType",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "fileName",
-        "type": "string"
-      },
       {
         "internalType": "string",
         "name": "status",
@@ -266,22 +211,7 @@
     "inputs": [
       {
         "internalType": "string",
-        "name": "_filePath",
-        "type": "string"
-      },
-      {
-        "internalType": "uint256",
-        "name": "_fileSize",
-        "type": "uint256"
-      },
-      {
-        "internalType": "string",
-        "name": "_fileType",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "_fileName",
+        "name": "ipfspath",
         "type": "string"
       },
       {

@@ -1,18 +1,15 @@
 import 'dart:convert';
-
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:ipfs_client_flutter/ipfs_client_flutter.dart';
+import 'package:mobile_crowd_sensing/providers/smart_contract_provider.dart';
+import 'package:mobile_crowd_sensing/view_models/session_view_model.dart';
 import '../utils/helperfunctions.dart';
+import '../view_models/search_places_view_model.dart';
 import '../views/dialog_view.dart';
-import 'package:http/http.dart' as http;
 
 class UploadLightIpfsProvider extends StatefulWidget {
 
-  final List<double> lights;
-  final double averageRelevation;
-  const UploadLightIpfsProvider(this.lights, this.averageRelevation, {super.key});
+  const UploadLightIpfsProvider({super.key});
 
   @override
   // ignore: library_private_types_in_public_api
@@ -21,16 +18,20 @@ class UploadLightIpfsProvider extends StatefulWidget {
 
 class _UploadLightIpfsProviderState extends State<UploadLightIpfsProvider> {
   late String path;
+SessionViewModel sessionData = SessionViewModel();
+  Object? parameters;
+  dynamic jsonParameters = {};
 
   @override
   void initState() {
     super.initState();
-    uploadLight();
-
   }
 
   @override
   Widget build(BuildContext context) {
+    parameters = ModalRoute.of(context)!.settings.arguments;
+    jsonParameters = jsonDecode(jsonEncode(parameters));
+    uploadLight(jsonParameters['lights'].cast<double>(),jsonParameters['averageRelevation']);
     return const Scaffold(
         backgroundColor: Colors.white,//Colors.blue[900],
         body:  Center(
@@ -41,25 +42,37 @@ class _UploadLightIpfsProviderState extends State<UploadLightIpfsProvider> {
           );
   }
 
-  Future<void> uploadLight() async {
+  Future<void> uploadLight(List<double>? lights,double averageRelevation) async {
 
       path = await localPath;
-      await writeLightRelevation(widget.averageRelevation.toString());
+      await writeLightRelevation(averageRelevation.toString());
       try {
-        upload(await localFile);
-    } catch (error) {
-      print('\x1B[31m$error\x1B[0m');
-      Future.delayed(Duration.zero, () {
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (BuildContext context) => DialogView(message: error.toString())
-            )
-        );
-      });
+          SmartContractProvider smartContractViewModel = SmartContractProvider(jsonParameters['contractAddress'], 'Campaign', 'assets/abi_campaign.json', provider: sessionData.getProvider());
+          SearchPlacesViewModel position = SearchPlacesViewModel();
+          await position.updateLocalPosition();
+          String preHash = await getOnlyHashIPFS(await localFile);
+          List<dynamic> args = [preHash,BigInt.from((position.lat*100).round()),BigInt.from((position.lng*100).round())];
+          await smartContractViewModel.queryTransaction('uploadFile', args, null).then((value) async => {
+            print('\x1B[31m [DEBUG]:::::::::::::::::::::::::: $value\x1B[0m'),
+            if (value!=null && value!='0x0000000000000000000000000000000000000000') {
+              uploadIPFS(await localFile),
+              Navigator.popAndPushNamed(context, '/worker')
+            }
+          });
+        } catch (error) {
+          print('\x1B[31m$error\x1B[0m');
+          Future.delayed(Duration.zero, () {
+            Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (BuildContext context) => DialogView(message: '[uploadLight]: $error')
+                )
+            );
+          });
+      }
     }
   }
-}
+
 
 
 

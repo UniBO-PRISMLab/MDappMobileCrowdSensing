@@ -1,4 +1,5 @@
 import 'package:http/http.dart';
+import 'package:walletconnect_dart/walletconnect_dart.dart';
 import 'package:web3dart/web3dart.dart';
 
 import '../models/session_model.dart';
@@ -8,6 +9,10 @@ class SessionViewModel {
 
   Web3Client getEthClient() {
     return _sessionModel.ethClient;
+  }
+
+  EthereumWalletConnectProvider getProvider(){
+   return EthereumWalletConnectProvider(getConnector());
   }
 
   dynamic getAccountAddress() {

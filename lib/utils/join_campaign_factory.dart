@@ -11,7 +11,7 @@ abstract class JoinCampaignFactory extends StatefulWidget{
     String typeName = jsonDecode(jsonEncode(ModalRoute.of(context)!.settings.arguments))['type'];
 
     if (typeName == 'photo') return const PhotoJoinCampaignView();
-    if (typeName == 'temperature') return const LightJoinCampaignView();
+    if (typeName == 'light') return const LightJoinCampaignView();
     //... maybe future implementations
     throw "$typeName Campaign Type not recognized.";
   }

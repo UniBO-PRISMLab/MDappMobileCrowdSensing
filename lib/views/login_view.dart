@@ -91,7 +91,7 @@ class _LoginViewState extends State<LoginView> {
                           onPressed: () => {
                             setState (
                                     () {
-                                      Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) => const SignProvider()));
+                                      Navigator.push(context,MaterialPageRoute(builder: (context) => const SignProvider()));
                                     }
                             )
                           },
@@ -109,7 +109,7 @@ class _LoginViewState extends State<LoginView> {
                         const SizedBox(height: 20),
                         SliderButton(
                           action: () async {
-                            Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) => const HomeView()));
+                            Navigator.push(context,MaterialPageRoute(builder: (context) => const HomeView()));
                           },
                           label: const Text('Slide to login'),
                           icon: const Icon(Icons.check),

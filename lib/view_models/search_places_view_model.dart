@@ -14,12 +14,15 @@ class SearchPlacesViewModel {
   Set<Marker> markersList = {};
   late GoogleMapController googleMapController;
 
-  void updateLocalPosition() async {
+  Future<void> updateLocalPosition() async {
     position = await _getGeoLocationPosition();
     lng = position.longitude;
     lat = position.latitude;
-    googleMapController
-        .animateCamera(CameraUpdate.newLatLngZoom(LatLng(lat, lng), zoom));
+  }
+
+  void updateLocalPositionAndCamera() async {
+    await updateLocalPosition();
+    googleMapController.animateCamera(CameraUpdate.newLatLngZoom(LatLng(lat, lng), zoom));
   }
 
   Future<Position> _getGeoLocationPosition() async {

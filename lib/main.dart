@@ -3,6 +3,7 @@ import 'package:flutter_config/flutter_config.dart';
 import 'package:mobile_crowd_sensing/providers/all_campaign_provider.dart';
 import 'package:mobile_crowd_sensing/providers/create_campaign_provider.dart';
 import 'package:mobile_crowd_sensing/providers/my_campaign_provider.dart';
+import 'package:mobile_crowd_sensing/providers/upload_light_ipfs_privider.dart';
 import 'package:mobile_crowd_sensing/utils/join_campaign_factory.dart';
 import 'package:mobile_crowd_sensing/view_models/camera_view_model.dart';
 import 'package:mobile_crowd_sensing/views/login_view.dart';
@@ -33,6 +34,8 @@ class MyApp extends StatelessWidget {
         '/sourcer': (context) => const SourcerView(),
         '/worker': (context) => const AllCampaignProvider(),
         '/create_campaign_provider': (context) => const CampaignCreator(),
+        '/upload_light': (context) => const UploadLightIpfsProvider(),
+
         '/map': (context) => const SearchPlacesView(),
         '/sourcer_campaigns': (context) => const SourcerCampaignView(contractAddress: [],),
         '/sourcer_campaigns_provider': (context) => const MyCampaignProvider(),

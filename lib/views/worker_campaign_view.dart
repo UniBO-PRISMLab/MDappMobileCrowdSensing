@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../providers/smart_contract_provider.dart';
+import '../view_models/session_view_model.dart';
 
 class WorkerCampaignView extends StatefulWidget {
   final List<dynamic>? contractAddress;
@@ -13,6 +14,7 @@ class WorkerCampaignView extends StatefulWidget {
 
 class _WorkerCampaignViewState extends State<WorkerCampaignView> {
 
+  late List<String> contractsAddresses = [];
   late List<String> names = [];
   late List<String> latitude = [];
   late List<String> longitude = [];
@@ -20,6 +22,7 @@ class _WorkerCampaignViewState extends State<WorkerCampaignView> {
   late List<String> type = [];
   late List<String> addressCrowdSourcer = [];
   late List<String> fileCount = [];
+  SessionViewModel sessionData = SessionViewModel();
 
   @override
   initState() {
@@ -28,12 +31,13 @@ class _WorkerCampaignViewState extends State<WorkerCampaignView> {
         SmartContractProvider smartContractViewModel = SmartContractProvider(
             widget.contractAddress![i].toString(),
             'Campaign',
-            'assets/abi_campaign.json');
+            'assets/abi_campaign.json', provider: sessionData.getProvider());
 
         smartContractViewModel
             .queryCall(context, 'getInfo', [], null, null)
             .then((value) => {
                   setState(() {
+                    contractsAddresses.add(widget.contractAddress![i].toString());
                     names.add(value![0]);
                     latitude.add(value[1].toString());
                     longitude.add(value[2].toString());
@@ -76,6 +80,7 @@ class _WorkerCampaignViewState extends State<WorkerCampaignView> {
                         onTap: (){
                           Navigator.pushNamed(context,'/join_campaign', arguments: {
                             'name': names[index],
+                            'contractAddress': contractsAddresses[index],
                             'lat': latitude[index].toString(),
                             'lng': longitude[index].toString(),
                             'range': range[index].toString(),

@@ -41,7 +41,7 @@ class _AllCampaignProviderState extends State<AllCampaignProvider> {
 
   Future<void> getAllCampaign(String sourcerAddress) async {
     try {
-      SmartContractProvider smartContractViewModel = SmartContractProvider(FlutterConfig.get('MCSfactory_CONTRACT_ADDRESS'),'MCSfactory','assets/abi.json');
+      SmartContractProvider smartContractViewModel = SmartContractProvider(FlutterConfig.get('MCSfactory_CONTRACT_ADDRESS'),'MCSfactory','assets/abi.json', provider: sessionData.getProvider());
 
       List? result = await smartContractViewModel.queryCall(context, 'getAllCampaigns',[],null,null);
       // ignore: unnecessary_non_null_assertion

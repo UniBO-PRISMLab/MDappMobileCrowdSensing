@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mobile_crowd_sensing/view_models/session_view_model.dart';
 import '../providers/smart_contract_provider.dart';
 
 class SourcerCampaignView extends StatefulWidget {
@@ -13,6 +14,8 @@ class SourcerCampaignView extends StatefulWidget {
 }
 
 class _SourcerCampaignViewState extends State<SourcerCampaignView> {
+
+  SessionViewModel sessionData = SessionViewModel();
   late List<String> names = [];
   late List<String> latitude = [];
   late List<String> longitude = [];
@@ -28,7 +31,7 @@ class _SourcerCampaignViewState extends State<SourcerCampaignView> {
         SmartContractProvider smartContractViewModel = SmartContractProvider(
             widget.contractAddress![i].toString(),
             'Campaign',
-            'assets/abi_campaign.json');
+            'assets/abi_campaign.json', provider: sessionData.getProvider());
 
         smartContractViewModel
             .queryCall(context, 'getAllCampaigns', [], null, null)
