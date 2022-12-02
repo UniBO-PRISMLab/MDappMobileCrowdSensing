@@ -51,13 +51,10 @@ class _CampaignCreatorState extends State<CampaignCreator> {
   Future<void> createCampaign(String name, BigInt lat, BigInt lng, BigInt range,String type, BigInt value) async {
     try {
 
-      SmartContractProvider smartContractViewModel = SmartContractProvider(
-          FlutterConfig.get('MCSfactory_CONTRACT_ADDRESS'), 'MCSfactory',
-          'assets/abi.json');
+      SmartContractProvider smartContractViewModel = SmartContractProvider(FlutterConfig.get('MCSfactory_CONTRACT_ADDRESS'), 'MCSfactory', 'assets/abi.json', provider: sessionData.getProvider());
       List args = [name, lat, lng, range,type];
-      List<dynamic> result = await smartContractViewModel.queryTransaction(
-          context, 'createCampaign', args, value, 'sourcer');
-
+      List<dynamic> result = await smartContractViewModel.queryTransaction('createCampaign', args,value);
+      print(result);
     } catch(error){
       print('\x1B[31m$error\x1B[0m');
       Navigator.pushReplacement(

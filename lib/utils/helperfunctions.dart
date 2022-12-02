@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:flutter_config/flutter_config.dart';
 import 'package:path_provider/path_provider.dart';
@@ -52,44 +53,40 @@ Future<File> writeLightRelevation(String content) async {
   return file.writeAsString(content);
 }
 
-upload(File imageFile) async {
+Future<String> uploadIPFS(File file) async {
   String username = FlutterConfig.get('INFURA_PROJECT_ID');
   String password = FlutterConfig.get('INFURA_API_SECRET');
 
   String basicAuth = 'Basic ${base64.encode(utf8.encode("$username:$password"))}';
-  var stream = http.ByteStream(imageFile.openRead());
-  var length = await imageFile.length();
+  var stream = http.ByteStream(file.openRead());
+  var length = await file.length();
   var url = Uri.https('ipfs.infura.io:5001','/api/v0/add');
   var request = http.MultipartRequest("POST", url);
   request.headers['Authorization'] = basicAuth;
-  var multipartFile = http.MultipartFile('file', stream, length, filename: basename(imageFile.path));
+  var multipartFile = http.MultipartFile('file', stream, length, filename: basename(file.path));
   request.files.add(multipartFile);
   var response = await request.send();
-  print('STATUS REQUEST: ${response.statusCode}');
-
-  response.stream.transform(utf8.decoder).listen((value) {
-    var jsonResponse = jsonDecode(value);
-    print('HASH: ${jsonResponse['Hash']}');
-  });
+  var result = await http.Response.fromStream(response);
+  var jsonResponse = jsonDecode(result.body);
+  print('IPFS-HASH: ${jsonResponse['Hash']}');
+  return jsonResponse['Hash'];
 }
 
-//uploadNotWorking() {
-  // final Map body = {'file': '$path/light.txt'};
-  //
-  // var url = Uri.https(
-  //     'ipfs.infura.io:5001',
-  //     '/api/v0/add'
-  // );
-  // print(url);
-  // var response = await http.post(
-  //   url,
-  //   body: json.encode(body),
-  //     headers: <String, String>{
-  //      "Authorization": basicAuth,
-  //       'Content-Type': 'application/json; charset=UTF-8',
-  //     }
-  // );
-  // print('REQUEST: ${response.request}');
-  // print('Response status: ${response.statusCode}');
-  // print('Response body: ${response.body}');
-//}
+Future<String> getOnlyHashIPFS(File file) async {
+  String username = FlutterConfig.get('INFURA_PROJECT_ID');
+  String password = FlutterConfig.get('INFURA_API_SECRET');
+
+  String basicAuth = 'Basic ${base64.encode(utf8.encode("$username:$password"))}';
+  var stream = http.ByteStream(file.openRead());
+  var length = await file.length();
+  var url = Uri.https('ipfs.infura.io:5001','/api/v0/add',{'only-hash':'true'});
+  var request = http.MultipartRequest("POST", url);
+  request.headers['Authorization'] = basicAuth;
+  var multipartFile = http.MultipartFile('file', stream, length, filename: basename(file.path));
+  request.files.add(multipartFile);
+  var response = await request.send();
+  var result = await http.Response.fromStream(response);
+  var jsonResponse = jsonDecode(result.body);
+  print('PRE-IPFS-HASH: ${jsonResponse['Hash']}');
+  return jsonResponse['Hash'];
+}

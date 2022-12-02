@@ -3,10 +3,6 @@ import 'package:environment_sensors/environment_sensors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile_crowd_sensing/view_models/session_view_model.dart';
-
-import '../../models/ipfs_client_model.dart';
-import '../../providers/upload_light_ipfs_privider.dart';
-import '../../utils/helperfunctions.dart';
 import '../../utils/join_campaign_factory.dart';
 import '../dialog_view.dart';
 
@@ -21,8 +17,10 @@ class LightJoinCampaignView extends JoinCampaignFactory {
 
 class LightJoinCampaignViewState
     extends State<LightJoinCampaignView> {
+
   dynamic campaignSelectedData = {};
   Object? parameters;
+
   EnvironmentSensors environmentSensors = EnvironmentSensors();
   bool activeSensor = false;
   double sum = 0;
@@ -165,7 +163,11 @@ class LightJoinCampaignViewState
                               ]),
                               FloatingActionButton(
                                   onPressed: () {
-                                    Navigator.push(context,MaterialPageRoute(builder: (context) =>  UploadLightIpfsProvider(lights,averageRelevation)));
+                                    Navigator.pushReplacementNamed(context, '/upload_light', arguments: {
+                                      'contractAddress' : campaignSelectedData['contractAddress'],
+                                      'lights' : lights,
+                                      'averageRelevation' : averageRelevation,
+                                    });
                                     setState(() {
                                       lights.clear();
                                       averageRelevation = 0;

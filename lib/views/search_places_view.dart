@@ -38,7 +38,7 @@ class _SearchPlacesViewState extends State<SearchPlacesView> {
             onMapCreated: (GoogleMapController controller) {
               searchPlacesData.googleMapController = controller;
               setState(() {
-                searchPlacesData.updateLocalPosition();
+                searchPlacesData.updateLocalPositionAndCamera();
               });
             },
           ),

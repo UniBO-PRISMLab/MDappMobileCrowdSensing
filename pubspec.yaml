@@ -44,7 +44,6 @@ dependencies:
   google_api_headers: ^1.5.0
   geolocator: #latest version
   geocoding:  #latest version
-  flutter_dotenv: ^5.0.2
   flutter_intl: ^0.0.1
   flutter_config: ^2.0.0
   open_street_map_search_and_pick: ^0.0.15
@@ -55,6 +54,8 @@ dependencies:
   path: ^1.8.2
   environment_sensors: ^0.2.0
   ipfs_client_flutter: ^1.0.7
+  walletconnect_qrcode_modal_dart: ^0.0.5
+  build_runner: ^2.1.2
 
 dev_dependencies:
   flutter_test:
