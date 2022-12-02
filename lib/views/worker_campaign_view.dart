@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../providers/smart_contract_provider.dart';
+import '../view_models/search_places_view_model.dart';
 import '../view_models/session_view_model.dart';
 
 class WorkerCampaignView extends StatefulWidget {
@@ -18,29 +19,27 @@ class _WorkerCampaignViewState extends State<WorkerCampaignView> {
   late List<String> names = [];
   late List<String> latitude = [];
   late List<String> longitude = [];
+  late List<String?> readebleLocation = [];
   late List<String> range = [];
   late List<String> type = [];
   late List<String> addressCrowdSourcer = [];
   late List<String> fileCount = [];
   SessionViewModel sessionData = SessionViewModel();
-
+  SearchPlacesViewModel searchPlacesViewModel = SearchPlacesViewModel();
   @override
   initState() {
     if (widget.contractAddress != null) {
       for (int i = 0; i < widget.contractAddress!.length; i++) {
-        SmartContractProvider smartContractViewModel = SmartContractProvider(
-            widget.contractAddress![i].toString(),
-            'Campaign',
-            'assets/abi_campaign.json', provider: sessionData.getProvider());
-
-        smartContractViewModel
-            .queryCall(context, 'getInfo', [], null, null)
-            .then((value) => {
+        SmartContractProvider smartContractViewModel = SmartContractProvider(widget.contractAddress![i].toString(),'Campaign','assets/abi_campaign.json', provider: sessionData.getProvider());
+        String? readebleLocationQuery;
+        smartContractViewModel.queryCall(context, 'getInfo', [], null, null).then((value) async => {
+                  readebleLocationQuery = await searchPlacesViewModel.getReadebleLocationFromLatLng((double.parse(value![1].toString()))/10000000,(double.parse(value[2].toString()))/10000000),
                   setState(() {
                     contractsAddresses.add(widget.contractAddress![i].toString());
-                    names.add(value![0]);
+                    names.add(value[0]);
                     latitude.add(value[1].toString());
                     longitude.add(value[2].toString());
+                    readebleLocation.add(readebleLocationQuery);
                     range.add(value[3].toString());
                     type.add(value[4]);
                     addressCrowdSourcer.add(value[5].toString());
@@ -62,7 +61,7 @@ class _WorkerCampaignViewState extends State<WorkerCampaignView> {
           fontWeight: FontWeight.bold,
           fontSize: 16),
     );
-
+    setState(() {});
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.blue[900],
@@ -157,6 +156,22 @@ class _WorkerCampaignViewState extends State<WorkerCampaignView> {
                                                         FontWeight.normal,
                                                     fontSize: 16),
                                               ),
+                                      ]),
+                                      Column(children: <Widget>[
+                                        (readebleLocation.length != widget.contractAddress!.length)
+                                            ? loadingText
+                                            : Text("Location: ${readebleLocation[index]}",
+                                          style: GoogleFonts.spaceMono(
+                                              textStyle:
+                                              const TextStyle(
+                                                  color: Colors
+                                                      .black87,
+                                                  letterSpacing:
+                                                  .5),
+                                              fontWeight:
+                                              FontWeight.normal,
+                                              fontSize: 16),
+                                        ),
                                       ]),
                                       Row(children: <Widget>[
                                         (range.length !=

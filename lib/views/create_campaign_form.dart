@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../view_models/create_campaign_form_view_model.dart';
 
 class CreateCampaignForm extends StatefulWidget {
   const CreateCampaignForm({super.key});
@@ -18,7 +17,6 @@ class CreateCampaignFormState extends State<CreateCampaignForm> {
   Object? parameters;
   final _formKey = GlobalKey<FormState>();
   String? selectedValue = 'photo';
-  CreateCampaignFormViewModel createCampaignFormData = CreateCampaignFormViewModel();
   double _howMuch = 5;
   int _howFar = 10;
   final titleController = TextEditingController();
@@ -31,15 +29,13 @@ class CreateCampaignFormState extends State<CreateCampaignForm> {
 
     String? _address = '';
     if(positionSelectedData.runtimeType != Null) {
-      selectedValue = positionSelectedData['type'];
       _address = positionSelectedData['address'];
       titleController.text = positionSelectedData['title'];
-      print(positionSelectedData);
     }
       return Scaffold(
         resizeToAvoidBottomInset: false,
           appBar: AppBar(
-            title: Text(createCampaignFormData.appBarTitle),
+            title: const Text('Create New Campaign'),
           ),
           body: Form(
               key: _formKey,
@@ -185,15 +181,15 @@ class CreateCampaignFormState extends State<CreateCampaignForm> {
                                 ScaffoldMessenger.of(context)
                                     .showSnackBar(SnackBar(
                                     content: Text(
-                                      createCampaignFormData.snackBarText,
+                                        'Processing Data',
                                       style: GoogleFonts.merriweather(
                                           fontWeight: FontWeight.bold, fontSize: 16),
                                     )));
 
                                 Navigator.pushNamed(context, '/create_campaign_provider', arguments: {
                                   'title' : titleController.text,
-                                  'lat' : (100 * positionSelectedData['lat']).toInt(),
-                                  'lng' : (100 * positionSelectedData['lng']).toInt(),
+                                  'lat' : (10000000 * positionSelectedData['lat']).toInt(),
+                                  'lng' : (10000000 * positionSelectedData['lng']).toInt(),
                                   'payment' : _howMuch,
                                   'range' : _howFar,
                                   'type' : selectedValue,
