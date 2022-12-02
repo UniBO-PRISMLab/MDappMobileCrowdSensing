@@ -4,6 +4,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_api_headers/google_api_headers.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_webservice/places.dart';
+import "package:google_maps_webservice/geocoding.dart";
 
 class SearchPlacesViewModel {
   double lat = 40;
@@ -18,6 +19,7 @@ class SearchPlacesViewModel {
     position = await _getGeoLocationPosition();
     lng = position.longitude;
     lat = position.latitude;
+    print("__________________________________________________________________________POSITION: \n[lat]$lat\n[lng]$lng");
   }
 
   void updateLocalPositionAndCamera() async {
@@ -49,11 +51,28 @@ class SearchPlacesViewModel {
     }
 
     return await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
+        desiredAccuracy: LocationAccuracy.best);
   }
 
   CameraPosition getCameraPosition() {
     return CameraPosition(target: LatLng(lat, lng), zoom: zoom);
+  }
+  
+  Future<String?> getReadebleLocationFromLatLng(double lat, double lng) async {
+    try {
+      final geocoding = GoogleMapsGeocoding(apiKey: FlutterConfig.get('GOOGLE_API_KEY'),apiHeaders: await const GoogleApiHeaders().getHeaders());
+      GeocodingResponse response = await geocoding.searchByLocation(Location(lat: lat, lng: lng));
+
+      for(GeocodingResult element in response.results) {
+        print(
+            "DEBUG:::::::::::::::::::::::::::[getReadebleLocationFromLatLng]: ${element.formattedAddress}");
+      }
+      String? name = response.results.first.formattedAddress;
+      return name;
+    }catch (e){
+      print("[ERROR]: $e");
+      return 'Error';
+    }
   }
 
   Future<void> displayPrediction(

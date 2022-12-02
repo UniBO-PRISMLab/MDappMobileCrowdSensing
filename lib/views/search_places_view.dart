@@ -100,29 +100,9 @@ class _SearchPlacesViewState extends State<SearchPlacesView> {
                 borderSide: const BorderSide(color: Colors.blueAccent))),
         components: [
           Component(Component.country, "it"),
-          //Component(Component.country, "us"),
-          //Component(Component.country, "fr"),
-          //Component(Component.country, "de")
         ]);
-    searchPlacesData.displayPrediction(
-        p!, searchPlacesViewScaffoldKey.currentState);
+    searchPlacesData.displayPrediction(p!, searchPlacesViewScaffoldKey.currentState);
   }
-
-/*
-_handleTap(LatLng point) {
-    setState(() {
-      searchPlacesData.markersList.add(Marker(
-        markerId: MarkerId(point.toString()),
-        position: point,
-        infoWindow: InfoWindow(
-          title: 'I am a marker',
-        ),
-        icon:
-            BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueMagenta),
-     ));
- });
-}
-*/
 
   void onError(PlacesAutocompleteResponse response) {
     searchPlacesViewScaffoldKey.currentState!.showBottomSheet(
