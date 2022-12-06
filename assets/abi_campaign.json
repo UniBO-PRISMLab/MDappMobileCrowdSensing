@@ -1,5 +1,41 @@
 [
   {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_name",
+        "type": "string"
+      },
+      {
+        "internalType": "int256",
+        "name": "_lat",
+        "type": "int256"
+      },
+      {
+        "internalType": "int256",
+        "name": "_lng",
+        "type": "int256"
+      },
+      {
+        "internalType": "int256",
+        "name": "_range",
+        "type": "int256"
+      },
+      {
+        "internalType": "string",
+        "name": "_type",
+        "type": "string"
+      },
+      {
+        "internalType": "address",
+        "name": "_addressCrowdSourcer",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "payable",
+    "type": "constructor"
+  },
+  {
     "anonymous": false,
     "inputs": [
       {
@@ -45,10 +81,42 @@
     "type": "event"
   },
   {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "allfilesPath",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "closeCampaign",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "fileCount",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -75,19 +143,6 @@
         "internalType": "address payable",
         "name": "uploader",
         "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "getFilePaths",
-    "outputs": [
-      {
-        "internalType": "string[]",
-        "name": "",
-        "type": "string[]"
       }
     ],
     "stateMutability": "view",
@@ -134,44 +189,6 @@
       }
     ],
     "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "string",
-        "name": "_name",
-        "type": "string"
-      },
-      {
-        "internalType": "int256",
-        "name": "_lat",
-        "type": "int256"
-      },
-      {
-        "internalType": "int256",
-        "name": "_lng",
-        "type": "int256"
-      },
-      {
-        "internalType": "int256",
-        "name": "_range",
-        "type": "int256"
-      },
-      {
-        "internalType": "string",
-        "name": "_type",
-        "type": "string"
-      },
-      {
-        "internalType": "address",
-        "name": "_addressCrowdSourcer",
-        "type": "address"
-      }
-    ],
-    "name": "initialize",
-    "outputs": [],
-    "stateMutability": "payable",
     "type": "function"
   },
   {

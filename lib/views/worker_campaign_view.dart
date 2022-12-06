@@ -68,8 +68,8 @@ class _WorkerCampaignViewState extends State<WorkerCampaignView> {
           title: const Text('List Of All Campaigns'),
           centerTitle: true,
         ),
-        body: (widget.contractAddress != null)
-            ? Container(
+        body: (widget.contractAddress != null) ?
+        Container(
                 padding: const EdgeInsets.fromLTRB(10, 30, 10, 10),
                 width: double.maxFinite,
                 child: ListView.builder(

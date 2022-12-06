@@ -53,20 +53,14 @@ class _CampaignCreatorState extends State<CampaignCreator> {
       SmartContractProvider smartContractViewModel = SmartContractProvider(FlutterConfig.get('MCSfactory_CONTRACT_ADDRESS'), 'MCSfactory', 'assets/abi.json', provider: sessionData.getProvider());
       List args = [name, lat, lng, range,type];
       await smartContractViewModel.queryTransaction('createCampaign', args,value).then((value) async => {
-        print('\x1B[31m [DEBUG]:::::::::::::::::::::::::: $value\x1B[0m'),
         if (value!=null && value!='0x0000000000000000000000000000000000000000') {
-          Navigator.popAndPushNamed(context, '/worker')
+          Navigator.popAndPushNamed(context, '/sourcer')
         }
       });
     } catch (error) {
       print('\x1B[31m$error\x1B[0m');
       Future.delayed(Duration.zero, () {
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (BuildContext context) => DialogView(message: '[uploadLight]: $error')
-            )
-        );
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => DialogView(message: '[uploadLight]: $error')));
       });
     }
   }

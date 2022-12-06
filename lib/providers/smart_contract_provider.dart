@@ -25,6 +25,7 @@ class SmartContractProvider extends CustomTransactionSender{
 
   Future<dynamic> queryTransaction(String functionName, List<dynamic> args, BigInt? value) async {
     try {
+      sessionData.checkConnection();
       print("[Transaction]:::::::::::::::::::::::::::::::::::::: [function]: $functionName [args]: $args");
       final contract = await loadContract(contractAddress);
       final ethFunction = contract.function(functionName);
@@ -63,7 +64,7 @@ class SmartContractProvider extends CustomTransactionSender{
 
   Future<List<dynamic>?> queryCall(BuildContext context, String functionName, List<dynamic> args, BigInt? value, String? goToOnFail) async {
     try {
-
+      sessionData.checkConnection();
       final contract = await loadContract(contractAddress);
       final ethFunction = contract.function(functionName);
 

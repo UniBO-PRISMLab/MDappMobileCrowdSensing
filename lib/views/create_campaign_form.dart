@@ -87,7 +87,7 @@ class CreateCampaignFormState extends State<CreateCampaignForm> {
                         ),
                         ElevatedButton(
                             onPressed: () {
-                              Navigator.pushReplacementNamed(context, '/map', arguments: {
+                              Navigator.pushNamed(context, '/map', arguments: {
                                 'title' : titleController.text,
                                 'range' : _howFar,
                                 'payment' : _howMuch,
@@ -186,7 +186,7 @@ class CreateCampaignFormState extends State<CreateCampaignForm> {
                                           fontWeight: FontWeight.bold, fontSize: 16),
                                     )));
 
-                                Navigator.pushNamed(context, '/create_campaign_provider', arguments: {
+                                Navigator.pushReplacementNamed(context, '/create_campaign_provider', arguments: {
                                   'title' : titleController.text,
                                   'lat' : (10000000 * positionSelectedData['lat']).toInt(),
                                   'lng' : (10000000 * positionSelectedData['lng']).toInt(),

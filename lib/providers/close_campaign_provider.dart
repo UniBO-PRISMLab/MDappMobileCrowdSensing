@@ -4,17 +4,18 @@ import 'package:flutter_config/flutter_config.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:mobile_crowd_sensing/view_models/session_view_model.dart';
 import 'package:mobile_crowd_sensing/providers/smart_contract_provider.dart';
+import 'package:web3dart/credentials.dart';
 import '../views/dialog_view.dart';
-import '../views/worker_campaign_view.dart';
+import '../views/sourcer_campaign_view.dart';
 
-class AllCampaignProvider extends StatefulWidget {
-  const AllCampaignProvider({super.key});
+class CloseCampaignProvider extends StatefulWidget {
+  const CloseCampaignProvider({super.key});
   @override
   // ignore: library_private_types_in_public_api
-  _AllCampaignProviderState createState() => _AllCampaignProviderState();
+  _CloseCampaignProviderState createState() => _CloseCampaignProviderState();
 }
 
-class _AllCampaignProviderState extends State<AllCampaignProvider> {
+class _CloseCampaignProviderState extends State<CloseCampaignProvider> {
 
   SessionViewModel sessionData = SessionViewModel();
   Object? parameters;
@@ -23,13 +24,12 @@ class _AllCampaignProviderState extends State<AllCampaignProvider> {
   @override
   void initState() {
     super.initState();
-    getAllCampaign();
+    closeMyCampaign(sessionData.getAccountAddress());
   }
 
   @override
   Widget build(BuildContext context) {
     sessionData = SessionViewModel();
-
     return Scaffold(
         backgroundColor: Colors.blue[900],
         body: const Center(
@@ -39,19 +39,13 @@ class _AllCampaignProviderState extends State<AllCampaignProvider> {
             )));
   }
 
-  Future<void> getAllCampaign() async {
+  Future<void> closeMyCampaign(String sourcerAddress) async {
     try {
       SmartContractProvider smartContractViewModel = SmartContractProvider(FlutterConfig.get('MCSfactory_CONTRACT_ADDRESS'),'MCSfactory','assets/abi.json', provider: sessionData.getProvider());
-      List? result = await smartContractViewModel.queryCall(context, 'getAllCampaigns',[],null,null);
-      if (result != null) {
-        setState(() {
-          Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) => WorkerCampaignView(contractAddress: result![0],)));
-        });
-      } else {
-        setState(() {
-          Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) => const DialogView(message: 'No Campaigns aviable',)));
-        });
-      }
+      String address = jsonParameters['address'];
+      List? result = await smartContractViewModel.queryCall(context, 'closeCampaign',[address],null,null);
+      // ignore: unnecessary_non_null_assertion
+      Navigator.pushReplacement(context!,MaterialPageRoute(builder: (context) => SourcerCampaignView(contractAddress: result!,)));
     } catch (error) {
       if (kDebugMode) {
         print('\x1B[31m$error\x1B[0m');

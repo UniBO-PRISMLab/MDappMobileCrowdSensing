@@ -20,22 +20,7 @@ class _LoginViewState extends State<LoginView> {
   @override
   Widget build(BuildContext context) {
     SessionViewModel sessionData = SessionViewModel();
-    sessionData.getConnector().on(
-        'connect',
-            (session) =>
-                setState(() {sessionData.setSession(session);},
-        ));
-    sessionData.getConnector().on(
-        'session_update',
-            (payload) => setState(() {
-              sessionData.setSession(payload);
-        }));
-    sessionData.getConnector().on(
-        'disconnect',
-            (payload) => setState(() {
-              sessionData.setSession(null);
-        }));
-
+    sessionData.checkConnection();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Login Page'),

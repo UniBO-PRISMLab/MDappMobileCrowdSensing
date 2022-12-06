@@ -28,22 +28,19 @@ class _SourcerCampaignViewState extends State<SourcerCampaignView> {
   initState() {
     if (widget.contractAddress != null) {
       for (int i = 0; i < widget.contractAddress!.length; i++) {
-        SmartContractProvider smartContractViewModel = SmartContractProvider(
-            widget.contractAddress![i].toString(),
-            'Campaign',
-            'assets/abi_campaign.json', provider: sessionData.getProvider());
+        SmartContractProvider smartContractViewModel = SmartContractProvider(widget.contractAddress![i].toString(), 'Campaign', 'assets/abi_campaign.json', provider: sessionData.getProvider());
 
-        smartContractViewModel
-            .queryCall(context, 'getAllCampaigns', [], null, null)
-            .then((value) => {
+        smartContractViewModel.queryCall(context, 'getInfo', [], null, null).then((value) => {
           setState(() {
-            names.add(value![0]);
-            latitude.add(value[1].toString());
-            longitude.add(value[2].toString());
-            range.add(value[3].toString());
-            type.add(value[4]);
-            addressCrowdSourcer.add(value[5].toString());
-            fileCount.add(value[6].toString());
+            if (value != null) {
+              names.add(value[0]);
+              latitude.add(value[1].toString());
+              longitude.add(value[2].toString());
+              range.add(value[3].toString());
+              type.add(value[4]);
+              addressCrowdSourcer.add(value[5].toString());
+              fileCount.add(value[6].toString());
+            }
           })
         });
       }
@@ -85,7 +82,13 @@ class _SourcerCampaignViewState extends State<SourcerCampaignView> {
                             content: Text('Do you want to close this campaign?'),
                             actions: <Widget>[
                               TextButton(child: const Text('No'),onPressed: () {Navigator.of(ctx).pop(false);}),
-                              TextButton(child: const Text('Yes'),onPressed: () {Navigator.of(ctx).pop(true);}),
+                              TextButton(child: const Text('Yes'),onPressed: () {
+                                Navigator.of(ctx).pop(true);
+                                Navigator.pushReplacementNamed(context, "/sourcer_close_campaign_provider",arguments: {
+                                  'address' : widget.contractAddress,
+                                });
+
+                              }),
                               ],
                           ),);
                         },
