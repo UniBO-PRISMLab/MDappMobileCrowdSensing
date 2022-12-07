@@ -24,7 +24,7 @@ class _SourcerViewState extends State<SourcerView> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [TextButton.icon(
                 onPressed: () {
-                  Navigator.pushNamed(context,'/campaignForm');
+                  Navigator.pushReplacementNamed(context,'/campaignForm');
                 },
                 icon: const Icon(Icons.create),
                 label: Text(
@@ -37,7 +37,7 @@ class _SourcerViewState extends State<SourcerView> {
 
                 TextButton.icon(
                 onPressed: () {
-                  Navigator.pushNamed(context,'/sourcer_campaigns_provider');
+                  Navigator.pushReplacementNamed(context,'/sourcer_campaigns_provider');
                 },
                 icon: const Icon(Icons.dataset_rounded),
                 label: Text(
@@ -50,7 +50,7 @@ class _SourcerViewState extends State<SourcerView> {
 
                 TextButton.icon(
                     onPressed: () {
-                          Navigator.pushNamed(context,'/sourcer_close_campaign_provider');
+                          Navigator.pushReplacementNamed(context,'/sourcer_close_campaign_provider');
                     },
                     icon: const Icon(Icons.dataset_rounded),
                     label: Text(

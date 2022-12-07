@@ -77,7 +77,7 @@ class _WorkerCampaignViewState extends State<WorkerCampaignView> {
                     itemBuilder: (context, index) {
                       return GestureDetector(
                         onTap: (){
-                          Navigator.pushNamed(context,'/join_campaign', arguments: {
+                          Navigator.pushReplacementNamed(context,'/join_campaign', arguments: {
                             'name': names[index],
                             'contractAddress': contractsAddresses[index],
                             'lat': latitude[index].toString(),
