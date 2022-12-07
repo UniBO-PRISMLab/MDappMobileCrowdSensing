@@ -90,3 +90,17 @@ Future<String> getOnlyHashIPFS(File file) async {
   print('PRE-IPFS-HASH: ${jsonResponse['Hash']}');
   return jsonResponse['Hash'];
 }
+
+Future<String> downloadItemIPFS(String hash) async {
+  String username = FlutterConfig.get('INFURA_PROJECT_ID');
+  String password = FlutterConfig.get('INFURA_API_SECRET');
+  String basicAuth = 'Basic ${base64.encode(utf8.encode("$username:$password"))}';
+  var url = Uri.https('ipfs.infura.io:5001','/api/v0/get',{'arg':hash});
+  var request = http.MultipartRequest("POST", url);
+  request.headers['Authorization'] = basicAuth;
+  var response = await request.send();
+  var result = await http.Response.fromStream(response);
+  var jsonResponse = jsonDecode(result.body);
+  print('downloadItemIPFS: ${jsonResponse.toString()}');
+  return jsonResponse['Hash'];
+}

@@ -16,6 +16,8 @@ class SourcerClosedCampaignView extends StatefulWidget {
 class _SourcerClosedCampaignViewState extends State<SourcerClosedCampaignView> {
 
   SessionViewModel sessionData = SessionViewModel();
+
+  late List<String> contractsAddresses = [];
   late List<String> names = [];
   late List<String> latitude = [];
   late List<String> longitude = [];
@@ -32,6 +34,7 @@ class _SourcerClosedCampaignViewState extends State<SourcerClosedCampaignView> {
         smartContractViewModel.queryCall('getInfo', [], null).then((value) => {
           setState(() {
             if (value != null) {
+              contractsAddresses.add(widget.contractAddress![i].toString());
               names.add(value[0]);
               latitude.add(value[1].toString());
               longitude.add(value[2].toString());
@@ -71,7 +74,15 @@ class _SourcerClosedCampaignViewState extends State<SourcerClosedCampaignView> {
           child: ListView.builder(
               itemCount: widget.contractAddress!.length,
               itemBuilder: (BuildContext context, int index) {
-                return Card(
+                return GestureDetector(
+                    onTap: (){
+                      Navigator.pushReplacementNamed(context,'/data_campaign', arguments: {
+                        'name': names[index],
+                        'contractAddress': contractsAddresses[index],
+                        'type' : type[index],
+                      });
+                    },
+                 child: Card(
                     shadowColor: Colors.blue[600],
                     color: Colors.white54,
                     shape: RoundedRectangleBorder(
@@ -224,6 +235,7 @@ class _SourcerClosedCampaignViewState extends State<SourcerClosedCampaignView> {
                         ],
                       ),
                     )
+                 )
                 );
               }),
         ) : const Center(child: Text('No active campaign at the moment...'))
