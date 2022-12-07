@@ -6,34 +6,29 @@ import 'package:mobile_crowd_sensing/view_models/session_view_model.dart';
 import 'package:mobile_crowd_sensing/providers/smart_contract_provider.dart';
 import 'package:web3dart/credentials.dart';
 import '../views/dialog_view.dart';
-import '../views/sourcer_campaign_view.dart';
+import '../views/sourcer_closed_campaign_view.dart';
 
-class MyCampaignProvider extends StatefulWidget {
-  const MyCampaignProvider({super.key});
+class ClosedCampaignProvider extends StatefulWidget {
+
+  const ClosedCampaignProvider({super.key});
   @override
   // ignore: library_private_types_in_public_api
-  _MyCampaignProviderState createState() => _MyCampaignProviderState();
+  _ClosedCampaignProviderState createState() => _ClosedCampaignProviderState();
 }
 
-class _MyCampaignProviderState extends State<MyCampaignProvider> {
-  final createCampaignProvider = GlobalKey<ScaffoldState>();
-
-  SessionViewModel sessionData = SessionViewModel();
+class _ClosedCampaignProviderState extends State<ClosedCampaignProvider> {
   Object? parameters;
   dynamic jsonParameters = {};
 
   @override
   void initState() {
     super.initState();
-    getMyCampaign(sessionData.getAccountAddress());
+    getMyClosedCampaign();
   }
 
   @override
   Widget build(BuildContext context) {
-    sessionData = SessionViewModel();
-
     return Scaffold(
-        key: createCampaignProvider,
         backgroundColor: Colors.blue[900],
         body: const Center(
             child: SpinKitFadingCube(
@@ -42,20 +37,34 @@ class _MyCampaignProviderState extends State<MyCampaignProvider> {
             )));
   }
 
-  Future<void> getMyCampaign(String sourcerAddress) async {
+  Future<void> getMyClosedCampaign() async {
     try {
+      SessionViewModel sessionData = SessionViewModel();
       SmartContractProvider smartContractViewModel = SmartContractProvider(FlutterConfig.get('MCSfactory_CONTRACT_ADDRESS'),'MCSfactory','assets/abi.json', provider: sessionData.getProvider());
-      EthereumAddress address = EthereumAddress.fromHex(sourcerAddress);
-      List? result = await smartContractViewModel.queryCall('activeCampaigns',[address],null);
-      if (result != null) {
+      EthereumAddress address = EthereumAddress.fromHex(sessionData.getAccountAddress());
+      List<String>? result = [];
+      int index = 0;
+      List<dynamic>? query = [];
+
+      do {
+        query = await smartContractViewModel.queryCall('closedCampaigns', [address, BigInt.from(index)], null);
+
+         if (query.toString() != "null") {
+           print("ADDED: ${query![0].toString()}");
+           result.add(query[0].toString());
+         }
+        index++;
+      } while (query.toString() != "null");
+
+      if (result.isNotEmpty) {
         setState(() {
-          Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) => SourcerCampaignView(contractAddress: result,)));
+          Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) => SourcerClosedCampaignView(contractAddress: result,)));
         });
       } else {
         setState(() {
           Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (BuildContext context) => const DialogView(goTo: "sourcer", message: 'No Campaign Aviable')));
+              MaterialPageRoute(builder: (BuildContext context) => const DialogView(goTo: "sourcer", message: 'No Campaigns Aviable')));
         });
       }
     } catch (error) {

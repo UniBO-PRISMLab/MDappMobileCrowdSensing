@@ -18,7 +18,7 @@ class CreateCampaignFormState extends State<CreateCampaignForm> {
   final _formKey = GlobalKey<FormState>();
   String? selectedValue = 'photo';
   double _howMuch = 5;
-  int _howFar = 10;
+  int _howFar = 100;
   final titleController = TextEditingController();
 
   @override
@@ -160,11 +160,11 @@ class CreateCampaignFormState extends State<CreateCampaignForm> {
                                     fontSize: 16),
                               ),
                               Slider(
-                                min: 10.0,
-                                max: 50.0,
-                                divisions: 7,
+                                min: 100.0,
+                                max: 1000.0,
+                                divisions: 10,
                                 value: _howFar.toDouble(),
-                                label: _howFar.toInt().toString(),
+                                label: "${_howFar.toInt()} meters",
                                 onChanged: (newValue) {
                                   setState(() {
                                     _howFar = newValue.toDouble().toInt();

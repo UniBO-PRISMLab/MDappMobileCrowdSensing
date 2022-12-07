@@ -26,11 +26,9 @@ class _SourcerCampaignViewState extends State<SourcerCampaignView> {
 
   @override
   initState() {
-    if (widget.contractAddress != null) {
-      for (int i = 0; i < widget.contractAddress!.length; i++) {
-        SmartContractProvider smartContractViewModel = SmartContractProvider(widget.contractAddress![i].toString(), 'Campaign', 'assets/abi_campaign.json', provider: sessionData.getProvider());
-
-        smartContractViewModel.queryCall(context, 'getInfo', [], null, null).then((value) => {
+    if (widget.contractAddress![0].toString() != "0x0000000000000000000000000000000000000000") {
+        SmartContractProvider smartContractViewModel = SmartContractProvider(widget.contractAddress![0].toString(), 'Campaign', 'assets/abi_campaign.json', provider: sessionData.getProvider());
+        smartContractViewModel.queryCall('getInfo', [], null).then((value) => {
           setState(() {
             if (value != null) {
               names.add(value[0]);
@@ -43,10 +41,8 @@ class _SourcerCampaignViewState extends State<SourcerCampaignView> {
             }
           })
         });
-      }
-
-      super.initState();
     }
+    super.initState();
   }
 
   @override
@@ -62,10 +58,10 @@ class _SourcerCampaignViewState extends State<SourcerCampaignView> {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.blue[900],
-          title: const Text('Your Campaigns'),
+          title: const Text('Your Campaign'),
           centerTitle: true,
         ),
-        body: (widget.contractAddress != null) ?
+        body: (widget.contractAddress![0].toString() != "0x0000000000000000000000000000000000000000") ?
         Container(
                 padding: const EdgeInsets.fromLTRB(10, 30, 10, 10),
                 width: double.maxFinite,
@@ -78,14 +74,14 @@ class _SourcerCampaignViewState extends State<SourcerCampaignView> {
                           return showDialog(
                           context: context,
                           builder: (ctx) => AlertDialog(
-                            title: Text('Are you sure?'),
-                            content: Text('Do you want to close this campaign?'),
+                            title: const Text('Are you sure?'),
+                            content: const Text('Do you want to close this campaign?'),
                             actions: <Widget>[
                               TextButton(child: const Text('No'),onPressed: () {Navigator.of(ctx).pop(false);}),
                               TextButton(child: const Text('Yes'),onPressed: () {
                                 Navigator.of(ctx).pop(true);
-                                Navigator.pushReplacementNamed(context, "/sourcer_close_campaign_provider",arguments: {
-                                  'address' : widget.contractAddress,
+                                Navigator.pushReplacementNamed(context, "/sourcer_close_campaign_service_provider",arguments: {
+                                  'address' : widget.contractAddress.toString(),
                                 });
 
                               }),
@@ -281,7 +277,12 @@ class _SourcerCampaignViewState extends State<SourcerCampaignView> {
                       ),
                       );
                     }),
-              ) : const Center(child: Text('No active campaign at the moment...'))
+              ) :  Center(
+                child:
+                  Text('No active campaign at the moment...',
+                    style: GoogleFonts.spaceMono(fontWeight: FontWeight.bold, fontSize: 16),
+                  )
+        )
     );
   }
 }

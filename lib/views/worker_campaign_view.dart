@@ -32,7 +32,7 @@ class _WorkerCampaignViewState extends State<WorkerCampaignView> {
       for (int i = 0; i < widget.contractAddress!.length; i++) {
         SmartContractProvider smartContractViewModel = SmartContractProvider(widget.contractAddress![i].toString(),'Campaign','assets/abi_campaign.json', provider: sessionData.getProvider());
         String? readebleLocationQuery;
-        smartContractViewModel.queryCall(context, 'getInfo', [], null, null).then((value) async => {
+        smartContractViewModel.queryCall('getInfo', [], null).then((value) async => {
                   readebleLocationQuery = await searchPlacesViewModel.getReadebleLocationFromLatLng((double.parse(value![1].toString()))/10000000,(double.parse(value[2].toString()))/10000000),
                   setState(() {
                     contractsAddresses.add(widget.contractAddress![i].toString());

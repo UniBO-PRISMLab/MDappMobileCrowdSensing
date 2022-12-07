@@ -42,10 +42,10 @@ class _AllCampaignProviderState extends State<AllCampaignProvider> {
   Future<void> getAllCampaign() async {
     try {
       SmartContractProvider smartContractViewModel = SmartContractProvider(FlutterConfig.get('MCSfactory_CONTRACT_ADDRESS'),'MCSfactory','assets/abi.json', provider: sessionData.getProvider());
-      List? result = await smartContractViewModel.queryCall(context, 'getAllCampaigns',[],null,null);
+      List? result = await smartContractViewModel.queryCall('getAllCampaigns',[],null);
       if (result != null) {
         setState(() {
-          Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) => WorkerCampaignView(contractAddress: result![0],)));
+          Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) => WorkerCampaignView(contractAddress: result[0],)));
         });
       } else {
         setState(() {

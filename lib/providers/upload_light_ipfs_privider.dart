@@ -51,16 +51,17 @@ SessionViewModel sessionData = SessionViewModel();
           SearchPlacesViewModel position = SearchPlacesViewModel();
           await position.updateLocalPosition();
           String preHash = await getOnlyHashIPFS(await localFile);
-          List<dynamic> args = [preHash,BigInt.from((position.lat*100).round()),BigInt.from((position.lng*100).round())];
+          List<dynamic> args = [preHash,BigInt.from((position.lat*1000000).round()),BigInt.from((position.lng*1000000).round())];
           await smartContractViewModel.queryTransaction('uploadFile', args, null).then((value) async => {
-            print('\x1B[31m [DEBUG]:::::::::::::::::::::::::: $value\x1B[0m'),
-            if (value!=null && value!='0x0000000000000000000000000000000000000000') {
+            if (value != "null" && value!='0x0000000000000000000000000000000000000000') {
               uploadIPFS(await localFile),
-              Navigator.popAndPushNamed(context, '/worker')
+              Navigator.pushReplacementNamed(context, '/worker')
+            } else {
+              print('\x1B[31m [DEBUG]:::::::::::::::::::::::::: [uploadLight]$value\x1B[0m'),
+              Navigator.pushReplacement(context,MaterialPageRoute(builder: (BuildContext context) => const DialogView(message: 'position out of area')))
             }
           });
         } catch (error) {
-          print('\x1B[31m$error\x1B[0m');
           Future.delayed(Duration.zero, () {
             Navigator.pushReplacement(
                 context,

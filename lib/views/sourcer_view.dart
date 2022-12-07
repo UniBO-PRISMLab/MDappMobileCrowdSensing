@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../view_models/sourcer_view_model.dart';
 
 class SourcerView extends StatefulWidget {
   const SourcerView({Key? key}) : super(key: key);
@@ -10,14 +9,13 @@ class SourcerView extends StatefulWidget {
 }
 
 class _SourcerViewState extends State<SourcerView> {
-  SourcerViewModel sourcerData = SourcerViewModel();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.blue[900],
-          title: Text(sourcerData.appBarTitle),
+          title: const Text("Crowdsourcer Menu"),
           centerTitle: true,
           elevation: 0,
         ),
@@ -26,11 +24,11 @@ class _SourcerViewState extends State<SourcerView> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [TextButton.icon(
                 onPressed: () {
-                  sourcerData.goToCreateCampaignForm(context);
+                  Navigator.pushNamed(context,'/campaignForm');
                 },
                 icon: const Icon(Icons.create),
                 label: Text(
-                  sourcerData.title_1,
+                  'Create a Campaign',
                   style: GoogleFonts.spaceMono(
                       textStyle: const TextStyle(color: Colors.black87, letterSpacing: .5),
                       fontWeight: FontWeight.normal, fontSize: 16),
@@ -39,15 +37,28 @@ class _SourcerViewState extends State<SourcerView> {
 
                 TextButton.icon(
                 onPressed: () {
-                  sourcerData.goToMyCampaign(context);
+                  Navigator.pushNamed(context,'/sourcer_campaigns_provider');
                 },
                 icon: const Icon(Icons.dataset_rounded),
                 label: Text(
-                  sourcerData.title_2,
+                  'Current Campaign',
                   style: GoogleFonts.spaceMono(
                       textStyle: const TextStyle(color: Colors.black87, letterSpacing: .5),
                       fontWeight: FontWeight.normal, fontSize: 16),
                 )),
+                const Padding(padding: EdgeInsets.all(50)),
+
+                TextButton.icon(
+                    onPressed: () {
+                          Navigator.pushNamed(context,'/sourcer_close_campaign_provider');
+                    },
+                    icon: const Icon(Icons.dataset_rounded),
+                    label: Text(
+                      'Closed Campaigns',
+                      style: GoogleFonts.spaceMono(
+                          textStyle: const TextStyle(color: Colors.black87, letterSpacing: .5),
+                          fontWeight: FontWeight.normal, fontSize: 16),
+                    )),
           ]),
         ));
   }

@@ -1,11 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mobile_crowd_sensing/view_models/session_view_model.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:walletconnect_dart/walletconnect_dart.dart';
 import 'package:web3dart/src/crypto/secp256k1.dart';
 import 'package:web3dart/web3dart.dart';
-import '../views/dialog_view.dart';
 
 class SmartContractProvider extends CustomTransactionSender{
   SmartContractProvider(this.contractAddress, this.abiName, this.abiFileRoot, {required this.provider});
@@ -62,27 +60,25 @@ class SmartContractProvider extends CustomTransactionSender{
     }
   }
 
-  Future<List<dynamic>?> queryCall(BuildContext context, String functionName, List<dynamic> args, BigInt? value, String? goToOnFail) async {
+  Future<List<dynamic>?> queryCall(String functionName, List<dynamic> args, BigInt? value) async {
     try {
       sessionData.checkConnection();
       final contract = await loadContract(contractAddress);
       final ethFunction = contract.function(functionName);
+      print('DEBUG:::::::::::::::::::::::::::[queryCall] transaction:  $functionName, $args, $value');
 
       final result = await sessionData.getEthClient().call(
+          sender: EthereumAddress.fromHex(sessionData.getAccountAddress()),
           contract: contract,
           function: ethFunction,
           params: args);
 
-      print('DEBUG:::::::::::::::::::::::::::[queryCall]:  $result');
       List<dynamic> res = result;
+      print('DEBUG:::::::::::::::::::::::::::[queryCall] result:  $res');
+
       return res;
     } catch (error) {
       print('\x1B[31m$error\x1B[0m');
-      Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (BuildContext context) =>
-                  DialogView(goTo: goToOnFail, message: error.toString())));
     }
     return null;
   }
