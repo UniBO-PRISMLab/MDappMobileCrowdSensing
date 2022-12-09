@@ -15,14 +15,25 @@ contract Campaign is Ownable, Initializable {
 
     string[] public allfilesPath;
 
+    function getValidFiles() public view onlyOwner returns(string[] memory){
+        string[] memory out = new string[](allfilesPath.length);
+        for(uint i; i<allfilesPath.length; i++) {
+            if ((files[allfilesPath[i]].status == true) && (files[allfilesPath[i]].validity == true)) {
+                out[i] = allfilesPath[i];
+            }
+        }
+        return out;
+    }
+
     uint256 public fileCount = 0;
+    uint256 public checkedFiles = 0;
 
     function getInfo() public view returns(string memory,int256,int256,int256,string memory,address,uint256) {
         return(name,lat,lng,range,campaignType,addressCrowdSourcer,fileCount);
     }
 
     struct File {
-        string status;
+        bool status;
         bool validity;
         address payable uploader;
     }
@@ -31,7 +42,7 @@ contract Campaign is Ownable, Initializable {
         isClosed = true;
     }
 
-    function initialize(string memory _name,int256 _lat,int256 _lng,int256 _range,string memory _type,address _addressCrowdSourcer) external payable onlyOwner initializer {
+    constructor(string memory _name,int256 _lat,int256 _lng,int256 _range,string memory _type,address _addressCrowdSourcer) payable onlyOwner initializer {
         name = _name;
         lat = _lat;
         lng = _lng;
@@ -39,6 +50,7 @@ contract Campaign is Ownable, Initializable {
         campaignType = _type;
         addressCrowdSourcer = _addressCrowdSourcer;
         isClosed = false;
+        transferOwnership(_addressCrowdSourcer);
     }
 
     event FileUploaded(address payable uploader);
@@ -48,8 +60,8 @@ contract Campaign is Ownable, Initializable {
         require(isClosed == false,'The campaign is closed by sourcer');
         require(isInRange(_fileLat,_fileLng),'position out of area');
         fileCount++;
-        filespathsLUT.push(ipfspath);
-        files[ipfspath] = File("not checked",false,payable(msg.sender));
+        allfilesPath.push(ipfspath);
+        files[ipfspath] = File(false,false,payable(msg.sender));
         emit FileUploaded(payable(msg.sender));
     }
 
@@ -63,15 +75,23 @@ contract Campaign is Ownable, Initializable {
         return y;
     }
 
-    function calculateDistance(int256 latFile, int256 lonFile) internal view returns (int256 dist) {
+    function calculateDistance(int256 latFile, int256 lonFile) public view returns (int256 dist) {
         int256 distance = sqrt((latFile - lat)**2 + (lonFile - lng)**2);
         return int256(distance);
     }
 
-    function isInRange(int256 latFile, int256 lonFile) internal view returns (bool answer){
-        if (range >= calculateDistance(latFile,lonFile)) {
+    function isInRange(int256 latFile, int256 lonFile) public view returns (bool answer){
+        if ((range*1000) >= calculateDistance(latFile,lonFile)) {
             return true;
         }
         return false;
     }
+
+
+    function validateFile(string memory hash) public {
+        files[hash].validity = true;
+        files[hash].status = true;
+        checkedFiles++;
+    }
+
 }

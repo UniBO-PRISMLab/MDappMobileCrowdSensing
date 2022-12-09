@@ -1,5 +1,12 @@
 [
   {
+    "inputs": [],
+    "name": "closeCampaign",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "string",
@@ -81,6 +88,62 @@
     "type": "event"
   },
   {
+    "inputs": [],
+    "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "transferOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "ipfspath",
+        "type": "string"
+      },
+      {
+        "internalType": "int256",
+        "name": "_fileLat",
+        "type": "int256"
+      },
+      {
+        "internalType": "int256",
+        "name": "_fileLng",
+        "type": "int256"
+      }
+    ],
+    "name": "uploadFile",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "hash",
+        "type": "string"
+      }
+    ],
+    "name": "validateFile",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "uint256",
@@ -100,10 +163,40 @@
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "int256",
+        "name": "latFile",
+        "type": "int256"
+      },
+      {
+        "internalType": "int256",
+        "name": "lonFile",
+        "type": "int256"
+      }
+    ],
+    "name": "calculateDistance",
+    "outputs": [
+      {
+        "internalType": "int256",
+        "name": "dist",
+        "type": "int256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [],
-    "name": "closeCampaign",
-    "outputs": [],
-    "stateMutability": "nonpayable",
+    "name": "checkedFiles",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -130,9 +223,9 @@
     "name": "files",
     "outputs": [
       {
-        "internalType": "string",
+        "internalType": "bool",
         "name": "status",
-        "type": "string"
+        "type": "bool"
       },
       {
         "internalType": "bool",
@@ -193,6 +286,43 @@
   },
   {
     "inputs": [],
+    "name": "getValidFiles",
+    "outputs": [
+      {
+        "internalType": "string[]",
+        "name": "",
+        "type": "string[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "int256",
+        "name": "latFile",
+        "type": "int256"
+      },
+      {
+        "internalType": "int256",
+        "name": "lonFile",
+        "type": "int256"
+      }
+    ],
+    "name": "isInRange",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "answer",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "owner",
     "outputs": [
       {
@@ -202,49 +332,6 @@
       }
     ],
     "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "renounceOwnership",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "newOwner",
-        "type": "address"
-      }
-    ],
-    "name": "transferOwnership",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "string",
-        "name": "ipfspath",
-        "type": "string"
-      },
-      {
-        "internalType": "int256",
-        "name": "_fileLat",
-        "type": "int256"
-      },
-      {
-        "internalType": "int256",
-        "name": "_fileLng",
-        "type": "int256"
-      }
-    ],
-    "name": "uploadFile",
-    "outputs": [],
-    "stateMutability": "nonpayable",
     "type": "function"
   }
 ]

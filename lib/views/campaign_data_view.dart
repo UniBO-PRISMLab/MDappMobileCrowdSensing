@@ -60,11 +60,11 @@ class LightJoinCampaignViewState extends State<CampaignDataView> {
           centerTitle: true,
           title: Text(campaignSelectedData['name']),
         ),
-        body: SingleChildScrollView(
+        body: (hashes.isNotEmpty)?
+          SingleChildScrollView(
             child: Container(
           padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-          child: (hashes.isNotEmpty)
-              ? Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   Text(
                     'Account',
                     style: GoogleFonts.merriweather(
@@ -100,12 +100,15 @@ class LightJoinCampaignViewState extends State<CampaignDataView> {
                         }),
                   )
                 ])
-              : Center(
-                  child: Text(
-                    'No files for this Campaign',
-                    style: GoogleFonts.inconsolata(fontSize: 16),
+            )
+          )
+              : Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Center(
+                    child: Text('No files for this Campaign', style: GoogleFonts.inconsolata(fontSize: 16),),
                   ),
-                ),
-        )));
+                ])
+        );
   }
 }

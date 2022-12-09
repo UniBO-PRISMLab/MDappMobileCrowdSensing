@@ -43,7 +43,7 @@ class MyApp extends StatelessWidget {
         '/sourcer_close_campaign_service_provider': (context) => const CloseCampaignServiceProvider(),
         '/join_campaign':(context) => JoinCampaignFactory.fromTypeName(context),
         '/camera':(context) => const CameraViewModel(),
-          '/data_campaign':(context) => const CampaignDataView(),
+        '/data_campaign':(context) => const CampaignDataView(),
       },
     );
   }

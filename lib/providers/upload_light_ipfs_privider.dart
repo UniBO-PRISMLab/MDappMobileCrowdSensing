@@ -51,7 +51,7 @@ SessionViewModel sessionData = SessionViewModel();
           SearchPlacesViewModel position = SearchPlacesViewModel();
           await position.updateLocalPosition();
           String preHash = await getOnlyHashIPFS(await localFile);
-          List<dynamic> args = [preHash,BigInt.from((position.lat*1000000).round()),BigInt.from((position.lng*1000000).round())];
+          List<dynamic> args = [preHash,BigInt.from((position.lat*10000000).round()),BigInt.from((position.lng*10000000).round())];
           await smartContractViewModel.queryTransaction('uploadFile', args, null).then((value) async => {
             if (value != "null" && value!='0x0000000000000000000000000000000000000000') {
               uploadIPFS(await localFile),
