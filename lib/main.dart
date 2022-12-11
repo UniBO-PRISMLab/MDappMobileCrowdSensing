@@ -6,9 +6,9 @@ import 'package:mobile_crowd_sensing/providers/create_campaign_provider.dart';
 import 'package:mobile_crowd_sensing/providers/my_campaign_provider.dart';
 import 'package:mobile_crowd_sensing/providers/sourcer_past_campaigns_provider.dart';
 import 'package:mobile_crowd_sensing/providers/upload_light_ipfs_privider.dart';
+import 'package:mobile_crowd_sensing/utils/campaign_data_factory.dart';
 import 'package:mobile_crowd_sensing/utils/join_campaign_factory.dart';
 import 'package:mobile_crowd_sensing/view_models/camera_view_model.dart';
-import 'package:mobile_crowd_sensing/views/campaign_data_view.dart';
 import 'package:mobile_crowd_sensing/views/home_view.dart';
 import 'package:mobile_crowd_sensing/views/login_view.dart';
 import 'package:mobile_crowd_sensing/views/sourcer_view.dart';
@@ -43,7 +43,8 @@ class MyApp extends StatelessWidget {
         '/sourcer_close_campaign_service_provider': (context) => const CloseCampaignServiceProvider(),
         '/join_campaign':(context) => JoinCampaignFactory.fromTypeName(context),
         '/camera':(context) => const CameraViewModel(),
-        '/data_campaign':(context) => const CampaignDataView(),
+        '/data_campaign':(context) => CampaignDataFactory.fromTypeName(context),
+
       },
     );
   }

@@ -2,11 +2,11 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile_crowd_sensing/view_models/session_view_model.dart';
-import '../../utils/join_campaign_factory.dart';
-import '../providers/smart_contract_provider.dart';
+import '../../providers/smart_contract_provider.dart';
+import '../../utils/campaign_data_factory.dart';
 
-class CampaignDataView extends JoinCampaignFactory {
-  const CampaignDataView({super.key});
+class CampaignDataLightView extends CampaignDataFactory {
+  const CampaignDataLightView({super.key});
 
   @override
   LightJoinCampaignViewState createState() {
@@ -14,7 +14,7 @@ class CampaignDataView extends JoinCampaignFactory {
   }
 }
 
-class LightJoinCampaignViewState extends State<CampaignDataView> {
+class LightJoinCampaignViewState extends State<CampaignDataLightView> {
   dynamic campaignSelectedData = {};
   Object? parameters;
   SessionViewModel sessionData = SessionViewModel();
