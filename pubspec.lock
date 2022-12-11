@@ -126,28 +126,28 @@ packages:
       name: camera_android
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.10.0+4"
+    version: "0.10.1"
   camera_avfoundation:
     dependency: transitive
     description:
       name: camera_avfoundation
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.9.8+6"
+    version: "0.9.9"
   camera_platform_interface:
     dependency: transitive
     description:
       name: camera_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.3.1"
+    version: "2.3.2"
   camera_web:
     dependency: transitive
     description:
       name: camera_web
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.3.0+1"
+    version: "0.3.1"
   characters:
     dependency: transitive
     description:
@@ -321,13 +321,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.1"
-  flutter_map:
-    dependency: transitive
-    description:
-      name: flutter_map
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "3.0.0"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -449,7 +442,7 @@ packages:
       name: google_maps_flutter_android
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.3.3"
+    version: "2.4.0"
   google_maps_flutter_ios:
     dependency: transitive
     description:
@@ -500,7 +493,7 @@ packages:
     source: hosted
     version: "4.0.2"
   intl:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: intl
       url: "https://pub.dartlang.org"
@@ -541,13 +534,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.2"
-  latlong2:
-    dependency: transitive
-    description:
-      name: latlong2
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.8.1"
   lints:
     dependency: transitive
     description:
@@ -555,13 +541,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.1"
-  lists:
-    dependency: transitive
-    description:
-      name: lists
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.1"
   logging:
     dependency: transitive
     description:
@@ -590,13 +569,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.8.0"
-  mgrs_dart:
-    dependency: transitive
-    description:
-      name: mgrs_dart
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.0"
   mime:
     dependency: transitive
     description:
@@ -611,13 +583,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.2"
-  open_street_map_search_and_pick:
-    dependency: "direct main"
-    description:
-      name: open_street_map_search_and_pick
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.0.15"
   package_config:
     dependency: transitive
     description:
@@ -723,13 +688,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.6.2"
-  polylabel:
-    dependency: transitive
-    description:
-      name: polylabel
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.1"
   pool:
     dependency: transitive
     description:
@@ -737,13 +695,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.5.1"
-  positioned_tap_detector_2:
-    dependency: transitive
-    description:
-      name: positioned_tap_detector_2
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.4"
   process:
     dependency: transitive
     description:
@@ -751,13 +702,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.2.4"
-  proj4dart:
-    dependency: transitive
-    description:
-      name: proj4dart
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.1.0"
   pub_semver:
     dependency: transitive
     description:
@@ -853,7 +797,7 @@ packages:
       name: sqflite
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.2.0+3"
+    version: "2.2.2"
   sqflite_common:
     dependency: transitive
     description:
@@ -931,13 +875,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.0"
-  tuple:
-    dependency: transitive
-    description:
-      name: tuple
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.1"
   typed_data:
     dependency: transitive
     description:
@@ -945,13 +882,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.3.1"
-  unicode:
-    dependency: transitive
-    description:
-      name: unicode
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.3.1"
   url_launcher:
     dependency: "direct main"
     description:
@@ -1071,13 +1001,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.1.2"
-  wkt_parser:
-    dependency: transitive
-    description:
-      name: wkt_parser
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.0"
   xdg_directories:
     dependency: transitive
     description:

@@ -1,9 +1,13 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile_crowd_sensing/view_models/session_view_model.dart';
 import '../../providers/smart_contract_provider.dart';
 import '../../utils/campaign_data_factory.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:intl/intl.dart';
+import '../../utils/helperfunctions.dart';
 
 class CampaignDataLightView extends CampaignDataFactory {
   const CampaignDataLightView({super.key});
@@ -19,22 +23,30 @@ class LightJoinCampaignViewState extends State<CampaignDataLightView> {
   Object? parameters;
   SessionViewModel sessionData = SessionViewModel();
   late SmartContractProvider smartContractViewModel;
-  List<String> hashes = [];
-
-  void _getFileIPFSHash(int index) async {
-    List<dynamic>? res = await smartContractViewModel.queryCall(
-        'allfilesPath', [BigInt.from(index)], null);
-    print(
-        "DEBUG ::::::::::::::::::::::::::::::::::::::: [getFileIPFSHash]: $res");
+  List<FileSystemEntity> files = [];
+  late List<String> hashes;
+  List<LightData> contents = [];
+  void _getHashAndDownload(int index) async {
+    List<dynamic>? res = await smartContractViewModel.queryCall('allfilesPath', [BigInt.from(index)], null);
+    print("DEBUG ::::::::::::::::::::::::::::::::::::::: [getFileIPFSHash]: $res");
     hashes.add(res![0]);
+    downloadItemIPFS(res[0],'lights');
   }
 
-  Future<int> getFileCount() async {
+  Future<int> _getFileCount() async {
     List<dynamic>? res =
         await smartContractViewModel.queryCall('fileCount', [], null);
     print(
         "DEBUG ::::::::::::::::::::::::::::::::::::::: [getFileCount]: ${res.toString()}");
     return int.parse(res![0].toString());
+  }
+
+  void _prepareFiles() async{
+    for(FileSystemEntity element in files) {
+      String singleData = await File(element.path).readAsString();
+      List<String> value = singleData.split("/");
+      contents.add(LightData(DateTime.fromMillisecondsSinceEpoch(int.parse(value[0])), double.parse(value[1])));
+    }
   }
 
   @override
@@ -47,12 +59,15 @@ class LightJoinCampaignViewState extends State<CampaignDataLightView> {
         'assets/abi_campaign.json',
         provider: sessionData.getProvider());
     setState(() {
-      getFileCount().then((fileCount) => {
-            for (int i = 0; i < fileCount; i++) {_getFileIPFSHash}
-          });
+      _getFileCount().then((fileCount) => {
+        for (int i = 0; i < fileCount; i++) {
+          _getHashAndDownload
+        },
+        files = getDownloadedFiles('lights'),
+        _prepareFiles()
+      });
     });
-    print(
-        "DEBUG ::::::::::::::::::::::::::::::::::::::: [initState-Hashes]: ${hashes.toString()}");
+    print("DEBUG ::::::::::::::::::::::::::::::::::::::: [initState-Hashes]: ${hashes.toString()}");
 
     return Scaffold(
         resizeToAvoidBottomInset: false,
@@ -60,7 +75,7 @@ class LightJoinCampaignViewState extends State<CampaignDataLightView> {
           centerTitle: true,
           title: Text(campaignSelectedData['name']),
         ),
-        body: (hashes.isNotEmpty)?
+        body: (files.isNotEmpty)?
           SingleChildScrollView(
             child: Container(
           padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
@@ -77,27 +92,19 @@ class LightJoinCampaignViewState extends State<CampaignDataLightView> {
                   Container(
                     padding: const EdgeInsets.fromLTRB(10, 30, 10, 10),
                     width: double.maxFinite,
-                    child: ListView.builder(
-                        scrollDirection: Axis.vertical,
-                        shrinkWrap: true,
-                        itemCount: hashes.length,
-                        itemBuilder: (context, index) {
-                          return Card(
-                              shadowColor: Colors.blue[600],
-                              color: Colors.white54,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0),
-                              ),
-                              child: Padding(
-                                  padding: const EdgeInsets.all(20),
-                                  child: Stack(children: <Widget>[
-                                    Align(
-                                        alignment: Alignment.topLeft,
-                                        child: Column(children: <Widget>[
-                                          Text(hashes[index])
-                                        ]))
-                                  ])));
-                        }),
+                    child: Center(
+                      child: SfCartesianChart(
+                          primaryXAxis: CategoryAxis(),
+                          series: <LineSeries<LightData, String>>[
+                            LineSeries<LightData, String>(
+                              // Bind data source
+                                dataSource:  contents,
+                                xValueMapper: (LightData sales, _) => DateFormat('dd/MM/yyyy, HH:mm').format(sales.timeStamp),
+                                yValueMapper: (LightData sales, _) => sales.value
+                            )
+                          ]
+                      )
+                    )
                   )
                 ])
             )
@@ -111,4 +118,9 @@ class LightJoinCampaignViewState extends State<CampaignDataLightView> {
                 ])
         );
   }
+}
+class LightData {
+  LightData(this.timeStamp, this.value);
+  final DateTime timeStamp;
+  final double value;
 }

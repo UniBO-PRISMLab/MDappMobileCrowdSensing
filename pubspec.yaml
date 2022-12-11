@@ -46,7 +46,6 @@ dependencies:
   geocoding:  #latest version
   flutter_intl: ^0.0.1
   flutter_config: ^2.0.0
-  open_street_map_search_and_pick: ^0.0.15
   http: ^0.13.5
   google_maps_webservice: ^0.0.20-nullsafety.5
   camera: ^0.10.0+4
@@ -57,6 +56,7 @@ dependencies:
   walletconnect_qrcode_modal_dart: ^0.0.5
   build_runner: ^2.1.2
   syncfusion_flutter_charts: ^20.3.60
+  intl: ^0.17.0
 
 dev_dependencies:
   flutter_test:

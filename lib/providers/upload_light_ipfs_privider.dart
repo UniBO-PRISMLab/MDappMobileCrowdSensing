@@ -45,7 +45,7 @@ SessionViewModel sessionData = SessionViewModel();
   Future<void> uploadLight(List<double>? lights,double averageRelevation) async {
 
       path = await localPath;
-      await writeLightRelevation(averageRelevation.toString());
+      await writeLightRelevation("${DateTime.now().millisecondsSinceEpoch}/${averageRelevation.toString()}");
       try {
           SmartContractProvider smartContractViewModel = SmartContractProvider(jsonParameters['contractAddress'], 'Campaign', 'assets/abi_campaign.json', provider: sessionData.getProvider());
           SearchPlacesViewModel position = SearchPlacesViewModel();

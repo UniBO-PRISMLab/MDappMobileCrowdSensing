@@ -33,8 +33,18 @@ Future<String> get localPath async {
   return directory.path;
 }
 
+Future<String> get temporaryDirectoryPath async {
+  final directory = await getTemporaryDirectory();
+  return directory.path;
+}
+
 Future<File> get localFile async {
   final path = await localPath;
+  return File('$path/light.txt');
+}
+
+Future<File> get temporaryFile async {
+  final path = await temporaryDirectoryPath;
   return File('$path/light.txt');
 }
 
@@ -91,16 +101,23 @@ Future<String> getOnlyHashIPFS(File file) async {
   return jsonResponse['Hash'];
 }
 
-Future<String> downloadItemIPFS(String hash) async {
+Future<String> downloadItemIPFS(String hash,String localFolder) async {
   String username = FlutterConfig.get('INFURA_PROJECT_ID');
   String password = FlutterConfig.get('INFURA_API_SECRET');
   String basicAuth = 'Basic ${base64.encode(utf8.encode("$username:$password"))}';
-  var url = Uri.https('ipfs.infura.io:5001','/api/v0/get',{'arg':hash});
+  print("DEBUG::::::::::::::::::::::::::::::::::::::::::::::::::::::::::[downloadItemIPFS] temporaryDirectoryPath: $temporaryDirectoryPath");
+  Directory dir = await Directory("$temporaryDirectoryPath/$localFolder/").create();
+  var url = Uri.https('ipfs.infura.io:5001','/api/v0/get',{'arg':hash,'output': dir.path});
   var request = http.MultipartRequest("POST", url);
   request.headers['Authorization'] = basicAuth;
   var response = await request.send();
   var result = await http.Response.fromStream(response);
   var jsonResponse = jsonDecode(result.body);
   print('downloadItemIPFS: ${jsonResponse.toString()}');
-  return jsonResponse['Hash'];
+  return jsonResponse[0];
+}
+
+List<FileSystemEntity> getDownloadedFiles(String folder) {
+  Directory dir = Directory("temporaryDirectoryPath/$folder");
+  return dir.listSync();
 }
