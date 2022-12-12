@@ -2,15 +2,19 @@
 pragma solidity ^0.8.17;
 import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "./MCSfactory.sol";
 
 contract Campaign is Ownable, Initializable {
-    bool internal isClosed;
+    bool public isClosed;
     string internal name;
     int256 internal lat;
     int256 internal lng;
     int256 internal range;
     string internal campaignType;
-    address internal addressCrowdSourcer;
+
+    address public addressCrowdSourcer;
+
+    CampaignFactory internal factoryContractAddress;
     mapping(string => File) public files; // ipfs hash -> file info
 
     string[] public allfilesPath;
@@ -35,25 +39,22 @@ contract Campaign is Ownable, Initializable {
     struct File {
         bool status;
         bool validity;
-        address payable uploader;
+        address  uploader;
     }
 
-    function closeCampaign() external onlyOwner{
-        isClosed = true;
-    }
-
-    constructor(string memory _name,int256 _lat,int256 _lng,int256 _range,string memory _type,address _addressCrowdSourcer) payable onlyOwner initializer {
+    constructor(string memory _name,int256 _lat,int256 _lng,int256 _range,string memory _type,address  _addressCrowdSourcer,address  _factoryAddress)  onlyOwner initializer {
         name = _name;
         lat = _lat;
         lng = _lng;
         range = _range;
         campaignType = _type;
-        addressCrowdSourcer = _addressCrowdSourcer;
+        addressCrowdSourcer =_addressCrowdSourcer;
+        factoryContractAddress = CampaignFactory(_factoryAddress);
         isClosed = false;
         transferOwnership(_addressCrowdSourcer);
     }
 
-    event FileUploaded(address payable uploader);
+    event FileUploaded(address  uploader);
 
     function uploadFile(string memory ipfspath,int256 _fileLat,int256 _fileLng) public {
         require(msg.sender != address(0));
@@ -61,8 +62,8 @@ contract Campaign is Ownable, Initializable {
         require(isInRange(_fileLat,_fileLng),'position out of area');
         fileCount++;
         allfilesPath.push(ipfspath);
-        files[ipfspath] = File(false,false,payable(msg.sender));
-        emit FileUploaded(payable(msg.sender));
+        files[ipfspath] = File(false,false,(msg.sender));
+        emit FileUploaded((msg.sender));
     }
 
     function sqrt(int256 x) internal pure returns (int256 y) {
@@ -92,6 +93,12 @@ contract Campaign is Ownable, Initializable {
         files[hash].validity = true;
         files[hash].status = true;
         checkedFiles++;
+    }
+
+    function closeCampaign() public {
+        require(msg.sender == addressCrowdSourcer,'you are not the owner');
+        require(msg.sender != address(0), "invalid address provided");
+        isClosed = factoryContractAddress.closeCampaign();
     }
 
 }

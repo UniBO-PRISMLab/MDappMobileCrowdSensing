@@ -65,9 +65,16 @@ class _SourcerCampaignViewState extends State<SourcerCampaignView> {
         Container(
                 padding: const EdgeInsets.fromLTRB(10, 30, 10, 10),
                 width: double.maxFinite,
-                child: ListView.builder(
-                    itemCount: widget.contractAddress!.length,
-                    itemBuilder: (context, index) {
+                child: Column (
+                    children: [
+                  Text("Swipe right to close the campaign",style: GoogleFonts.spaceMono(
+                      textStyle: const TextStyle(color: Colors.black87, letterSpacing: .5),
+                      fontWeight: FontWeight.bold, fontSize: 20)),
+                  ListView.builder(
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
+                      itemCount: widget.contractAddress!.length,
+                      itemBuilder: (context, index) {
                       return Dismissible(
                         direction: DismissDirection.startToEnd,
                         confirmDismiss: (direction) {
@@ -135,7 +142,10 @@ class _SourcerCampaignViewState extends State<SourcerCampaignView> {
                                                   widget.contractAddress!
                                                       .length)
                                               ? loadingText
-                                              : Text(
+                                              :
+                                           Expanded(
+                                             flex: 5,
+                                               child: Text(
                                                   "Name: ${names[index]}",
                                                   style: GoogleFonts.spaceMono(
                                                       textStyle:
@@ -147,7 +157,8 @@ class _SourcerCampaignViewState extends State<SourcerCampaignView> {
                                                       fontWeight:
                                                           FontWeight.normal,
                                                       fontSize: 16),
-                                                ),
+                                                )
+                                           ),
                                         ]),
                                         Row(children: <Widget>[
                                           (latitude.length != widget.contractAddress!.length)
@@ -276,7 +287,8 @@ class _SourcerCampaignViewState extends State<SourcerCampaignView> {
                         ),
                       ),
                       );
-                    }),
+                    })
+          ]),
               ) :  Center(
                 child:
                   Text('No active campaign at the moment...',

@@ -1,12 +1,5 @@
 [
   {
-    "inputs": [],
-    "name": "closeCampaign",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
         "internalType": "string",
@@ -37,9 +30,14 @@
         "internalType": "address",
         "name": "_addressCrowdSourcer",
         "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_factoryAddress",
+        "type": "address"
       }
     ],
-    "stateMutability": "payable",
+    "stateMutability": "nonpayable",
     "type": "constructor"
   },
   {
@@ -47,7 +45,7 @@
     "inputs": [
       {
         "indexed": false,
-        "internalType": "address payable",
+        "internalType": "address",
         "name": "uploader",
         "type": "address"
       }
@@ -89,58 +87,15 @@
   },
   {
     "inputs": [],
-    "name": "renounceOwnership",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
+    "name": "addressCrowdSourcer",
+    "outputs": [
       {
         "internalType": "address",
-        "name": "newOwner",
+        "name": "",
         "type": "address"
       }
     ],
-    "name": "transferOwnership",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "string",
-        "name": "ipfspath",
-        "type": "string"
-      },
-      {
-        "internalType": "int256",
-        "name": "_fileLat",
-        "type": "int256"
-      },
-      {
-        "internalType": "int256",
-        "name": "_fileLng",
-        "type": "int256"
-      }
-    ],
-    "name": "uploadFile",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "string",
-        "name": "hash",
-        "type": "string"
-      }
-    ],
-    "name": "validateFile",
-    "outputs": [],
-    "stateMutability": "nonpayable",
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -201,6 +156,13 @@
   },
   {
     "inputs": [],
+    "name": "closeCampaign",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "fileCount",
     "outputs": [
       {
@@ -233,7 +195,7 @@
         "type": "bool"
       },
       {
-        "internalType": "address payable",
+        "internalType": "address",
         "name": "uploader",
         "type": "address"
       }
@@ -298,6 +260,19 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "isClosed",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "int256",
@@ -332,6 +307,62 @@
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "transferOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "ipfspath",
+        "type": "string"
+      },
+      {
+        "internalType": "int256",
+        "name": "_fileLat",
+        "type": "int256"
+      },
+      {
+        "internalType": "int256",
+        "name": "_fileLng",
+        "type": "int256"
+      }
+    ],
+    "name": "uploadFile",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "hash",
+        "type": "string"
+      }
+    ],
+    "name": "validateFile",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   }
 ]

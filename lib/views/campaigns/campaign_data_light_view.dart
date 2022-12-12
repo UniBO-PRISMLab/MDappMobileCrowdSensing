@@ -75,7 +75,7 @@ class LightJoinCampaignViewState extends State<CampaignDataLightView> {
           centerTitle: true,
           title: Text(campaignSelectedData['name']),
         ),
-        body: (files.isNotEmpty)?
+        body: (files.isNotEmpty && contents.isNotEmpty)?
           SingleChildScrollView(
             child: Container(
           padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),

@@ -105,18 +105,20 @@ class _WorkerCampaignViewState extends State<WorkerCampaignView> {
                                                 widget
                                                     .contractAddress!.length)
                                             ? loadingText
-                                            : Text(
-                                                "Name: ${names[index]}",
-                                                style: GoogleFonts.spaceMono(
-                                                    textStyle:
-                                                        const TextStyle(
-                                                            color: Colors
-                                                                .black87,
-                                                            letterSpacing:
-                                                                .5),
-                                                    fontWeight:
-                                                        FontWeight.normal,
-                                                    fontSize: 16),
+                                            : Expanded(
+                                              child: Text(
+                                                      "Name: ${names[index]}",
+                                                      style: GoogleFonts.spaceMono(
+                                                          textStyle:
+                                                              const TextStyle(
+                                                                  color: Colors
+                                                                      .black87,
+                                                                  letterSpacing:
+                                                                      .5),
+                                                          fontWeight:
+                                                              FontWeight.normal,
+                                                          fontSize: 16),
+                                                    )
                                               ),
                                       ]),
                                       Row(children: <Widget>[
