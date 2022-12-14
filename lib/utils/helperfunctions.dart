@@ -1,32 +1,13 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter_config/flutter_config.dart';
+import 'package:http/http.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:web3dart/crypto.dart';
 import 'package:path/path.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-String truncateString(String text, int front, int end) {
-  int size = front + end;
-
-  if (text.length > size) {
-    String finalString =
-        "${text.substring(0, front)}...${text.substring(text.length - end)}";
-    return finalString;
-  }
-
-  return text;
-}
-
-String generateSessionMessage(String accountAddress) {
-  String message =
-      'Hello $accountAddress, the session is created.';
-  print(message);
-  var hash = keccakUtf8(message);
-  final hashString = '0x${bytesToHex(hash).toString()}';
-  return hashString;
-}
+import 'package:tar/tar.dart';
 
 Future<String> get localPath async {
   final directory = await getApplicationDocumentsDirectory();
@@ -35,16 +16,17 @@ Future<String> get localPath async {
 
 Future<String> get temporaryDirectoryPath async {
   final directory = await getTemporaryDirectory();
+  print("There are ${directory.listSync().length} files in the tmp directory");
   return directory.path;
+}
+
+Future<void> clearTemporaryDirectory()  async {
+  final directory = await getTemporaryDirectory();
+  directory.deleteSync(recursive: true);
 }
 
 Future<File> get localFile async {
   final path = await localPath;
-  return File('$path/light.txt');
-}
-
-Future<File> get temporaryFile async {
-  final path = await temporaryDirectoryPath;
   return File('$path/light.txt');
 }
 
@@ -67,6 +49,8 @@ Future<String> uploadIPFS(File file) async {
   String username = FlutterConfig.get('INFURA_PROJECT_ID');
   String password = FlutterConfig.get('INFURA_API_SECRET');
 
+  String fileContent = await file.readAsString();
+  print("FILE that i try to upload: $fileContent");
   String basicAuth = 'Basic ${base64.encode(utf8.encode("$username:$password"))}';
   var stream = http.ByteStream(file.openRead());
   var length = await file.length();
@@ -78,14 +62,13 @@ Future<String> uploadIPFS(File file) async {
   var response = await request.send();
   var result = await http.Response.fromStream(response);
   var jsonResponse = jsonDecode(result.body);
-  print('IPFS-HASH: ${jsonResponse['Hash']}');
+  //print('IPFS-HASH: ${jsonResponse['Hash']}');
   return jsonResponse['Hash'];
 }
 
 Future<String> getOnlyHashIPFS(File file) async {
   String username = FlutterConfig.get('INFURA_PROJECT_ID');
   String password = FlutterConfig.get('INFURA_API_SECRET');
-
   String basicAuth = 'Basic ${base64.encode(utf8.encode("$username:$password"))}';
   var stream = http.ByteStream(file.openRead());
   var length = await file.length();
@@ -101,23 +84,31 @@ Future<String> getOnlyHashIPFS(File file) async {
   return jsonResponse['Hash'];
 }
 
-Future<String> downloadItemIPFS(String hash,String localFolder) async {
+Future<String?> downloadItemIPFS(String hash,String localFolder) async {
   String username = FlutterConfig.get('INFURA_PROJECT_ID');
   String password = FlutterConfig.get('INFURA_API_SECRET');
   String basicAuth = 'Basic ${base64.encode(utf8.encode("$username:$password"))}';
-  print("DEBUG::::::::::::::::::::::::::::::::::::::::::::::::::::::::::[downloadItemIPFS] temporaryDirectoryPath: $temporaryDirectoryPath");
-  Directory dir = await Directory("$temporaryDirectoryPath/$localFolder/").create();
-  var url = Uri.https('ipfs.infura.io:5001','/api/v0/get',{'arg':hash,'output': dir.path});
+  String tmpPath = await temporaryDirectoryPath;
+  Directory('$tmpPath/$localFolder/').create();
+  var list = List<int>.generate(100, (i) => i)..shuffle();
+  List<int> names = list.take(5).toList();
+  String name = '';
+  for (int i = 0; i<names.length; i++) {
+    name += names[i].toString();
+  }
+  var url = Uri.https('ipfs.infura.io:5001','/api/v0/get',{'arg':hash ,'output': '$tmpPath/$localFolder/'});
   var request = http.MultipartRequest("POST", url);
   request.headers['Authorization'] = basicAuth;
-  var response = await request.send();
+  StreamedResponse response = await request.send();
   var result = await http.Response.fromStream(response);
-  var jsonResponse = jsonDecode(result.body);
-  print('downloadItemIPFS: ${jsonResponse.toString()}');
-  return jsonResponse[0];
-}
-
-List<FileSystemEntity> getDownloadedFiles(String folder) {
-  Directory dir = Directory("temporaryDirectoryPath/$folder");
-  return dir.listSync();
+  
+  if (result.statusCode == 200) {
+    File file = await File("$tmpPath/$localFolder/$name").writeAsBytes(result.bodyBytes);
+    TarReader reader = TarReader(file.openRead());
+    while (await reader.moveNext()) {
+      final entry = reader.current;
+      return await entry.contents.transform(utf8.decoder).first;
+    }
+  }
+  return null;
 }

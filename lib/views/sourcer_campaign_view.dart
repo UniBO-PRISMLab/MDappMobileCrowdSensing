@@ -88,7 +88,7 @@ class _SourcerCampaignViewState extends State<SourcerCampaignView> {
                               TextButton(child: const Text('Yes'),onPressed: () {
                                 Navigator.of(ctx).pop(true);
                                 Navigator.pushReplacementNamed(context, "/sourcer_close_campaign_service_provider",arguments: {
-                                  'address' : widget.contractAddress.toString(),
+                                  'address' : widget.contractAddress![0].toString(),
                                 });
 
                               }),

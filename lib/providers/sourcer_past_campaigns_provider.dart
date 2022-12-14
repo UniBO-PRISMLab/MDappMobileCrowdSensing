@@ -50,8 +50,7 @@ class _ClosedCampaignProviderState extends State<ClosedCampaignProvider> {
         query = await smartContractViewModel.queryCall('closedCampaigns', [address, BigInt.from(index)], null);
 
          if (query.toString() != "null") {
-           print("ADDED: ${query![0].toString()}");
-           result.add(query[0].toString());
+           result.add(query![0].toString());
          }
         index++;
       } while (query.toString() != "null");

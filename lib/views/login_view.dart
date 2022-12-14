@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_crowd_sensing/providers/login_provider.dart';
-import 'package:mobile_crowd_sensing/providers/sign_provider.dart';
 import 'package:mobile_crowd_sensing/view_models/session_view_model.dart';
 import 'package:mobile_crowd_sensing/views/home_view.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:slider_button/slider_button.dart';
-
-import '../utils/helperfunctions.dart';
-
 class LoginView extends StatefulWidget {
   const LoginView({Key? key}) : super(key: key);
 
@@ -60,37 +56,16 @@ class _LoginViewState extends State<LoginView> {
                           sessionData.getNetworkName(sessionData.getSession().chainId),
                           style: GoogleFonts.inconsolata(fontSize: 16),
                         ),
-                      ],
-                    ),
+                      ]),
                     const SizedBox(height: 20),
-                    (sessionData.getSession().chainId != 5) ? Row(
-                      children: const [
+                    (sessionData.getSession().chainId != 5) ?
+                      Row(
+                        children: const [
                         Icon(Icons.warning,
                             color: Colors.redAccent, size: 15),
                         Text('Network not supported. Switch to '),
                         Text('Goreli Testnet', style: TextStyle(fontWeight: FontWeight.bold),)
-                      ],
-                    )  : (sessionData.getSignature() == null) ? Container(alignment: Alignment.center,
-                      child:
-                      ElevatedButton(
-                          onPressed: () => {
-                            setState (
-                                    () {
-                                      Navigator.push(context,MaterialPageRoute(builder: (context) => const SignProvider()));
-                                    }
-                            )
-                          },
-                          child: const Text('Sign Message')),
-                    )
-                        : Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Row(
-                          children: [
-                            Text("Signature: ", style: GoogleFonts.merriweather(fontWeight: FontWeight.bold, fontSize: 16),),
-                            Text(truncateString(sessionData.getSignature().toString(), 4, 2), style: GoogleFonts.inconsolata(fontSize: 16))
-                          ],
-                        ),
+                        ]):
                         const SizedBox(height: 20),
                         SliderButton(
                           action: () async {
@@ -99,12 +74,9 @@ class _LoginViewState extends State<LoginView> {
                           label: const Text('Slide to login'),
                           icon: const Icon(Icons.check),
                         )
-                      ],
-                    )
-                  ],
-                ))
+                      ]))
                 : ElevatedButton(
-                onPressed: () => Navigator.push(context,MaterialPageRoute(builder: (context) => LoginProvider())),
+                onPressed: () => Navigator.push(context,MaterialPageRoute(builder: (context) => const LoginProvider())),
                 child: const Text("Connect with Metamask")),
           ],
         ),

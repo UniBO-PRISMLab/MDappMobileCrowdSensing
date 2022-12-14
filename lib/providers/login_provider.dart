@@ -14,6 +14,8 @@ class _LoginProviderState extends State<LoginProvider> {
   SessionViewModel sessionData = SessionViewModel();
 
   loginUsingMetamask() async {
+    sessionData.checkConnection();
+
     if (!sessionData.getConnector().connected) {
       try {
         var session = await sessionData.getConnector().createSession(
@@ -23,18 +25,15 @@ class _LoginProviderState extends State<LoginProvider> {
         });
 
         sessionData.setSession(session);
-
-        setState(() {
-          Navigator.pushReplacementNamed(context, '/login');
-        });
       } catch (exp) {
         print(exp);
       }
-    } else {
-      setState(() {
-        Navigator.pushReplacementNamed(context, '/login');
-      });
     }
+    Future.delayed(Duration.zero, () {
+      setState(() {
+          Navigator.pushReplacementNamed(context, '/login');
+      });
+    });
   }
 
   @override

@@ -6,6 +6,7 @@ import 'package:flutter_config/flutter_config.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:mobile_crowd_sensing/view_models/session_view_model.dart';
 import 'package:mobile_crowd_sensing/providers/smart_contract_provider.dart';
+import 'package:web3dart/credentials.dart';
 import '../views/dialog_view.dart';
 
 class CloseCampaignServiceProvider extends StatefulWidget {
@@ -16,7 +17,8 @@ class CloseCampaignServiceProvider extends StatefulWidget {
 }
 
 class _CloseCampaignServiceProviderState extends State<CloseCampaignServiceProvider> {
-
+  Object? parameters;
+  dynamic jsonParameters = {};
   SessionViewModel sessionData = SessionViewModel();
   @override
   void initState() {
@@ -25,8 +27,9 @@ class _CloseCampaignServiceProviderState extends State<CloseCampaignServiceProvi
 
   @override
   Widget build(BuildContext context) {
+    parameters = ModalRoute.of(context)!.settings.arguments;
+    jsonParameters = jsonDecode(jsonEncode(parameters));
     closeMyCampaign();
-
     return Scaffold(
         backgroundColor: Colors.blue[900],
         body: const Center(
@@ -38,15 +41,15 @@ class _CloseCampaignServiceProviderState extends State<CloseCampaignServiceProvi
 
   Future<void> closeMyCampaign() async {
     try {
-
-      SmartContractProvider smartContractViewModel = SmartContractProvider(FlutterConfig.get('MCSfactory_CONTRACT_ADDRESS'),'MCSfactory','assets/abi.json', provider: sessionData.getProvider());
+      print(jsonParameters['address']);
+      SmartContractProvider smartContractViewModel = SmartContractProvider(jsonParameters['address'],'Campaing','assets/abi_campaign.json', provider: sessionData.getProvider());
 
       List? result = await smartContractViewModel.queryTransaction('closeCampaign',[],null);
 
       if (result != null) {
           Navigator.pushReplacementNamed(context, '/sourcer');
       } else {
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const DialogView(message: "An error occurred.", goTo: 'home',)));
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const DialogView(message: "An error occurred. Campaign still open", goTo: 'home',)));
       }
     } catch (error) {
       if (kDebugMode) {

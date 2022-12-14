@@ -1,4 +1,3 @@
-import 'package:http/http.dart';
 import 'package:walletconnect_dart/walletconnect_dart.dart';
 import 'package:web3dart/web3dart.dart';
 
@@ -19,7 +18,7 @@ class SessionViewModel {
     return getSession().accounts[0];
   }
 
-  dynamic getConnector(){
+  WalletConnect getConnector(){
     return _sessionModel.connector;
   }
 
@@ -47,12 +46,31 @@ class SessionViewModel {
     _sessionModel.signature = signature;
   }
 
-  void checkConnection() {
-    getConnector().on('connect', (session) => {print('\x1B[31m[checkConnection]\x1B[0m:connect'),setSession(session)});
+  Future<void> checkConnection() async {
+    SessionStorage? sessionStorage = getConnector().sessionStorage;
+    if (sessionStorage != null) {
+        setSession(sessionStorage.getSession());
+        reconnect();
+    } else {
+      await sessionStorage?.store(getConnector().session);
+    }
+    getConnector().on('connect', (session) => {print('\x1B[31m[checkConnection]\x1B[0m:connect'),reconnect(),setSession(session)});
     getConnector().on('session_update', (payload) =>{print('\x1B[31m[checkConnection]\x1B[0m:session_update'), setSession(payload)});
-    getConnector().on('disconnect', (payload) => {print('\x1B[31m[checkConnection]\x1B[0m:disconnect'),setSession(null)});
+    getConnector().on('disconnect', (payload) => {print('\x1B[31m[checkConnection]\x1B[0m:disconnect'),setSession(null), closeConnection()});
   }
 
+  void reconnect(){
+    print('\x1B[31m[Connection reconnected]\x1B[0m:connect');
+    getConnector().reconnect();
+  }
+  void closeConnection() {
+    print('\x1B[31m[Reconnect]\x1B[0m:connect');
+    getConnector().close();
+  }
+  void killConnection(){
+    print('\x1B[31m[Connection Killed]\x1B[0m:connect');
+    getConnector().killSession();
+  }
   getNetworkName(chainId) {
     switch (chainId) {
       case 1:

@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile_crowd_sensing/view_models/session_view_model.dart';
+import 'package:tar/tar.dart';
 import '../../providers/smart_contract_provider.dart';
 import '../../utils/campaign_data_factory.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -22,30 +24,32 @@ class LightJoinCampaignViewState extends State<CampaignDataLightView> {
   dynamic campaignSelectedData = {};
   Object? parameters;
   SessionViewModel sessionData = SessionViewModel();
-  late SmartContractProvider smartContractViewModel;
-  List<FileSystemEntity> files = [];
-  late List<String> hashes;
+  late SmartContractProvider smartContract = SmartContractProvider(campaignSelectedData['contractAddress'], 'Campaign', 'assets/abi_campaign.json', provider: sessionData.getProvider());
+  late List<String> hashes = [];
   List<LightData> contents = [];
-  void _getHashAndDownload(int index) async {
-    List<dynamic>? res = await smartContractViewModel.queryCall('allfilesPath', [BigInt.from(index)], null);
-    print("DEBUG ::::::::::::::::::::::::::::::::::::::: [getFileIPFSHash]: $res");
-    hashes.add(res![0]);
-    downloadItemIPFS(res[0],'lights');
-  }
 
-  Future<int> _getFileCount() async {
-    List<dynamic>? res =
-        await smartContractViewModel.queryCall('fileCount', [], null);
-    print(
-        "DEBUG ::::::::::::::::::::::::::::::::::::::: [getFileCount]: ${res.toString()}");
-    return int.parse(res![0].toString());
-  }
-
-  void _prepareFiles() async{
-    for(FileSystemEntity element in files) {
-      String singleData = await File(element.path).readAsString();
-      List<String> value = singleData.split("/");
+  _downloadFiles(hashToDownload) async {
+    print("DEBUG ::::::::::::::::::::::::::::::::::::::: [getFileIPFSHash]: $hashToDownload");
+    String? res = await downloadItemIPFS(hashToDownload,'lights');
+    if (res != null) {
+      List<String> value = res.split('/');
       contents.add(LightData(DateTime.fromMillisecondsSinceEpoch(int.parse(value[0])), double.parse(value[1])));
+      hashes.add(hashToDownload);
+    }
+  }
+
+  _preparePage() async {
+    int lenght = 0;
+    await clearTemporaryDirectory();
+    List<dynamic>? fileCountRes = await smartContract.queryCall('fileCount', [], null);
+    if (fileCountRes != null) {
+      lenght = int.parse(fileCountRes[0].toString());
+      for (int i = 0; i < lenght; i++) {
+        List<dynamic>? allfilesPathRes = await smartContract.queryCall('allfilesPath', [BigInt.from(i)], null);
+        if (allfilesPathRes?[0] != null) {
+           await _downloadFiles(allfilesPathRes![0]);
+        }
+      }
     }
   }
 
@@ -53,21 +57,7 @@ class LightJoinCampaignViewState extends State<CampaignDataLightView> {
   Widget build(BuildContext context) {
     parameters = ModalRoute.of(context)!.settings.arguments;
     campaignSelectedData = jsonDecode(jsonEncode(parameters));
-    smartContractViewModel = SmartContractProvider(
-        campaignSelectedData['contractAddress'],
-        'Campaign',
-        'assets/abi_campaign.json',
-        provider: sessionData.getProvider());
-    setState(() {
-      _getFileCount().then((fileCount) => {
-        for (int i = 0; i < fileCount; i++) {
-          _getHashAndDownload
-        },
-        files = getDownloadedFiles('lights'),
-        _prepareFiles()
-      });
-    });
-    print("DEBUG ::::::::::::::::::::::::::::::::::::::: [initState-Hashes]: ${hashes.toString()}");
+    _preparePage();
 
     return Scaffold(
         resizeToAvoidBottomInset: false,
@@ -75,41 +65,40 @@ class LightJoinCampaignViewState extends State<CampaignDataLightView> {
           centerTitle: true,
           title: Text(campaignSelectedData['name']),
         ),
-        body: (files.isNotEmpty && contents.isNotEmpty)?
+        body: (contents.isNotEmpty)?
           SingleChildScrollView(
             child: Container(
-          padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text(
-                    'Account',
-                    style: GoogleFonts.merriweather(
-                        fontWeight: FontWeight.bold, fontSize: 16),
-                  ),
-                  Text(
-                    '${sessionData.getAccountAddress()}',
-                    style: GoogleFonts.inconsolata(fontSize: 16),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.fromLTRB(10, 30, 10, 10),
-                    width: double.maxFinite,
-                    child: Center(
-                      child: SfCartesianChart(
-                          primaryXAxis: CategoryAxis(),
-                          series: <LineSeries<LightData, String>>[
-                            LineSeries<LightData, String>(
-                              // Bind data source
-                                dataSource:  contents,
-                                xValueMapper: (LightData sales, _) => DateFormat('dd/MM/yyyy, HH:mm').format(sales.timeStamp),
-                                yValueMapper: (LightData sales, _) => sales.value
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                          Text(
+                            'Account',
+                            style: GoogleFonts.merriweather(
+                                fontWeight: FontWeight.bold, fontSize: 16),
+                          ),
+                          Text(
+                            '${sessionData.getAccountAddress()}',
+                            style: GoogleFonts.inconsolata(fontSize: 16),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.fromLTRB(10, 30, 10, 10),
+                            width: double.maxFinite,
+                            child: Center(
+                              child: SfCartesianChart(
+                                  primaryXAxis: CategoryAxis(),
+                                  series: <LineSeries<LightData, String>>[
+                                    LineSeries<LightData, String>(
+                                      // Bind data source
+                                        dataSource:  contents,
+                                        xValueMapper: (LightData sales, _) => DateFormat('dd/MM/yyyy, HH:mm').format(sales.timeStamp),
+                                        yValueMapper: (LightData sales, _) => sales.value
+                                    )
+                                  ]
+                              )
                             )
-                          ]
-                      )
-                    )
-                  )
-                ])
+                          )
+                  ])
             )
-          )
-              : Column(
+          ) : Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Center(
