@@ -34,7 +34,8 @@ class MyApp extends StatelessWidget {
         '/login': (context) => const LoginView(),
         '/campaignForm': (context) => const CreateCampaignForm(),
         '/sourcer': (context) => const SourcerView(),
-        '/worker': (context) => const AllCampaignProvider(),
+        '/worker': (context) => const AllCampaignProvider('worker'),
+        '/verifier': (context) => const AllCampaignProvider('verifier'),
         '/create_campaign_provider': (context) => const CampaignCreator(),
         '/upload_light': (context) => const UploadLightIpfsProvider(),
         '/map': (context) => const SearchPlacesView(),
@@ -44,7 +45,6 @@ class MyApp extends StatelessWidget {
         '/join_campaign':(context) => JoinCampaignFactory.fromTypeName(context),
         '/camera':(context) => const CameraViewModel(),
         '/data_campaign':(context) => CampaignDataFactory.fromTypeName(context),
-
       },
     );
   }

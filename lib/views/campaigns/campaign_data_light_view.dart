@@ -1,15 +1,13 @@
 import 'dart:convert';
-import 'dart:io';
-import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile_crowd_sensing/view_models/session_view_model.dart';
-import 'package:tar/tar.dart';
 import '../../providers/smart_contract_provider.dart';
 import '../../utils/campaign_data_factory.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:intl/intl.dart';
 import '../../utils/helperfunctions.dart';
+import '../../utils/styles.dart';
 
 class CampaignDataLightView extends CampaignDataFactory {
   const CampaignDataLightView({super.key});
@@ -28,27 +26,35 @@ class LightJoinCampaignViewState extends State<CampaignDataLightView> {
   late List<String> hashes = [];
   List<LightData> contents = [];
 
+  @override
+  initState(){
+    super.initState();
+    clearTemporaryDirectory();
+  }
+
   _downloadFiles(hashToDownload) async {
     print("DEBUG ::::::::::::::::::::::::::::::::::::::: [getFileIPFSHash]: $hashToDownload");
     String? res = await downloadItemIPFS(hashToDownload,'lights');
     if (res != null) {
       List<String> value = res.split('/');
-      contents.add(LightData(DateTime.fromMillisecondsSinceEpoch(int.parse(value[0])), double.parse(value[1])));
-      hashes.add(hashToDownload);
+      if (mounted) {
+        setState(() {
+          contents.add(LightData(
+              DateTime.fromMillisecondsSinceEpoch(int.parse(value[0])),
+              double.parse(value[1])));
+          hashes.add(hashToDownload);
+        });
+      }
     }
   }
 
   _preparePage() async {
-    int lenght = 0;
-    await clearTemporaryDirectory();
-    List<dynamic>? fileCountRes = await smartContract.queryCall('fileCount', [], null);
-    if (fileCountRes != null) {
-      lenght = int.parse(fileCountRes[0].toString());
-      for (int i = 0; i < lenght; i++) {
-        List<dynamic>? allfilesPathRes = await smartContract.queryCall('allfilesPath', [BigInt.from(i)], null);
-        if (allfilesPathRes?[0] != null) {
-           await _downloadFiles(allfilesPathRes![0]);
-        }
+    List<dynamic>? allfilesPathRes = await smartContract.queryCall('getValidFiles', [], null);
+    if (allfilesPathRes != null) {
+      print("CHECK this: ${allfilesPathRes[0]}");
+      for (dynamic element in allfilesPathRes[0]) {
+        print('element: '+ element);
+        _downloadFiles(element);
       }
     }
   }
@@ -72,12 +78,11 @@ class LightJoinCampaignViewState extends State<CampaignDataLightView> {
                   child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                           Text(
                             'Account',
-                            style: GoogleFonts.merriweather(
-                                fontWeight: FontWeight.bold, fontSize: 16),
+                            style: CustomTextStyle.merriweatherBold(context),
                           ),
                           Text(
                             '${sessionData.getAccountAddress()}',
-                            style: GoogleFonts.inconsolata(fontSize: 16),
+                            style: CustomTextStyle.inconsolata(context),
                           ),
                           Container(
                             padding: const EdgeInsets.fromLTRB(10, 30, 10, 10),
@@ -87,7 +92,6 @@ class LightJoinCampaignViewState extends State<CampaignDataLightView> {
                                   primaryXAxis: CategoryAxis(),
                                   series: <LineSeries<LightData, String>>[
                                     LineSeries<LightData, String>(
-                                      // Bind data source
                                         dataSource:  contents,
                                         xValueMapper: (LightData sales, _) => DateFormat('dd/MM/yyyy, HH:mm').format(sales.timeStamp),
                                         yValueMapper: (LightData sales, _) => sales.value

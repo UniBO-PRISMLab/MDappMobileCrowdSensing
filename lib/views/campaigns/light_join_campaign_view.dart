@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile_crowd_sensing/view_models/session_view_model.dart';
 import '../../utils/join_campaign_factory.dart';
+import '../../utils/styles.dart';
 import '../dialog_view.dart';
 
 class LightJoinCampaignView extends JoinCampaignFactory {
@@ -56,12 +57,11 @@ class LightJoinCampaignViewState
                     children: [
                       Text(
                         'Account',
-                        style: GoogleFonts.merriweather(
-                            fontWeight: FontWeight.bold, fontSize: 16),
+                        style: CustomTextStyle.merriweatherBold(context),
                       ),
                       Text(
                         '${sessionData.getAccountAddress()}',
-                        style: GoogleFonts.inconsolata(fontSize: 16),
+                        style: CustomTextStyle.inconsolata(context),
                       ),
                       const SizedBox(height: 20),
                       Row(
@@ -81,17 +81,15 @@ class LightJoinCampaignViewState
                         children: [
                           Text(
                             'Latitude: ',
-                            style: GoogleFonts.merriweather(
-                                fontWeight: FontWeight.bold, fontSize: 16),
+                            style: CustomTextStyle.merriweatherBold(context)
                           ),
                           Text(
                             '${campaignSelectedData['lat']}',
-                            style: GoogleFonts.inconsolata(fontSize: 16),
+                            style: CustomTextStyle.inconsolata(context)
                           ),
                           Text(
                             'Longitude: ',
-                            style: GoogleFonts.merriweather(
-                                fontWeight: FontWeight.bold, fontSize: 16),
+                            style: CustomTextStyle.merriweatherBold(context)
                           ),
                           Text(
                             '${campaignSelectedData['lng']}',
@@ -103,12 +101,11 @@ class LightJoinCampaignViewState
                         children: [
                           Text(
                             'Range: ',
-                            style: GoogleFonts.merriweather(
-                                fontWeight: FontWeight.bold, fontSize: 16),
+                            style: CustomTextStyle.merriweatherBold(context),
                           ),
                           Text(
                             '${campaignSelectedData['range']}',
-                            style: GoogleFonts.inconsolata(fontSize: 16),
+                            style: CustomTextStyle.inconsolata(context),
                           ),
                         ],
                       ),
@@ -153,13 +150,9 @@ class LightJoinCampaignViewState
                                         fontSize: 16))
                               ]),
                               Row(children: [
-                                Text('Number of relevations: ',
-                                    style: GoogleFonts.merriweather(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16)),
+                                Text('Number of relevations: ', style: CustomTextStyle.merriweatherBold(context)),
                                 Text('${lights.length}',
-                                    style: GoogleFonts.inconsolata(
-                                        fontSize: 16))
+                                    style: CustomTextStyle.inconsolata(context))
                               ]),
                               FloatingActionButton(
                                   onPressed: () {

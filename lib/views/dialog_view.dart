@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mobile_crowd_sensing/utils/styles.dart';
+import 'package:web3dart/credentials.dart';
 
 class DialogView extends StatefulWidget {
   final String message;
@@ -26,8 +28,7 @@ class _DialogViewState extends State<DialogView> {
                 padding: const EdgeInsets.all(15.0),
                 child: Text(
                   widget.message,
-                  style: GoogleFonts.merriweather(
-                      fontWeight: FontWeight.bold, fontSize: 16),
+                  style: CustomTextStyle.merriweatherBold(context)
                 )),
             const Padding(padding: EdgeInsets.only(top: 50.0)),
             TextButton(

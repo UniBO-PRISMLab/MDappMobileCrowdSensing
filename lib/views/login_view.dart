@@ -4,6 +4,8 @@ import 'package:mobile_crowd_sensing/view_models/session_view_model.dart';
 import 'package:mobile_crowd_sensing/views/home_view.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:slider_button/slider_button.dart';
+
+import '../utils/styles.dart';
 class LoginView extends StatefulWidget {
   const LoginView({Key? key}) : super(key: key);
 
@@ -37,8 +39,7 @@ class _LoginViewState extends State<LoginView> {
                   children: [
                     Text(
                       'Account',
-                      style: GoogleFonts.merriweather(
-                          fontWeight: FontWeight.bold, fontSize: 16),
+                      style: CustomTextStyle.merriweatherBold(context),
                     ),
                     Text(
                       '${sessionData.getAccountAddress()}',

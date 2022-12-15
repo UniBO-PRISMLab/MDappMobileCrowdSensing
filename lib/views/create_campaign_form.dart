@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mobile_crowd_sensing/utils/styles.dart';
 
 class CreateCampaignForm extends StatefulWidget {
   const CreateCampaignForm({super.key});
@@ -47,10 +48,7 @@ class CreateCampaignFormState extends State<CreateCampaignForm> {
                       children: [
                         Text(
                           'Title?',
-                          style: GoogleFonts.spaceMono(
-                              textStyle: const TextStyle(color: Colors.black87, letterSpacing: .5),
-                              fontWeight: FontWeight.normal,
-                              fontSize: 16),
+                          style: CustomTextStyle.spaceMono(context),
                         ),
                         TextFormField(
                           controller: titleController,
@@ -69,11 +67,7 @@ class CreateCampaignFormState extends State<CreateCampaignForm> {
                       children: [
                         Text(
                           'Where?',
-                          style: GoogleFonts.spaceMono(
-                              textStyle: const TextStyle(
-                                  color: Colors.black87, letterSpacing: .5),
-                              fontWeight: FontWeight.normal,
-                              fontSize: 16),
+                          style: CustomTextStyle.spaceMono(context),
                         ),
                         TextFormField(
                           initialValue: _address,
@@ -101,11 +95,7 @@ class CreateCampaignFormState extends State<CreateCampaignForm> {
                             children: [
                               Text(
                                 'What?',
-                                style: GoogleFonts.spaceMono(
-                                    textStyle: const TextStyle(
-                                        color: Colors.black87, letterSpacing: .5),
-                                    fontWeight: FontWeight.normal,
-                                    fontSize: 16),
+                                style: CustomTextStyle.spaceMono(context),
                               ),
                               DropdownButton(
                                   value: selectedValue,
@@ -133,11 +123,7 @@ class CreateCampaignFormState extends State<CreateCampaignForm> {
                             children: [
                               Text(
                                 'How much?',
-                                style: GoogleFonts.spaceMono(
-                                    textStyle: const TextStyle(
-                                        color: Colors.black87, letterSpacing: .5),
-                                    fontWeight: FontWeight.normal,
-                                    fontSize: 16),
+                                style: CustomTextStyle.spaceMono(context),
                               ),
                               Slider(
                                 min: 1.0,
@@ -153,11 +139,7 @@ class CreateCampaignFormState extends State<CreateCampaignForm> {
                               ),
                               Text(
                                 'How Far?',
-                                style: GoogleFonts.spaceMono(
-                                    textStyle: const TextStyle(
-                                        color: Colors.black87, letterSpacing: .5),
-                                    fontWeight: FontWeight.normal,
-                                    fontSize: 16),
+                                style: CustomTextStyle.spaceMono(context),
                               ),
                               Slider(
                                 min: 100.0,
@@ -182,8 +164,7 @@ class CreateCampaignFormState extends State<CreateCampaignForm> {
                                     .showSnackBar(SnackBar(
                                     content: Text(
                                         'Processing Data',
-                                      style: GoogleFonts.merriweather(
-                                          fontWeight: FontWeight.bold, fontSize: 16),
+                                      style: CustomTextStyle.spaceMono(context),
                                     )));
 
                                 Navigator.pushReplacementNamed(context, '/create_campaign_provider', arguments: {

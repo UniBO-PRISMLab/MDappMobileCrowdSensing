@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mobile_crowd_sensing/utils/styles.dart';
 
 class SourcerView extends StatefulWidget {
   const SourcerView({Key? key}) : super(key: key);
@@ -29,23 +30,17 @@ class _SourcerViewState extends State<SourcerView> {
                 icon: const Icon(Icons.create),
                 label: Text(
                   'Create a Campaign',
-                  style: GoogleFonts.spaceMono(
-                      textStyle: const TextStyle(color: Colors.black87, letterSpacing: .5),
-                      fontWeight: FontWeight.normal, fontSize: 16),
+                  style: CustomTextStyle.spaceMono(context),
                 )),
                 const Padding(padding: EdgeInsets.all(50)),
 
                 TextButton.icon(
-                onPressed: () {
-                  Navigator.pushReplacementNamed(context,'/sourcer_campaigns_provider');
-                },
-                icon: const Icon(Icons.dataset_rounded),
-                label: Text(
-                  'Current Campaign',
-                  style: GoogleFonts.spaceMono(
-                      textStyle: const TextStyle(color: Colors.black87, letterSpacing: .5),
-                      fontWeight: FontWeight.normal, fontSize: 16),
-                )),
+                  onPressed: () {
+                    Navigator.pushReplacementNamed(context,'/sourcer_campaigns_provider');
+                  },
+                  icon: const Icon(Icons.dataset_rounded),
+                  label: Text('Current Campaign', style: CustomTextStyle.spaceMono(context))
+                ),
                 const Padding(padding: EdgeInsets.all(50)),
 
                 TextButton.icon(
@@ -55,9 +50,7 @@ class _SourcerViewState extends State<SourcerView> {
                     icon: const Icon(Icons.dataset_rounded),
                     label: Text(
                       'Closed Campaigns',
-                      style: GoogleFonts.spaceMono(
-                          textStyle: const TextStyle(color: Colors.black87, letterSpacing: .5),
-                          fontWeight: FontWeight.normal, fontSize: 16),
+                      style: CustomTextStyle.spaceMono(context),
                     )),
           ]),
         ));

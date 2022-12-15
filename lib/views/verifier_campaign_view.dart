@@ -5,16 +5,16 @@ import '../utils/styles.dart';
 import '../view_models/search_places_view_model.dart';
 import '../view_models/session_view_model.dart';
 
-class WorkerCampaignView extends StatefulWidget {
+class VerifierCampaignView extends StatefulWidget {
   final List<dynamic>? contractAddress;
-  const WorkerCampaignView({Key? key, required this.contractAddress})
+  const VerifierCampaignView({Key? key, required this.contractAddress})
       : super(key: key);
 
   @override
-  State<WorkerCampaignView> createState() => _WorkerCampaignViewState();
+  State<VerifierCampaignView> createState() => _VerifierCampaignViewState();
 }
 
-class _WorkerCampaignViewState extends State<WorkerCampaignView> {
+class _VerifierCampaignViewState extends State<VerifierCampaignView> {
   late List<String> contractsAddresses = [];
   late List<String> names = [];
   late List<String> latitude = [];
@@ -72,7 +72,7 @@ class _WorkerCampaignViewState extends State<WorkerCampaignView> {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.blue[900],
-          title: const Text('List Of All Campaigns'),
+          title: const Text('List Of All Campaigns to Verify'),
           centerTitle: true,
         ),
         body: (widget.contractAddress != null)

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile_crowd_sensing/view_models/session_view_model.dart';
 import '../providers/smart_contract_provider.dart';
+import '../utils/styles.dart';
 
 class SourcerClosedCampaignView extends StatefulWidget {
   final List<dynamic>? contractAddress;
@@ -55,10 +56,7 @@ class _SourcerClosedCampaignViewState extends State<SourcerClosedCampaignView> {
   Widget build(BuildContext context) {
     Text loadingText = Text(
       'LOADING...',
-      style: GoogleFonts.spaceMono(
-          textStyle: const TextStyle(color: Colors.black87, letterSpacing: .5),
-          fontWeight: FontWeight.bold,
-          fontSize: 16),
+      style: CustomTextStyle.spaceMono(context),
     );
 
     return Scaffold(
@@ -121,16 +119,7 @@ class _SourcerClosedCampaignViewState extends State<SourcerClosedCampaignView> {
                                       ? loadingText
                                       : Text(
                                     "Latitude: ${latitude[index]}",
-                                    style: GoogleFonts.spaceMono(
-                                        textStyle:
-                                        const TextStyle(
-                                            color: Colors
-                                                .black87,
-                                            letterSpacing:
-                                            .5),
-                                        fontWeight:
-                                        FontWeight.normal,
-                                        fontSize: 16),
+                                    style: CustomTextStyle.spaceMono(context),
                                   ),
                                 ]),
                                 Row(children: <Widget>[
@@ -151,16 +140,7 @@ class _SourcerClosedCampaignViewState extends State<SourcerClosedCampaignView> {
                                   (range.length != widget.contractAddress!.length) ? loadingText
                                       : Text(
                                     "Range: ${range[index]}",
-                                    style: GoogleFonts.spaceMono(
-                                        textStyle:
-                                        const TextStyle(
-                                            color: Colors
-                                                .black87,
-                                            letterSpacing:
-                                            .5),
-                                        fontWeight:
-                                        FontWeight.normal,
-                                        fontSize: 16),
+                                    style: CustomTextStyle.spaceMono(context),
                                   ),
                                 ]),
 
@@ -187,16 +167,7 @@ class _SourcerClosedCampaignViewState extends State<SourcerClosedCampaignView> {
                                     children: [
                                       Text(
                                         "crowdsourcer:",
-                                        style: GoogleFonts.spaceMono(
-                                            textStyle:
-                                            const TextStyle(
-                                                color: Colors
-                                                    .black87,
-                                                letterSpacing:
-                                                .5),
-                                            fontWeight:
-                                            FontWeight.normal,
-                                            fontSize: 16),
+                                        style: CustomTextStyle.spaceMono(context),
                                       ),
                                       Text(addressCrowdSourcer[index],
                                         style: GoogleFonts.spaceMono(
@@ -217,16 +188,7 @@ class _SourcerClosedCampaignViewState extends State<SourcerClosedCampaignView> {
                                   (fileCount.length != widget.contractAddress!.length) ? loadingText :
                                   Text(
                                     "fileCount: ${fileCount[index]}",
-                                    style: GoogleFonts.spaceMono(
-                                        textStyle:
-                                        const TextStyle(
-                                            color: Colors
-                                                .black87,
-                                            letterSpacing:
-                                            .5),
-                                        fontWeight:
-                                        FontWeight.normal,
-                                        fontSize: 16),
+                                    style: CustomTextStyle.spaceMono(context),
                                   ),
                                 ])
                               ])

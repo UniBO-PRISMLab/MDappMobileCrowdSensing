@@ -5,6 +5,8 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../utils/styles.dart';
+
 class CameraViewModel extends StatefulWidget {
   const CameraViewModel({super.key});
 
@@ -89,12 +91,11 @@ class CameraViewModelState extends State<CameraViewModel> {
                       children: [
                         Text(
                           ' Photos taken: ',
-                          style: GoogleFonts.merriweather(
-                              fontWeight: FontWeight.bold, fontSize: 16),
+                          style: CustomTextStyle.merriweatherBold(context),
                         ),
                         Text(
                           '${pictures.length}',
-                          style: GoogleFonts.inconsolata(fontSize: 16),
+                          style: CustomTextStyle.inconsolata(context)
                         ),
                       ],
                     ),

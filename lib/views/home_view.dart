@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile_crowd_sensing/view_models/home_view_model.dart';
+import '../utils/styles.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({Key? key}) : super(key: key);
@@ -30,12 +30,7 @@ class _HomeViewState extends State<HomeView> {
                     homeData.goToSourcerView(context);
                   },
                   icon: const Icon(Icons.connect_without_contact),
-                  label: Text(
-                    homeData.getTitle1(),
-                    style: GoogleFonts.spaceMono(
-                        textStyle: const TextStyle(color: Colors.black87, letterSpacing: .5),
-                        fontWeight: FontWeight.normal, fontSize: 16),
-                  )),
+                  label: Text(homeData.getTitle1(), style: CustomTextStyle.spaceMono(context),)),
               const Padding(padding: EdgeInsets.all(50)),
               TextButton.icon(
                   onPressed: () {
@@ -44,9 +39,7 @@ class _HomeViewState extends State<HomeView> {
                   icon: const Icon(Icons.work),
                   label: Text(
                     homeData.getTitle2(),
-                    style: GoogleFonts.spaceMono(
-                        textStyle: const TextStyle(color: Colors.black87, letterSpacing: .5),
-                        fontWeight: FontWeight.normal, fontSize: 16),
+                    style: CustomTextStyle.spaceMono(context),
                   )),
               const Padding(padding: EdgeInsets.all(50)),
               TextButton.icon(
@@ -54,12 +47,7 @@ class _HomeViewState extends State<HomeView> {
                       homeData.goToVerifierView(context);
                   },
                   icon: const Icon(Icons.verified_user_sharp),
-                  label: Text(
-                    homeData.getTitle3(),
-                    style: GoogleFonts.spaceMono(
-                        textStyle: const TextStyle(color: Colors.black87, letterSpacing: .5),
-                        fontWeight: FontWeight.normal, fontSize: 16),
-                  ))
+                  label: Text(homeData.getTitle3(), style: CustomTextStyle.spaceMono(context),))
             ],
           ),
         )));

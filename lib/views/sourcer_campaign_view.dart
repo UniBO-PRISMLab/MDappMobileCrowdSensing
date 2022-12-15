@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mobile_crowd_sensing/utils/styles.dart';
 import 'package:mobile_crowd_sensing/view_models/session_view_model.dart';
 import '../providers/smart_contract_provider.dart';
+import '../view_models/search_places_view_model.dart';
 
 class SourcerCampaignView extends StatefulWidget {
   final List<dynamic>? contractAddress;
@@ -16,30 +18,63 @@ class SourcerCampaignView extends StatefulWidget {
 class _SourcerCampaignViewState extends State<SourcerCampaignView> {
 
   SessionViewModel sessionData = SessionViewModel();
-  late List<String> names = [];
-  late List<String> latitude = [];
-  late List<String> longitude = [];
-  late List<String> range = [];
-  late List<String> type = [];
-  late List<String> addressCrowdSourcer = [];
-  late List<String> fileCount = [];
+  String name = '';
+  String latitude = '';
+  String longitude = '';
+  String range = '';
+  String type = '';
+  String addressCrowdSourcer = '';
+  String? readebleLocation = '';
+
+  String fileCount = '0';
+  String fileChecked = '0';
+  String workersCount = '0';
+
+  late SmartContractProvider smartContractViewModel;
+  SearchPlacesViewModel searchPlacesViewModel = SearchPlacesViewModel();
+
+
+  _getFilesCountes() async {
+    List<dynamic>? fileCountRaw = await smartContractViewModel.queryCall('fileCount', [], null);
+    List<dynamic>? fileCheckedRaw = await smartContractViewModel.queryCall('checkedFiles', [], null);
+    if(mounted) {
+      setState(() {
+        if (fileCheckedRaw != null) {
+          fileChecked = fileCheckedRaw[0].toString();
+        }
+        if (fileCountRaw != null) {
+          fileCount = fileCountRaw[0].toString();
+        }
+
+        //to implement in the contract
+        workersCount = 'NaN';
+      });
+    }
+  }
 
   @override
   initState() {
     if (widget.contractAddress![0].toString() != "0x0000000000000000000000000000000000000000") {
-        SmartContractProvider smartContractViewModel = SmartContractProvider(widget.contractAddress![0].toString(), 'Campaign', 'assets/abi_campaign.json', provider: sessionData.getProvider());
-        smartContractViewModel.queryCall('getInfo', [], null).then((value) => {
-          setState(() {
-            if (value != null) {
-              names.add(value[0]);
-              latitude.add(value[1].toString());
-              longitude.add(value[2].toString());
-              range.add(value[3].toString());
-              type.add(value[4]);
-              addressCrowdSourcer.add(value[5].toString());
-              fileCount.add(value[6].toString());
-            }
+        smartContractViewModel = SmartContractProvider(widget.contractAddress![0].toString(), 'Campaign', 'assets/abi_campaign.json', provider: sessionData.getProvider());
+        String? readebleLocationQuery;
+
+    smartContractViewModel.queryCall('getInfo', [], null).then((value) async => {
+        if (value != null) {
+          readebleLocationQuery =
+          await searchPlacesViewModel.getReadebleLocationFromLatLng(
+              (double.parse(value[1].toString())) / 10000000,
+              (double.parse(value[2].toString())) / 10000000),
+
+    setState(() {
+            name = value[0];
+            latitude = value[1].toString();
+            longitude = value[2].toString();
+            range = value[3].toString();
+            type = value[4];
+            addressCrowdSourcer = value[5].toString();
+            readebleLocation = readebleLocationQuery;
           })
+        }
         });
     }
     super.initState();
@@ -47,17 +82,16 @@ class _SourcerCampaignViewState extends State<SourcerCampaignView> {
 
   @override
   Widget build(BuildContext context) {
+    _getFilesCountes();
+
     Text loadingText = Text(
       'LOADING...',
-      style: GoogleFonts.spaceMono(
-          textStyle: const TextStyle(color: Colors.black87, letterSpacing: .5),
-          fontWeight: FontWeight.bold,
-          fontSize: 16),
+      style: CustomTextStyle.spaceMono(context),
     );
 
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.blue[900],
+          backgroundColor: CustomColors.blue900(context),
           title: const Text('Your Campaign'),
           centerTitle: true,
         ),
@@ -65,11 +99,22 @@ class _SourcerCampaignViewState extends State<SourcerCampaignView> {
         Container(
                 padding: const EdgeInsets.fromLTRB(10, 30, 10, 10),
                 width: double.maxFinite,
-                child: Column (
+                child:
+                Column (
                     children: [
-                  Text("Swipe right to close the campaign",style: GoogleFonts.spaceMono(
-                      textStyle: const TextStyle(color: Colors.black87, letterSpacing: .5),
-                      fontWeight: FontWeight.bold, fontSize: 20)),
+                      Padding(padding: const EdgeInsets.all(20), child:
+                      Column (
+                        children: [
+                      Text(
+                        'Account',
+                        style: CustomTextStyle.merriweatherBold(context),
+                      ),
+                      Text(
+                        '${sessionData.getAccountAddress()}',
+                        style: GoogleFonts.inconsolata(fontSize: 16),
+                      ),])
+                      ),
+                      Text("Swipe right to close the campaign",style: CustomTextStyle.spaceMono(context)),
                   ListView.builder(
                       scrollDirection: Axis.vertical,
                       shrinkWrap: true,
@@ -84,13 +129,14 @@ class _SourcerCampaignViewState extends State<SourcerCampaignView> {
                             title: const Text('Are you sure?'),
                             content: const Text('Do you want to close this campaign?'),
                             actions: <Widget>[
-                              TextButton(child: const Text('No'),onPressed: () {Navigator.of(ctx).pop(false);}),
+                              TextButton(child: const Text('No'),onPressed: () {
+                                Navigator.of(ctx).pop(false);
+                              }),
                               TextButton(child: const Text('Yes'),onPressed: () {
                                 Navigator.of(ctx).pop(true);
                                 Navigator.pushReplacementNamed(context, "/sourcer_close_campaign_service_provider",arguments: {
                                   'address' : widget.contractAddress![0].toString(),
                                 });
-
                               }),
                               ],
                           ),);
@@ -102,23 +148,13 @@ class _SourcerCampaignViewState extends State<SourcerCampaignView> {
                             children: [
                               Text(
                               'CLOSE\nCAMPAIGN',
-                              style: GoogleFonts.spaceMono(
-                                  textStyle: const TextStyle(color: Colors.black87, letterSpacing: .5),
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 40),
+                              style: CustomTextStyle.spaceMonoH40Bold(context),
                             ),
                             ]),
                         ),
                         key: Key(index.toString()),
                         onDismissed: (direction) {
                           setState(() {
-                            widget.contractAddress!.removeAt(index);
-                            names.removeAt(index);
-                            latitude.removeAt(index);
-                            longitude.removeAt(index);
-                            range.removeAt(index);
-                            addressCrowdSourcer.removeAt(index);
-                            fileCount.removeAt(index);
                             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Campaign closed')));
                           });
                         },
@@ -138,33 +174,19 @@ class _SourcerCampaignViewState extends State<SourcerCampaignView> {
                                       child: Column(children: <Widget>[
                                         Row(children: <Widget>[
                                           //loop
-                                          (names.length !=
-                                                  widget.contractAddress!
-                                                      .length)
-                                              ? loadingText
-                                              :
+                                          (name.isEmpty) ? loadingText :
                                            Expanded(
                                              flex: 5,
                                                child: Text(
-                                                  "Name: ${names[index]}",
-                                                  style: GoogleFonts.spaceMono(
-                                                      textStyle:
-                                                          const TextStyle(
-                                                              color: Colors
-                                                                  .black87,
-                                                              letterSpacing:
-                                                                  .5),
-                                                      fontWeight:
-                                                          FontWeight.normal,
-                                                      fontSize: 16),
+                                                  "Name: $name",
+                                                  style: CustomTextStyle.spaceMono(context)
                                                 )
                                            ),
                                         ]),
                                         Row(children: <Widget>[
-                                          (latitude.length != widget.contractAddress!.length)
-                                              ? loadingText
+                                          (latitude.isEmpty) ? loadingText
                                               : Text(
-                                                  "Latitude: ${latitude[index]}",
+                                                  "Latitude: $latitude",
                                                   style: GoogleFonts.spaceMono(
                                                       textStyle:
                                                           const TextStyle(
@@ -178,107 +200,36 @@ class _SourcerCampaignViewState extends State<SourcerCampaignView> {
                                                 ),
                                         ]),
                                         Row(children: <Widget>[
-                                          (longitude.length != widget.contractAddress!.length) ? loadingText
+                                          (longitude.isEmpty) ? loadingText
                                               : Text(
-                                                  "Longitude: ${longitude[index]}",
-                                                  style: GoogleFonts.spaceMono(
-                                                      textStyle:
-                                                          const TextStyle(
-                                                              color: Colors
-                                                                  .black87,
-                                                              letterSpacing:
-                                                                  .5),
-                                                      fontWeight:
-                                                          FontWeight.normal,
-                                                      fontSize: 16),
-                                                ),
-                                        ]),
-                                        Row(children: <Widget>[
-                                          (range.length != widget.contractAddress!.length) ? loadingText
-                                              : Text(
-                                                  "Range: ${range[index]}",
-                                                  style: GoogleFonts.spaceMono(
-                                                      textStyle:
-                                                          const TextStyle(
-                                                              color: Colors
-                                                                  .black87,
-                                                              letterSpacing:
-                                                                  .5),
-                                                      fontWeight:
-                                                          FontWeight.normal,
-                                                      fontSize: 16),
+                                                  "Longitude: $longitude",
+                                                  style: CustomTextStyle.spaceMono(context)
                                                 ),
                                         ]),
 
-                                        Row(children: <Widget>[
-                                          (type.length != widget.contractAddress!.length) ? loadingText
-                                              : Text(
-                                            "Type: ${type[index]}",
-                                            style: GoogleFonts.spaceMono(
-                                                textStyle:
-                                                const TextStyle(
-                                                    color: Colors
-                                                        .black87,
-                                                    letterSpacing:
-                                                    .5),
-                                                fontWeight:
-                                                FontWeight.normal,
-                                                fontSize: 16),
+                                        Column(children: <Widget>[
+                                          (readebleLocation == null)
+                                              ? loadingText
+                                              : Text("Location: $readebleLocation",
+                                            style: CustomTextStyle.spaceMono(context),
                                           ),
                                         ]),
 
+                                        Row(children: <Widget>[
+                                          (range.isEmpty) ? loadingText
+                                              : Text(
+                                                  "Range: $range",
+                                                  style: CustomTextStyle.spaceMono(context),
+                                                ),
+                                        ]),
 
                                         Row(children: <Widget>[
-                                          (addressCrowdSourcer.length != widget.contractAddress!.length)
-                                              ? loadingText
-                                              : Column(
-                                                //mainAxisAlignment: MainAxisAlignment.end,
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                      "crowdsourcer:",
-                                                      style: GoogleFonts.spaceMono(
-                                                          textStyle:
-                                                              const TextStyle(
-                                                                  color: Colors
-                                                                      .black87,
-                                                                  letterSpacing:
-                                                                      .5),
-                                                          fontWeight:
-                                                              FontWeight.normal,
-                                                          fontSize: 16),
-                                                    ),
-                                                  Text(addressCrowdSourcer[index],
-                                                    style: GoogleFonts.spaceMono(
-                                                        textStyle:
-                                                        const TextStyle(
-                                                            color: Colors
-                                                                .black87,
-                                                            letterSpacing:
-                                                            .5),
-                                                        fontWeight:
-                                                        FontWeight.normal,
-                                                        fontSize: 10),
-                                                  )
-                                                ],
-                                              ),
+                                          (type.isEmpty) ? loadingText
+                                              : Text(
+                                            "Type: $type",
+                                            style: CustomTextStyle.spaceMono(context),
+                                          ),
                                         ]),
-                                        Row(children: <Widget>[
-                                          (fileCount.length != widget.contractAddress!.length) ? loadingText :
-                                          Text(
-                                                  "fileCount: ${fileCount[index]}",
-                                                  style: GoogleFonts.spaceMono(
-                                                      textStyle:
-                                                          const TextStyle(
-                                                              color: Colors
-                                                                  .black87,
-                                                              letterSpacing:
-                                                                  .5),
-                                                      fontWeight:
-                                                          FontWeight.normal,
-                                                      fontSize: 16),
-                                                ),
-                                        ])
                                       ])
                                   ),
 
@@ -287,12 +238,15 @@ class _SourcerCampaignViewState extends State<SourcerCampaignView> {
                         ),
                       ),
                       );
-                    })
-          ]),
+                    }),
+                      Flexible(
+                        flex: 5,
+                        child: Text("Sourcing Status:\nuploaded $fileCount files\nchecked $fileChecked of $fileCount\nwhit the contribution of $workersCount workers", style: CustomTextStyle.spaceMono(context),))
+                    ]),
               ) :  Center(
                 child:
                   Text('No active campaign at the moment...',
-                    style: GoogleFonts.spaceMono(fontWeight: FontWeight.bold, fontSize: 16),
+                    style: CustomTextStyle.spaceMono(context),
                   )
         )
     );
