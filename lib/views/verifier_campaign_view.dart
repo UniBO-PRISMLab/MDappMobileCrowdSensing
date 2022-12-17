@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../controller/verifier_campaign_controller.dart';
+import '../controllers/verifier_campaign_controller.dart';
 
 
 class VerifierCampaignView extends StatefulWidget {

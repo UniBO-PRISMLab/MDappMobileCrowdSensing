@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mobile_crowd_sensing/view_models/session_view_model.dart';
+import 'package:mobile_crowd_sensing/models/session_model.dart';
 import '../../models/file_manager_model.dart';
 import '../../models/ipfs_client_model.dart';
 import '../../models/smart_contract_model.dart';
@@ -10,7 +10,7 @@ import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:intl/intl.dart';
 import '../../utils/styles.dart';
 
-class CampaignDataLightView extends CampaignDataFactory {
+class CampaignDataLightView extends DataCampaignFactory {
   const CampaignDataLightView({super.key});
 
   @override
@@ -22,7 +22,7 @@ class CampaignDataLightView extends CampaignDataFactory {
 class LightJoinCampaignViewState extends State<CampaignDataLightView> {
   dynamic campaignSelectedData = {};
   Object? parameters;
-  SessionViewModel sessionData = SessionViewModel();
+  SessionModel sessionData = SessionModel();
   late SmartContractModel smartContract = SmartContractModel(campaignSelectedData['contractAddress'], 'Campaign', 'assets/abi_campaign.json', provider: sessionData.getProvider());
   late List<String> hashes = [];
   List<LightData> contents = [];

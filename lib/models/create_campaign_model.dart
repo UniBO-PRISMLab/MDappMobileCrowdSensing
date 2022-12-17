@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_config/flutter_config.dart';
-import 'package:mobile_crowd_sensing/controller/create_campaign_controller.dart';
+import 'package:mobile_crowd_sensing/controllers/create_campaign_controller.dart';
 import 'smart_contract_model.dart';
-import '../view_models/session_view_model.dart';
+import 'session_model.dart';
 import '../views/dialog_view.dart';
 
 class CreateCampaignModel {
 
   static Future<void> createCampaign(BuildContext context,String name, BigInt lat, BigInt lng, BigInt range,String type, BigInt value) async {
     try {
-      SessionViewModel sessionData = SessionViewModel();
+      SessionModel sessionData = SessionModel();
       SmartContractModel smartContractViewModel = SmartContractModel(FlutterConfig.get('MCSfactory_CONTRACT_ADDRESS'), 'MCSfactory', 'assets/abi.json', provider: sessionData.getProvider());
       List args = [name, lat, lng, range,type];
       await smartContractViewModel.queryTransaction('createCampaign', args,value).then((value) async => {

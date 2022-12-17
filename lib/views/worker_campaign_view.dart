@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../models/smart_contract_model.dart';
 import '../utils/styles.dart';
-import '../view_models/search_places_view_model.dart';
-import '../view_models/session_view_model.dart';
+import '../models/search_places_model.dart';
+import '../models/session_model.dart';
 
 class WorkerCampaignView extends StatefulWidget {
   final List<dynamic>? contractAddress;
@@ -24,8 +24,8 @@ class _WorkerCampaignViewState extends State<WorkerCampaignView> {
   late List<String> type = [];
   late List<String> addressCrowdSourcer = [];
   late List<String> fileCount = [];
-  SessionViewModel sessionData = SessionViewModel();
-  SearchPlacesViewModel searchPlacesViewModel = SearchPlacesViewModel();
+  SessionModel sessionData = SessionModel();
+  SearchPlacesModel searchPlacesViewModel = SearchPlacesModel();
   @override
   initState() {
     if (widget.contractAddress != null) {

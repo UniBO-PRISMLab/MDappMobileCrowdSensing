@@ -4,8 +4,8 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../utils/join_campaign_factory.dart';
 import '../../utils/styles.dart';
-import '../../view_models/camera_view_model.dart';
-import '../../view_models/session_view_model.dart';
+import '../camera_view.dart';
+import '../../models/session_model.dart';
 
 class PhotoJoinCampaignView extends JoinCampaignFactory {
   const PhotoJoinCampaignView({super.key});
@@ -27,7 +27,7 @@ class PhotoJoinCampaignViewState extends State<PhotoJoinCampaignView> {
     int counterFiles = pictures.length;
     parameters = ModalRoute.of(context)!.settings.arguments;
     campaignSelectedData = jsonDecode(jsonEncode(parameters));
-    SessionViewModel sessionData = SessionViewModel();
+    SessionModel sessionData = SessionModel();
     int _index = 0;
 
     return  Scaffold(
@@ -108,7 +108,7 @@ class PhotoJoinCampaignViewState extends State<PhotoJoinCampaignView> {
 
                             pictures = await Navigator.of(context).push(
                                 MaterialPageRoute(builder: (
-                                    context) => const CameraViewModel()));
+                                    context) => const DataCollectionCameraView()));
                             setState(()  {
                             print("DEBUG::::::::::::::::::::::::::::::::::::: NUMBER OF PHOTOS: ${pictures.length}");
                           });

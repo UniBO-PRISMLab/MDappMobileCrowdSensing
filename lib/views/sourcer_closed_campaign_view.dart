@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mobile_crowd_sensing/view_models/session_view_model.dart';
+import 'package:mobile_crowd_sensing/models/session_model.dart';
 import '../models/smart_contract_model.dart';
 import '../utils/styles.dart';
 
@@ -16,7 +16,7 @@ class SourcerClosedCampaignView extends StatefulWidget {
 
 class _SourcerClosedCampaignViewState extends State<SourcerClosedCampaignView> {
 
-  SessionViewModel sessionData = SessionViewModel();
+  SessionModel sessionData = SessionModel();
 
   late List<String> contractsAddresses = [];
   late List<String> names = [];

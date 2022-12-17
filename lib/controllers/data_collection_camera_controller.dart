@@ -1,32 +1,30 @@
 import 'dart:async';
 import 'dart:io';
-
 import 'package:camera/camera.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-
 import '../utils/styles.dart';
 
-class CameraViewModel extends StatefulWidget {
-  const CameraViewModel({super.key});
+class DataCollectionCameraController extends StatefulWidget {
+  const DataCollectionCameraController({super.key});
 
   @override
-  CameraViewModelState createState() => CameraViewModelState();
+  State<StatefulWidget> createState() {
+    return DataCollectionCameraControllerState();
+  }
 }
 
-class CameraViewModelState extends State<CameraViewModel> {
+class DataCollectionCameraControllerState extends State<DataCollectionCameraController> {
   late dynamic cameras;
   late dynamic camera;
   late CameraController _controller;
   Future<void>? _initializeControllerFuture;
   List<Image> pictures = [];
+
   void getDeviceCamera() async {
     cameras = await availableCameras();
     camera = cameras.first;
-    _controller = CameraController(
-      camera,
-      ResolutionPreset.medium,
-    );
+    _controller = CameraController(camera, ResolutionPreset.medium,);
     setState(() {
       _initializeControllerFuture = _controller.initialize();
     });
@@ -62,15 +60,15 @@ class CameraViewModelState extends State<CameraViewModel> {
               if (res != null) {
                 setState(() {
                   pictures.add(res);
-                  print('____________________YES___PHOTO_________________');
-                  print('____________________${pictures.length}_________________');
-
+                  if (kDebugMode) {
+                    print('____________________${pictures.length}_________________');
+                  }
                 });
-              } else {
-                print('____________________NO___PHOTO_________________');
               }
             } catch (e) {
-              print(e);
+              if (kDebugMode) {
+                print(e);
+              }
             }
           },
           child: const Icon(Icons.camera_alt),
@@ -94,8 +92,8 @@ class CameraViewModelState extends State<CameraViewModel> {
                           style: CustomTextStyle.merriweatherBold(context),
                         ),
                         Text(
-                          '${pictures.length}',
-                          style: CustomTextStyle.inconsolata(context)
+                            '${pictures.length}',
+                            style: CustomTextStyle.inconsolata(context)
                         ),
                       ],
                     ),
@@ -110,7 +108,6 @@ class CameraViewModelState extends State<CameraViewModel> {
   }
 }
 
-// A widget that displays the picture taken by the user.
 class DisplayPictureScreen extends StatelessWidget {
   final String imagePath;
 

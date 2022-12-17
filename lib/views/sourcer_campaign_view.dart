@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile_crowd_sensing/utils/styles.dart';
-import 'package:mobile_crowd_sensing/view_models/session_view_model.dart';
+import 'package:mobile_crowd_sensing/models/session_model.dart';
 import '../models/smart_contract_model.dart';
-import '../view_models/search_places_view_model.dart';
+import '../models/search_places_model.dart';
 
 class SourcerCampaignView extends StatefulWidget {
   final List<dynamic>? contractAddress;
@@ -17,7 +17,7 @@ class SourcerCampaignView extends StatefulWidget {
 
 class _SourcerCampaignViewState extends State<SourcerCampaignView> {
 
-  SessionViewModel sessionData = SessionViewModel();
+  SessionModel sessionData = SessionModel();
   String name = '';
   String latitude = '';
   String longitude = '';
@@ -31,7 +31,7 @@ class _SourcerCampaignViewState extends State<SourcerCampaignView> {
   String workersCount = '0';
 
   late SmartContractModel smartContractViewModel;
-  SearchPlacesViewModel searchPlacesViewModel = SearchPlacesViewModel();
+  SearchPlacesModel searchPlacesViewModel = SearchPlacesModel();
 
 
   _getFilesCountes() async {

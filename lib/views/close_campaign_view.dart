@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import '../controller/close_campaign_controller.dart';
+import '../controllers/close_campaign_controller.dart';
 
 
 class CloseCampaignView extends StatefulWidget {

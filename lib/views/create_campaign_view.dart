@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import '../controller/create_campaign_controller.dart';
+import '../controllers/create_campaign_controller.dart';
 
 class CreateCampaignView extends StatefulWidget {
   const CreateCampaignView({super.key});

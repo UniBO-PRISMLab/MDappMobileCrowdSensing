@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:environment_sensors/environment_sensors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mobile_crowd_sensing/view_models/session_view_model.dart';
+import 'package:mobile_crowd_sensing/models/session_model.dart';
 import '../../utils/join_campaign_factory.dart';
 import '../../utils/styles.dart';
 import '../dialog_view.dart';
@@ -33,7 +33,7 @@ class LightJoinCampaignViewState
   Widget build(BuildContext context) {
     parameters = ModalRoute.of(context)!.settings.arguments;
     campaignSelectedData = jsonDecode(jsonEncode(parameters));
-    SessionViewModel sessionData = SessionViewModel();
+    SessionModel sessionData = SessionModel();
 
     return Scaffold(
       resizeToAvoidBottomInset: false,

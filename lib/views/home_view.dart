@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_crowd_sensing/view_models/home_view_model.dart';
 import '../utils/styles.dart';
 
 class HomeView extends StatefulWidget {
@@ -10,7 +9,6 @@ class HomeView extends StatefulWidget {
 }
 
 class _HomeViewState extends State<HomeView> {
-  var homeData = HomeViewModel();
 
   @override
   Widget build(BuildContext context) {
@@ -27,27 +25,27 @@ class _HomeViewState extends State<HomeView> {
             children: [
               TextButton.icon(
                   onPressed: () {
-                    homeData.goToSourcerView(context);
+                    Navigator.pushNamed(context, '/sourcer');
                   },
                   icon: const Icon(Icons.connect_without_contact),
-                  label: Text(homeData.getTitle1(), style: CustomTextStyle.spaceMono(context),)),
+                  label: Text("Be a crowdsourcer", style: CustomTextStyle.spaceMono(context),)),
               const Padding(padding: EdgeInsets.all(50)),
               TextButton.icon(
                   onPressed: () {
-                    homeData.goToWorkerView(context);
+                    Navigator.pushNamed(context, '/worker');
                   },
                   icon: const Icon(Icons.work),
                   label: Text(
-                    homeData.getTitle2(),
+                    "Be a worker",
                     style: CustomTextStyle.spaceMono(context),
                   )),
               const Padding(padding: EdgeInsets.all(50)),
               TextButton.icon(
                   onPressed: () {
-                      homeData.goToVerifierView(context);
+                    Navigator.pushNamed(context, '/verifier');
                   },
                   icon: const Icon(Icons.verified_user_sharp),
-                  label: Text(homeData.getTitle3(), style: CustomTextStyle.spaceMono(context),))
+                  label: Text("Be a verifier", style: CustomTextStyle.spaceMono(context),))
             ],
           ),
         )));

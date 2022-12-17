@@ -4,7 +4,7 @@ import 'package:flutter_config/flutter_config.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mobile_crowd_sensing/views/dialog_view.dart';
-import '../view_models/search_places_view_model.dart';
+import '../models/search_places_model.dart';
 import 'package:google_maps_webservice/places.dart';
 
 class SearchPlacesView extends StatefulWidget {
@@ -18,7 +18,7 @@ class _SearchPlacesViewState extends State<SearchPlacesView> {
   final searchPlacesViewScaffoldKey = GlobalKey<ScaffoldState>();
   Object? parameters;
   dynamic formData = {};
-  SearchPlacesViewModel searchPlacesData = SearchPlacesViewModel();
+  SearchPlacesModel searchPlacesData = SearchPlacesModel();
 
   @override
   Widget build(BuildContext context) {

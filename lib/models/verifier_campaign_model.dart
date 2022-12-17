@@ -1,12 +1,12 @@
 import 'smart_contract_model.dart';
-import '../view_models/search_places_view_model.dart';
-import '../view_models/session_view_model.dart';
+import 'search_places_model.dart';
+import 'session_model.dart';
 
 class VerifierCampaignModel {
 
   static Future<dynamic>? getData(List<dynamic>? contractAddress) async {
-    SessionViewModel sessionData = SessionViewModel();
-    SearchPlacesViewModel searchPlacesViewModel = SearchPlacesViewModel();
+    SessionModel sessionData = SessionModel();
+    SearchPlacesModel searchPlacesViewModel = SearchPlacesModel();
 
     List? resInfo = [];
     List? dataFirstPart = [];

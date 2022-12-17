@@ -6,7 +6,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_webservice/places.dart';
 import "package:google_maps_webservice/geocoding.dart";
 
-class SearchPlacesViewModel {
+class SearchPlacesModel {
   double lat = 40;
   double lng = 10;
   final double zoom = 19.5;

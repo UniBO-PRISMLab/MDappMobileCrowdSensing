@@ -4,8 +4,8 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:mobile_crowd_sensing/models/file_manager_model.dart';
 import 'package:mobile_crowd_sensing/models/ipfs_client_model.dart';
 import 'package:mobile_crowd_sensing/models/smart_contract_model.dart';
-import 'package:mobile_crowd_sensing/view_models/session_view_model.dart';
-import '../view_models/search_places_view_model.dart';
+import 'package:mobile_crowd_sensing/models/session_model.dart';
+import '../models/search_places_model.dart';
 import '../views/dialog_view.dart';
 
 class UploadLightIpfsController extends StatefulWidget {
@@ -19,7 +19,7 @@ class UploadLightIpfsController extends StatefulWidget {
 
 class _UploadLightIpfsControllerState extends State<UploadLightIpfsController> {
   late String path;
-  SessionViewModel sessionData = SessionViewModel();
+  SessionModel sessionData = SessionModel();
   Object? parameters;
   dynamic jsonParameters = {};
 
@@ -49,7 +49,7 @@ class _UploadLightIpfsControllerState extends State<UploadLightIpfsController> {
       await  FileManagerModel.writeLightRelevation("${DateTime.now().millisecondsSinceEpoch}/${averageRelevation.toString()}");
       try {
           SmartContractModel smartContractViewModel = SmartContractModel(jsonParameters['contractAddress'], 'Campaign', 'assets/abi_campaign.json', provider: sessionData.getProvider());
-          SearchPlacesViewModel position = SearchPlacesViewModel();
+          SearchPlacesModel position = SearchPlacesModel();
           await position.updateLocalPosition();
           String preHash = await IpfsClientModel.getOnlyHashIPFS(await  FileManagerModel.localFile);
           List<dynamic> args = [preHash,BigInt.from((position.lat*10000000).round()),BigInt.from((position.lng*10000000).round())];

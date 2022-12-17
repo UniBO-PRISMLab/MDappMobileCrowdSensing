@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_crowd_sensing/controller/login_controller.dart';
+import 'package:mobile_crowd_sensing/controllers/login_controller.dart';
 
 class LoginView extends StatelessWidget {
   const LoginView({Key? key}) : super(key: key);

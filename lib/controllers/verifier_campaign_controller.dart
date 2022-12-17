@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile_crowd_sensing/models/verifier_campaign_model.dart';
 import '../utils/styles.dart';
-import '../view_models/search_places_view_model.dart';
-import '../view_models/session_view_model.dart';
+import '../models/search_places_model.dart';
+import '../models/session_model.dart';
 
 
 class VerifierCampaignController extends StatelessWidget {
@@ -13,8 +13,8 @@ class VerifierCampaignController extends StatelessWidget {
 
   VerifierCampaignController(this.contractsAddresses, {super.key});
 
-  SessionViewModel sessionData = SessionViewModel();
-  SearchPlacesViewModel searchPlacesViewModel = SearchPlacesViewModel();
+  SessionModel sessionData = SessionModel();
+  SearchPlacesModel searchPlacesViewModel = SearchPlacesModel();
 
   @override
   Widget build(BuildContext context) {

@@ -1,15 +1,15 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:mobile_crowd_sensing/controller/close_campaign_controller.dart';
+import 'package:mobile_crowd_sensing/controllers/close_campaign_controller.dart';
 import 'smart_contract_model.dart';
-import '../view_models/session_view_model.dart';
+import 'session_model.dart';
 import '../views/dialog_view.dart';
 
 class CloseCampaignModel {
 
   static Future<void> closeMyCampaign(BuildContext context,String address) async {
     try {
-      SessionViewModel sessionData = SessionViewModel();
+      SessionModel sessionData = SessionModel();
       SmartContractModel smartContractViewModel = SmartContractModel(address,'Campaing','assets/abi_campaign.json', provider: sessionData.getProvider());
       await smartContractViewModel.queryTransaction('closeCampaign',[],null).then((value) => {
           CloseCampaignController.routing(context,value)

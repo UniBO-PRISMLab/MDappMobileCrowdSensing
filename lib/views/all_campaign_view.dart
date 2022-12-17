@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../controller/all_campaign_controller.dart';
+import '../controllers/all_campaign_controller.dart';
 
 class AllCampaignView extends StatelessWidget {
   final String cameFrom;

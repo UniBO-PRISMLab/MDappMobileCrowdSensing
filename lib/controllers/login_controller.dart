@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:slider_button/slider_button.dart';
 import 'login_metamask_controller.dart';
 import '../utils/styles.dart';
-import '../view_models/session_view_model.dart';
+import '../models/session_model.dart';
 import '../views/home_view.dart';
 
 class LoginController extends StatelessWidget{
@@ -10,7 +10,7 @@ class LoginController extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    SessionViewModel sessionData = SessionViewModel();
+    SessionModel sessionData = SessionModel();
     sessionData.checkConnection();
     return  SingleChildScrollView(
         child: Column(

@@ -1,21 +1,32 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_config/flutter_config.dart';
-import 'package:mobile_crowd_sensing/models/session_model.dart';
-import '../controllers/all_campaign_controller.dart';
+import 'package:web3dart/credentials.dart';
 import 'smart_contract_model.dart';
+import 'session_model.dart';
 import '../views/dialog_view.dart';
 
-class AllCampaignModelCampaignModel {
+class SourcerPastCampaignsModel {
 
-  static Future<void> getAllCampaign(BuildContext context,String cameFrom) async {
+  static Future<List<String>?> getMyClosedCampaign(BuildContext context) async {
     try {
       SessionModel sessionData = SessionModel();
       SmartContractModel smartContractViewModel = SmartContractModel(FlutterConfig.get('MCSfactory_CONTRACT_ADDRESS'),'MCSfactory','assets/abi.json', provider: sessionData.getProvider());
-      await smartContractViewModel.queryCall('getAllCampaigns',[],null).then((value) => {
-        AllCampaignController.routingTo(context,value,cameFrom)
-      });
+      EthereumAddress address = EthereumAddress.fromHex(sessionData.getAccountAddress());
+      List<String>? result = [];
+      int index = 0;
+      List<dynamic>? query = [];
 
+      do {
+        query = await smartContractViewModel.queryCall('closedCampaigns', [address, BigInt.from(index)], null);
+
+        if (query.toString() != "null") {
+          result.add(query![0].toString());
+        }
+        index++;
+      } while (query.toString() != "null");
+
+      return result;
     } catch (error) {
       if (kDebugMode) {
         print('\x1B[31m$error\x1B[0m');
@@ -26,6 +37,7 @@ class AllCampaignModelCampaignModel {
               builder: (BuildContext context) =>
                   DialogView(message: error.toString())));
     }
-
+    return null;
   }
+
 }
