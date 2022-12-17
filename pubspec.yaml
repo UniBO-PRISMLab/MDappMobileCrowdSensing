@@ -58,6 +58,7 @@ dependencies:
   syncfusion_flutter_charts: ^20.3.60
   intl: ^0.17.0
   tar: ^0.5.6
+  flutter_native_splash: ^2.2.16
 
 dev_dependencies:
   flutter_test:

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_config/flutter_config.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:mobile_crowd_sensing/view_models/session_view_model.dart';
-import 'package:mobile_crowd_sensing/providers/smart_contract_provider.dart';
+import 'package:mobile_crowd_sensing/models/smart_contract_model.dart';
 import 'package:web3dart/credentials.dart';
 import '../views/dialog_view.dart';
 import '../views/sourcer_campaign_view.dart';
@@ -44,7 +44,7 @@ class _MyCampaignProviderState extends State<MyCampaignProvider> {
 
   Future<void> getMyCampaign(String sourcerAddress) async {
     try {
-      SmartContractProvider smartContractViewModel = SmartContractProvider(FlutterConfig.get('MCSfactory_CONTRACT_ADDRESS'),'MCSfactory','assets/abi.json', provider: sessionData.getProvider());
+      SmartContractModel smartContractViewModel = SmartContractModel(FlutterConfig.get('MCSfactory_CONTRACT_ADDRESS'),'MCSfactory','assets/abi.json', provider: sessionData.getProvider());
       EthereumAddress address = EthereumAddress.fromHex(sourcerAddress);
       List? result = await smartContractViewModel.queryCall('activeCampaigns',[address],null);
       if (result != null) {

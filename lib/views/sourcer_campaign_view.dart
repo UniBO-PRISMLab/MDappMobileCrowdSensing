@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile_crowd_sensing/utils/styles.dart';
 import 'package:mobile_crowd_sensing/view_models/session_view_model.dart';
-import '../providers/smart_contract_provider.dart';
+import '../models/smart_contract_model.dart';
 import '../view_models/search_places_view_model.dart';
 
 class SourcerCampaignView extends StatefulWidget {
@@ -30,7 +30,7 @@ class _SourcerCampaignViewState extends State<SourcerCampaignView> {
   String fileChecked = '0';
   String workersCount = '0';
 
-  late SmartContractProvider smartContractViewModel;
+  late SmartContractModel smartContractViewModel;
   SearchPlacesViewModel searchPlacesViewModel = SearchPlacesViewModel();
 
 
@@ -55,7 +55,7 @@ class _SourcerCampaignViewState extends State<SourcerCampaignView> {
   @override
   initState() {
     if (widget.contractAddress![0].toString() != "0x0000000000000000000000000000000000000000") {
-        smartContractViewModel = SmartContractProvider(widget.contractAddress![0].toString(), 'Campaign', 'assets/abi_campaign.json', provider: sessionData.getProvider());
+        smartContractViewModel = SmartContractModel(widget.contractAddress![0].toString(), 'Campaign', 'assets/abi_campaign.json', provider: sessionData.getProvider());
         String? readebleLocationQuery;
 
     smartContractViewModel.queryCall('getInfo', [], null).then((value) async => {

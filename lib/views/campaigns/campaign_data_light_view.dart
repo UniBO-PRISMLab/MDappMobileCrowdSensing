@@ -2,11 +2,12 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile_crowd_sensing/view_models/session_view_model.dart';
-import '../../providers/smart_contract_provider.dart';
+import '../../models/file_manager_model.dart';
+import '../../models/ipfs_client_model.dart';
+import '../../models/smart_contract_model.dart';
 import '../../utils/campaign_data_factory.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:intl/intl.dart';
-import '../../utils/helperfunctions.dart';
 import '../../utils/styles.dart';
 
 class CampaignDataLightView extends CampaignDataFactory {
@@ -22,19 +23,19 @@ class LightJoinCampaignViewState extends State<CampaignDataLightView> {
   dynamic campaignSelectedData = {};
   Object? parameters;
   SessionViewModel sessionData = SessionViewModel();
-  late SmartContractProvider smartContract = SmartContractProvider(campaignSelectedData['contractAddress'], 'Campaign', 'assets/abi_campaign.json', provider: sessionData.getProvider());
+  late SmartContractModel smartContract = SmartContractModel(campaignSelectedData['contractAddress'], 'Campaign', 'assets/abi_campaign.json', provider: sessionData.getProvider());
   late List<String> hashes = [];
   List<LightData> contents = [];
 
   @override
   initState(){
     super.initState();
-    clearTemporaryDirectory();
+    FileManagerModel.clearTemporaryDirectory();
   }
 
   _downloadFiles(hashToDownload) async {
     print("DEBUG ::::::::::::::::::::::::::::::::::::::: [getFileIPFSHash]: $hashToDownload");
-    String? res = await downloadItemIPFS(hashToDownload,'lights');
+    String? res = await IpfsClientModel.downloadItemIPFS(hashToDownload,'lights');
     if (res != null) {
       List<String> value = res.split('/');
       if (mounted) {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../providers/smart_contract_provider.dart';
+import '../models/smart_contract_model.dart';
 import '../utils/styles.dart';
 import '../view_models/search_places_view_model.dart';
 import '../view_models/session_view_model.dart';
@@ -30,7 +30,7 @@ class _WorkerCampaignViewState extends State<WorkerCampaignView> {
   initState() {
     if (widget.contractAddress != null) {
       for (int i = 0; i < widget.contractAddress!.length; i++) {
-        SmartContractProvider smartContractViewModel = SmartContractProvider(
+        SmartContractModel smartContractViewModel = SmartContractModel(
             widget.contractAddress![i].toString(),
             'Campaign',
             'assets/abi_campaign.json',

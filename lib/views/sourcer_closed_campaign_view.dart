@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile_crowd_sensing/view_models/session_view_model.dart';
-import '../providers/smart_contract_provider.dart';
+import '../models/smart_contract_model.dart';
 import '../utils/styles.dart';
 
 class SourcerClosedCampaignView extends StatefulWidget {
@@ -31,7 +31,7 @@ class _SourcerClosedCampaignViewState extends State<SourcerClosedCampaignView> {
   initState() {
     if (widget.contractAddress != null) {
       for (int i = 0; i < widget.contractAddress!.length; i++) {
-        SmartContractProvider smartContractViewModel = SmartContractProvider(widget.contractAddress![i].toString(), 'Campaign', 'assets/abi_campaign.json', provider: sessionData.getProvider());
+        SmartContractModel smartContractViewModel = SmartContractModel(widget.contractAddress![i].toString(), 'Campaign', 'assets/abi_campaign.json', provider: sessionData.getProvider());
         smartContractViewModel.queryCall('getInfo', [], null).then((value) => {
           setState(() {
             if (value != null) {

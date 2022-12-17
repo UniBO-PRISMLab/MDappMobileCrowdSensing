@@ -25,3 +25,10 @@ class CustomTextStyle {
     return GoogleFonts.inconsolata(fontSize: 16);
   }
 }
+
+class GlobalText {
+  static loadingText(BuildContext context) {
+    return Text('LOADING...', style: CustomTextStyle.spaceMono(context),);
+  }
+
+}
