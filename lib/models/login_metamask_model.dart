@@ -8,19 +8,23 @@ class LoginMetamaskModel {
   static Future<void> loginUsingMetamask(BuildContext context) async {
     SessionModel sessionData = SessionModel();
     sessionData.checkConnection();
-    if (!sessionData.getConnector().connected) {
+    if (!sessionData.connector.connected) {
       try {
-        SessionStatus session = await sessionData.getConnector().createSession(
+        SessionStatus session = await sessionData.connector.createSession(
             onDisplayUri: (uri) async {
-              sessionData.setUri(uri);
+              sessionData.uri = uri;
               await launchUrlString(uri, mode: LaunchMode.externalApplication);
             });
+
         if(session.accounts.isNotEmpty) {
-          sessionData.setSession(session);
+          sessionData.session = session;
+          print("connesso!");
         }
       } catch (exp) {
         print(exp);
       }
+    } else {
+      print("già connesso...");
     }
   }
 }

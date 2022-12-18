@@ -7,7 +7,7 @@ class SessionModel {
 
   static final SessionModel _instance = SessionModel._internal();
 
-  dynamic _session, _uri, _signature;
+  dynamic session, uri, signature;
   late WalletConnect  connector;
 
   late http.Client httpClient;
@@ -34,70 +34,38 @@ class SessionModel {
     return _instance;
   }
 
-  Web3Client getEthClient() {
-    return ethClient;
-  }
-
   EthereumWalletConnectProvider getProvider(){
-   return EthereumWalletConnectProvider(getConnector());
+   return EthereumWalletConnectProvider(connector);
   }
 
   dynamic getAccountAddress() {
-    return getSession().accounts[0];
-  }
-
-  WalletConnect getConnector(){
-    return connector;
-  }
-
-  dynamic getUri(){
-    return _uri;
-  }
-
-  void setUri(uri){
-     uri = uri;
-  }
-
-  dynamic getSession(){
-    return _session;
-  }
-
-  void setSession(session) {
-    session = session;
-  }
-
-  dynamic getSignature() {
-    return _signature;
-  }
-
-  void setSignature(signature) {
-    signature = signature;
+    return session.accounts[0];
   }
 
   Future<void> checkConnection() async {
-    SessionStorage? sessionStorage = getConnector().sessionStorage;
+    SessionStorage? sessionStorage = connector.sessionStorage;
     if (sessionStorage != null) {
-        setSession(sessionStorage.getSession());
+        session = sessionStorage.getSession();
         reconnect();
     } else {
-      await sessionStorage?.store(getConnector().session);
+      await sessionStorage?.store(connector.session);
     }
-    getConnector().on('connect', (session) => {print('\x1B[31m[checkConnection]\x1B[0m:connect'),reconnect(),setSession(session)});
-    getConnector().on('session_update', (payload) =>{print('\x1B[31m[checkConnection]\x1B[0m:session_update'), setSession(payload)});
-    getConnector().on('disconnect', (payload) => {print('\x1B[31m[checkConnection]\x1B[0m:disconnect'),setSession(null), closeConnection()});
+    connector.on('connect', (session) => {print('\x1B[31m[checkConnection]\x1B[0m:connect'),reconnect(),this.session = session});
+    connector.on('session_update', (payload) =>{print('\x1B[31m[checkConnection]\x1B[0m:session_update'), session = payload});
+    connector.on('disconnect', (payload) => {print('\x1B[31m[checkConnection]\x1B[0m:disconnect'),session = null, closeConnection()});
   }
 
   void reconnect(){
     print('\x1B[31m[Connection reconnected]\x1B[0m:connect');
-    getConnector().reconnect();
+    connector.reconnect();
   }
   void closeConnection() {
     print('\x1B[31m[Reconnect]\x1B[0m:connect');
-    getConnector().close();
+    connector.close();
   }
   void killConnection(){
     print('\x1B[31m[Connection Killed]\x1B[0m:connect');
-    getConnector().killSession();
+    connector.killSession();
   }
   getNetworkName(chainId) {
     switch (chainId) {

@@ -20,7 +20,7 @@ class AllCampaignController extends StatelessWidget {
       if(cameFrom == 'worker') {
         Navigator.pushReplacement(context, MaterialPageRoute(
             builder: (context) =>
-                WorkerCampaignView(contractAddress: result[0],)));
+                WorkerCampaignView(contractsAddresses: result[0],)));
       } else {
         Navigator.pushReplacement(context, MaterialPageRoute(
             builder: (context) =>

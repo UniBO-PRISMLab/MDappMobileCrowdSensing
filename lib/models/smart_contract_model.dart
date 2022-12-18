@@ -33,7 +33,7 @@ class SmartContractModel extends CustomTransactionSender{
           parameters: args,
           value: (value != null) ? EtherAmount.inWei(value) : null
       );
-      launchUrlString(sessionData.getUri(), mode: LaunchMode.externalApplication);
+      launchUrlString(sessionData.uri, mode: LaunchMode.externalApplication);
       final txBytes = await sendTransaction(transaction);
       return txBytes;
     } catch (error) {
@@ -67,7 +67,7 @@ class SmartContractModel extends CustomTransactionSender{
       final ethFunction = contract.function(functionName);
       //print('DEBUG:::::::::::::::::::::::::::[queryCall] transaction:  $functionName, $args, $value');
 
-      final result = await sessionData.getEthClient().call(
+      final result = await sessionData.ethClient.call(
           sender: EthereumAddress.fromHex(sessionData.getAccountAddress()),
           contract: contract,
           function: ethFunction,

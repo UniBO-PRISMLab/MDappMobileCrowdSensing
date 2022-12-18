@@ -7,11 +7,12 @@ import '../views/home_view.dart';
 
 class LoginController extends StatelessWidget{
   const LoginController({super.key});
-
   @override
   Widget build(BuildContext context) {
     SessionModel sessionData = SessionModel();
     sessionData.checkConnection();
+    print("DEBUG::::: ${sessionData.session}");
+
     return  SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -20,7 +21,7 @@ class LoginController extends StatelessWidget{
               'assets/images/main_page_image.png',
               fit: BoxFit.fitHeight,
             ),
-            (sessionData.getSession() != null) ?
+            (sessionData.session != null) ?
             Container(
                 padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                 child: Column(
@@ -43,14 +44,14 @@ class LoginController extends StatelessWidget{
                             ),
                             Text(
                               sessionData.getNetworkName(sessionData
-                                  .getSession()
+                                  .session
                                   .chainId),
                               style: CustomTextStyle.inconsolata(context),
                             ),
                           ]),
                       const SizedBox(height: 20),
                       (sessionData
-                          .getSession()
+                          .session
                           .chainId != 5) ?
                       Row(
                           children: const [
