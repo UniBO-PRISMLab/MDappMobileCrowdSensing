@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile_crowd_sensing/models/verifier_campaign_model.dart';
@@ -55,14 +54,16 @@ class VerifierCampaignController extends StatelessWidget {
             String readebleLocation = current[8];
             return GestureDetector(
               onTap: () {
-                Navigator.pushReplacementNamed(context, '/join_campaign',
+                Navigator.pushReplacementNamed(context, '/verifier_campaign_data',
                     arguments: {
+                      'contractAddress': contractAddress,
                       'name': name,
+                      'readebleLocation': readebleLocation,
+                      'type':type,
+                      'crowdsourcer': crowdsourcer,
+                      'range': range,
                       'lat': lat,
                       'lng': lng,
-                      'range': range,
-                      'type': type,
-                      'contractAddress': contractAddress,
                     });
               },
               child: Card(

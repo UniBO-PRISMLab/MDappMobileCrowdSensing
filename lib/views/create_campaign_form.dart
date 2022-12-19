@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile_crowd_sensing/utils/styles.dart';
 
 class CreateCampaignForm extends StatefulWidget {
