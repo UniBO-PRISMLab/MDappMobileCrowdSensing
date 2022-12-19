@@ -4,16 +4,16 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile_crowd_sensing/utils/styles.dart';
 
 
-class VerifierCampaignDataController extends StatefulWidget {
+class VerifierCampaignDataLightController extends StatefulWidget {
 
-  const VerifierCampaignDataController({Key? key}) : super(key: key);
+  const VerifierCampaignDataLightController({Key? key}) : super(key: key);
 
   @override
-  State<VerifierCampaignDataController> createState() =>
-      _VerifierCampaignDataControllerState();
+  State<VerifierCampaignDataLightController> createState() =>
+      _VerifierCampaignDataLightControllerState();
 }
 
-class _VerifierCampaignDataControllerState extends State<VerifierCampaignDataController> {
+class _VerifierCampaignDataLightControllerState extends State<VerifierCampaignDataLightController> {
 
   Object? parameters;
   dynamic jsonParameters = {};

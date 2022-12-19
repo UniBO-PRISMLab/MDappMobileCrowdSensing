@@ -1,15 +1,15 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import '../controllers/verifier_campaign_data_controller.dart';
+import '../controllers/verifier_campaign_data_light_controller.dart';
 
-class VerifierCampaignDataView extends StatefulWidget {
-  const VerifierCampaignDataView({Key? key}) : super(key: key);
+class VerifierCampaignDataLightView extends StatefulWidget {
+  const VerifierCampaignDataLightView({Key? key}) : super(key: key);
 
   @override
-  State<VerifierCampaignDataView> createState() => _VerifierCampaignDataViewState();
+  State<VerifierCampaignDataLightView> createState() => _VerifierCampaignDataLightViewState();
 }
 
-class _VerifierCampaignDataViewState extends State<VerifierCampaignDataView> {
+class _VerifierCampaignDataLightViewState extends State<VerifierCampaignDataLightView> {
   Object? parameters;
   dynamic jsonParameters = {};
 
@@ -29,7 +29,7 @@ class _VerifierCampaignDataViewState extends State<VerifierCampaignDataView> {
           title: Text(jsonParameters["name"]),
           centerTitle: true,
         ),
-        body: const VerifierCampaignDataController()
+        body: const VerifierCampaignDataLightController()
     );
   }
 }

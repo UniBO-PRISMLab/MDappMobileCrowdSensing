@@ -14,9 +14,9 @@ import 'package:mobile_crowd_sensing/views/my_campaign_view.dart';
 import 'package:mobile_crowd_sensing/views/sourcer_view.dart';
 import 'package:mobile_crowd_sensing/views/create_campaign_form.dart';
 import 'package:mobile_crowd_sensing/views/search_places_view.dart';
-import 'package:mobile_crowd_sensing/views/verifier_campaign_data_view.dart';
+import 'package:mobile_crowd_sensing/views/verifier_campaign_data_light_view.dart';
 
-import 'controllers/verifier_campaign_data_controller.dart';
+import 'controllers/verifier_campaign_data_light_controller.dart';
 
 
 Future<void> main(List<String> args) async {
@@ -48,7 +48,7 @@ class MyApp extends StatelessWidget {
         '/join_campaign':(context) => JoinCampaignFactory.fromTypeName(context),
         '/camera':(context) => const DataCollectionCameraView(),
         '/data_campaign':(context) => DataCampaignFactory.fromTypeName(context),
-        "/verifier_campaign_data":(context) => const VerifierCampaignDataView(),
+        "/verifier_campaign_data":(context) => const VerifierCampaignDataLightView(),
       },
     );
   }
