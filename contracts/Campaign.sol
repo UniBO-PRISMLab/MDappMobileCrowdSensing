@@ -5,7 +5,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "./MCSfactory.sol";
 
 contract Campaign is Ownable, Initializable {
-    bool public isClosed;
+
     string internal name;
     int256 internal lat;
     int256 internal lng;
@@ -14,10 +14,31 @@ contract Campaign is Ownable, Initializable {
 
     address public addressCrowdSourcer;
 
+    struct File {
+        bool status;
+        bool validity;
+        address  uploader;
+        string hash;
+    }
+
+    uint256 public fileCount = 0;
+    uint256 public checkedFiles = 0;
+    uint256 public numberOfActiveWorkers = 0;
+    bool public isClosed;
+
+
     CampaignFactory internal factoryContractAddress;
     mapping(string => File) public files; // ipfs hash -> file info
 
     string[] public allfilesPath;
+
+    function getAllFilesInfo() public view returns(File[] memory){
+        File[] memory out = new File[](allfilesPath.length);
+        for(uint i = 0; i<allfilesPath.length; i++) {
+            out[i] = files[allfilesPath[i]];
+        }
+        return out;
+    }
 
     function getValidFiles() public view onlyOwner returns(string[] memory){
         string[] memory out = new string[](allfilesPath.length);
@@ -29,17 +50,8 @@ contract Campaign is Ownable, Initializable {
         return out;
     }
 
-    uint256 public fileCount = 0;
-    uint256 public checkedFiles = 0;
-
     function getInfo() public view returns(string memory,int256,int256,int256,string memory,address,uint256) {
         return(name,lat,lng,range,campaignType,addressCrowdSourcer,fileCount);
-    }
-
-    struct File {
-        bool status;
-        bool validity;
-        address  uploader;
     }
 
     constructor(string memory _name,int256 _lat,int256 _lng,int256 _range,string memory _type,address  _addressCrowdSourcer,address  _factoryAddress)  onlyOwner initializer {
@@ -61,8 +73,9 @@ contract Campaign is Ownable, Initializable {
         require(isClosed == false,'The campaign is closed by sourcer');
         require(isInRange(_fileLat,_fileLng),'position out of area');
         fileCount++;
+        numberOfActiveWorkers++;
         allfilesPath.push(ipfspath);
-        files[ipfspath] = File(false,false,(msg.sender));
+        files[ipfspath] = File(false,false,(msg.sender),ipfspath);
         emit FileUploaded((msg.sender));
     }
 

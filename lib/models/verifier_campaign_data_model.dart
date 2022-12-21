@@ -1,57 +1,64 @@
 import 'smart_contract_model.dart';
-import 'search_places_model.dart';
 import 'session_model.dart';
 
 class VerifierCampaignDataModel {
 
-  static Future<dynamic>? getData(String contractAddress) async {
+  static Future<String> getData(String contractAddress) async {
+
+    String? fileChecked,fileCount,workersCount;
     SessionModel sessionData = SessionModel();
-    SearchPlacesModel searchPlacesViewModel = SearchPlacesModel();
+
     late SmartContractModel smartContract;
 
     if (contractAddress != "0x0000000000000000000000000000000000000000") {
       smartContract = SmartContractModel(contractAddress, 'Campaign', 'assets/abi_campaign.json',
           provider: sessionData.getProvider());
-      String? readebleLocationQuery;
+      List<dynamic>? fileCountRaw =
+      await smartContract.queryCall('fileCount', [], null);
+      List<dynamic>? fileCheckedRaw =
+      await smartContract.queryCall('checkedFiles', [], null);
+      List<dynamic>? workersCountRaw =
+      await smartContract.queryCall('numberOfActiveWorkers', [], null);
 
-      await smartContract
-          .queryCall('getInfo', [], null)
-          .then((value) async =>
-      {
-        if (value != null)
-          {
-            readebleLocationQuery = await searchPlacesViewModel
-                .getReadebleLocationFromLatLng(
-                (double.parse(value[1].toString())) / 10000000,
-                (double.parse(value[2].toString())) / 10000000),
-            // setState(() {
-            //   name = value[0];
-            //   latitude = value[1].toString();
-            //   longitude = value[2].toString();
-            //   range = value[3].toString();
-            //   type = value[4];
-            //   addressCrowdSourcer = value[5].toString();
-            //   readebleLocation = readebleLocationQuery;
-            // })
-          }
-      });
+      if (fileCheckedRaw != null) {
+        fileChecked = fileCheckedRaw[0].toString();
+      }
+      if (fileCountRaw != null) {
+        fileCount = fileCountRaw[0].toString();
+      }
+
+      if (workersCountRaw != null) {
+        workersCount = workersCountRaw[0].toString();
+      }
     }
-    List<dynamic>? fileCountRaw =
-    await smartContract.queryCall('fileCount', [], null);
-    List<dynamic>? fileCheckedRaw =
-    await smartContract.queryCall('checkedFiles', [], null);
-    // if (mounted) {
-    //   setState(() {
-    //     if (fileCheckedRaw != null) {
-    //       fileChecked = fileCheckedRaw[0].toString();
-    //     }
-    //     if (fileCountRaw != null) {
-    //       fileCount = fileCountRaw[0].toString();
-    //     }
-    //
-    //     //to implement in the contract
-    //     workersCount = 'NaN';
-    //   });
-    // }
+    return
+          "{"
+            "\"fileChecked\":\"$fileChecked\","
+            "\"fileCount\":\"$fileCount\","
+            "\"workersCount\":\"$workersCount\""
+          "}";
+  }
+
+
+  static Future<List<dynamic>?> getDataFileInfo(String contractAddress) async {
+
+    List<dynamic>? allFilesInfo;
+    SessionModel sessionData = SessionModel();
+
+    late SmartContractModel smartContract;
+
+    if (contractAddress != "0x0000000000000000000000000000000000000000") {
+      smartContract = SmartContractModel(contractAddress, 'Campaign', 'assets/abi_campaign.json',
+          provider: sessionData.getProvider());
+
+      List<dynamic>? allFilesInfoRaw =
+      await smartContract.queryCall('getAllFilesInfo', [], null);
+
+      if (allFilesInfoRaw != null) {
+          allFilesInfo = allFilesInfoRaw[0];
+      }
+
+    }
+    return allFilesInfo;
   }
 }

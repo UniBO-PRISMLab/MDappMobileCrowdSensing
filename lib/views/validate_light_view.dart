@@ -1,16 +1,16 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:mobile_crowd_sensing/utils/verifier_campaign_data_factory.dart';
-import '../controllers/verifier_campaign_data_light_controller.dart';
+import '../controllers/validate_light_controller.dart';
 
-class VerifierCampaignDataLightView extends VerifierDataCampaignFactory {
-  const VerifierCampaignDataLightView({Key? key}) : super(key: key);
+class ValidateLightView extends VerifierDataCampaignFactory {
+  const ValidateLightView({Key? key}) : super(key: key);
 
   @override
-  State<VerifierCampaignDataLightView> createState() => _VerifierCampaignDataLightViewState();
+  State<ValidateLightView> createState() => _VerifierCampaignDataLightViewState();
 }
 
-class _VerifierCampaignDataLightViewState extends State<VerifierCampaignDataLightView> {
+class _VerifierCampaignDataLightViewState extends State<ValidateLightView> {
   Object? parameters;
   dynamic jsonParameters = {};
 
@@ -30,7 +30,7 @@ class _VerifierCampaignDataLightViewState extends State<VerifierCampaignDataLigh
           title: Text(jsonParameters["name"]),
           centerTitle: true,
         ),
-        body: const VerifierCampaignDataLightController()
+        body: const ValidateLightController()
     );
   }
 }

@@ -5,12 +5,12 @@ import 'package:mobile_crowd_sensing/models/session_model.dart';
 import '../../models/file_manager_model.dart';
 import '../../models/ipfs_client_model.dart';
 import '../../models/smart_contract_model.dart';
-import '../../utils/campaign_data_factory.dart';
+import '../../utils/worker_campaign_data_factory.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:intl/intl.dart';
 import '../../utils/styles.dart';
 
-class CampaignDataLightView extends DataCampaignFactory {
+class CampaignDataLightView extends WorkerDataCampaignFactory {
   const CampaignDataLightView({super.key});
 
   @override

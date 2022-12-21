@@ -6,11 +6,31 @@ class CustomColors {
   static blue900(BuildContext context) {
     return Colors.blue[900];
   }
+
+  static green600(BuildContext context) {
+    return Colors.green[600];
+  }
+
+  static red600(BuildContext context) {
+    return Colors.red[600];
+  }
+
+  static blue600(BuildContext context) {
+    return Colors.blue[600];
+  }
+
+  static customWhite(BuildContext context) {
+    return Colors.white54;
+  }
 }
 
 class CustomTextStyle {
   static spaceMono(BuildContext context) {
     return GoogleFonts.spaceMono(textStyle: const TextStyle(color: Colors.black87, letterSpacing: .5));
+  }
+
+  static spaceMonoBold(BuildContext context) {
+    return GoogleFonts.spaceMono(textStyle: const TextStyle(color: Colors.black87, fontWeight: FontWeight.bold, letterSpacing: .5));
   }
 
   static spaceMonoH40Bold(BuildContext context) {

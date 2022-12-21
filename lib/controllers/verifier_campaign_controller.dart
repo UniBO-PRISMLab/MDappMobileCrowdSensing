@@ -41,17 +41,19 @@ class VerifierCampaignController extends StatelessWidget {
       child: ListView.builder(
           itemCount: snapshot.data.length,
           itemBuilder: (context, index) {
-            List current = snapshot.data[index];
-
-            String name = current[0];
-            String lat = current[1].toString();
-            String lng = current[2].toString();
-            String range = current[3].toString();
-            String type = current[4];
-            String crowdsourcer = current[5].toString();
-            String fileCount = current[6].toString();
-            String contractAddress = current[7].toString();
-            String readebleLocation = current[8];
+            List? current = snapshot.data[index];
+            String? name,lat,lng,range,type,crowdsourcer,fileCount,contractAddress,readebleLocation;
+            if (current != null) {
+              name = current[0];
+              lat = current[1].toString();
+              lng = current[2].toString();
+              range = current[3].toString();
+              type = current[4];
+              crowdsourcer = current[5].toString();
+              fileCount = current[6].toString();
+              contractAddress = current[7].toString();
+              readebleLocation = current[8];
+            }
             return GestureDetector(
               onTap: () {
                 Navigator.pushReplacementNamed(context, '/verifier_campaign_data',
@@ -131,7 +133,7 @@ class VerifierCampaignController extends StatelessWidget {
                                   FittedBox(
                                       fit: BoxFit.fitWidth,
                                       child: Text(
-                                        crowdsourcer,
+                                        (crowdsourcer!=null)? crowdsourcer:"null",
                                         style:
                                         CustomTextStyle.spaceMono(context),
                                       )),
