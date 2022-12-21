@@ -1,6 +1,10 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+class DeviceDimension {
+  static double deviceHeight(BuildContext context) => MediaQuery.of(context).size.height;
+  static double deviceWidth(BuildContext context) => MediaQuery.of(context).size.width;
+}
 
 class CustomColors {
   static blue900(BuildContext context) {
@@ -27,6 +31,10 @@ class CustomColors {
 class CustomTextStyle {
   static spaceMono(BuildContext context) {
     return GoogleFonts.spaceMono(textStyle: const TextStyle(color: Colors.black87, letterSpacing: .5));
+  }
+
+  static spaceMonoWhite(BuildContext context) {
+    return GoogleFonts.spaceMono(textStyle: const TextStyle(color: Colors.white, letterSpacing: .5));
   }
 
   static spaceMonoBold(BuildContext context) {

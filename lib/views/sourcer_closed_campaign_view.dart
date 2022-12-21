@@ -54,10 +54,6 @@ class _SourcerClosedCampaignViewState extends State<SourcerClosedCampaignView> {
 
   @override
   Widget build(BuildContext context) {
-    Text loadingText = Text(
-      'LOADING...',
-      style: CustomTextStyle.spaceMono(context),
-    );
 
     return Scaffold(
         appBar: AppBar(
@@ -99,7 +95,7 @@ class _SourcerClosedCampaignViewState extends State<SourcerClosedCampaignView> {
                                   (names.length !=
                                       widget.contractAddress!
                                           .length)
-                                      ? loadingText
+                                      ? GlobalText.loadingText(context)
                                       : Text(
                                     "Name: ${names[index]}",
                                     style: GoogleFonts.spaceMono(
@@ -116,14 +112,14 @@ class _SourcerClosedCampaignViewState extends State<SourcerClosedCampaignView> {
                                 ]),
                                 Row(children: <Widget>[
                                   (latitude.length != widget.contractAddress!.length)
-                                      ? loadingText
+                                      ? GlobalText.loadingText(context)
                                       : Text(
                                     "Latitude: ${latitude[index]}",
                                     style: CustomTextStyle.spaceMono(context),
                                   ),
                                 ]),
                                 Row(children: <Widget>[
-                                  (longitude.length != widget.contractAddress!.length) ? loadingText : Text("Longitude: ${longitude[index]}",
+                                  (longitude.length != widget.contractAddress!.length) ? GlobalText.loadingText(context) : Text("Longitude: ${longitude[index]}",
                                     style: GoogleFonts.spaceMono(
                                         textStyle:
                                         const TextStyle(
@@ -137,7 +133,7 @@ class _SourcerClosedCampaignViewState extends State<SourcerClosedCampaignView> {
                                   ),
                                 ]),
                                 Row(children: <Widget>[
-                                  (range.length != widget.contractAddress!.length) ? loadingText
+                                  (range.length != widget.contractAddress!.length) ? GlobalText.loadingText(context)
                                       : Text(
                                     "Range: ${range[index]}",
                                     style: CustomTextStyle.spaceMono(context),
@@ -145,7 +141,7 @@ class _SourcerClosedCampaignViewState extends State<SourcerClosedCampaignView> {
                                 ]),
 
                                 Row(children: <Widget>[
-                                  (type.length != widget.contractAddress!.length) ? loadingText
+                                  (type.length != widget.contractAddress!.length) ? GlobalText.loadingText(context)
                                       : Text(
                                     "Type: ${type[index]}",
                                     style: GoogleFonts.spaceMono(
@@ -161,7 +157,8 @@ class _SourcerClosedCampaignViewState extends State<SourcerClosedCampaignView> {
                                   ),
                                 ]),
                                 Row(children: <Widget>[
-                                  (addressCrowdSourcer.length != widget.contractAddress!.length) ? loadingText : Column(
+                                  (addressCrowdSourcer.length != widget.contractAddress!.length) ? GlobalText.loadingText(context)
+                                      : Column(
                                     //mainAxisAlignment: MainAxisAlignment.end,
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
@@ -185,8 +182,8 @@ class _SourcerClosedCampaignViewState extends State<SourcerClosedCampaignView> {
                                   ),
                                 ]),
                                 Row(children: <Widget>[
-                                  (fileCount.length != widget.contractAddress!.length) ? loadingText :
-                                  Text(
+                                  (fileCount.length != widget.contractAddress!.length) ? GlobalText.loadingText(context)
+                                      : Text(
                                     "fileCount: ${fileCount[index]}",
                                     style: CustomTextStyle.spaceMono(context),
                                   ),

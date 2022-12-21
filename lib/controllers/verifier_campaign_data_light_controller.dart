@@ -54,7 +54,6 @@ class _VerifierCampaignDataLightControllerState
     range = jsonParameters['range'];
     type = jsonParameters['type'];
     crowdsourcer = jsonParameters['crowdsourcer'];
-    contractAddress = jsonParameters['contractAddress'];
     readebleLocation = jsonParameters['readebleLocation'];
 
     VerifierCampaignDataModel.getData(contractAddress).then((counters) => {
@@ -74,6 +73,12 @@ class _VerifierCampaignDataLightControllerState
             padding: const EdgeInsets.fromLTRB(10, 30, 10, 10),
             width: double.maxFinite,
             child: Column(children: <Widget>[
+              Row(children: <Widget>[
+                Expanded(
+                    flex: 5,
+                    child: Text("contractAddress:\n$contractAddress",
+                        style: CustomTextStyle.spaceMono(context))),
+              ]),
               Row(children: <Widget>[
                 Expanded(
                     flex: 5,
@@ -119,7 +124,8 @@ class _VerifierCampaignDataLightControllerState
                             Navigator.pushNamed(context, '/validate_light_view', arguments: {
                               "name" : name,
                               "ipfsHash" : ipfsHash,
-                              "uploader" : uploader
+                              "uploader" : uploader,
+                              "contractAddress" : contractAddress
                             });
                           },
                           child: Card(

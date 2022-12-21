@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'package:environment_sensors/environment_sensors.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../utils/join_campaign_factory.dart';
 import '../../utils/styles.dart';
+import '../models/validate_light_model.dart';
 import '../views/dialog_view.dart';
 
 class ValidateLightController extends JoinCampaignFactory {
@@ -19,37 +19,39 @@ class ValidateLightControllerState extends State<ValidateLightController> {
   dynamic campaignSelectedData = {};
   Object? parameters;
   EnvironmentSensors environmentSensors = EnvironmentSensors();
-  bool activeSensor = false;
-  bool gate = false;
-  double sum = 0;
+  bool activeSensor = false, sensorGate = false, downloadGate = false;
 
+  double sum = 0, averageRelevation = 0;
+  late String? hash, time, relevation;
+  late List? data;
   List<double> lights = [];
-  double averageRelevation = 0;
+
+  _prepareData() async {
+    data = await ValidateLightModel.downloadFiles(hash);
+    downloadGate = !downloadGate;
+    time = DateTime.fromMillisecondsSinceEpoch(int.parse(data![0])).toString();
+    relevation = double.parse(data![1]).toString();
+  }
 
   @override
   Widget build(BuildContext context) {
     parameters = ModalRoute.of(context)!.settings.arguments;
     campaignSelectedData = jsonDecode(jsonEncode(parameters));
-
+    hash = campaignSelectedData['ipfsHash'];
+    if (hash != null && !downloadGate) {
+      _prepareData();
+    }
     return SingleChildScrollView(
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
       Container(
-          padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+          padding:  EdgeInsets.only(
+                top: DeviceDimension.deviceHeight(context) * 0.01,
+                left: DeviceDimension.deviceWidth(context) * 0.01,
+                bottom: DeviceDimension.deviceHeight(context) * 0.06,
+              ),//const EdgeInsets.fromLTRB(20, 0, 20, 0),
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             const SizedBox(height: 20),
-            Row(
-              children: [
-                Text(
-                  'Name: ',
-                  style: CustomTextStyle.spaceMonoBold(context),
-                ),
-                Text(
-                  '${campaignSelectedData['name']}',
-                  style: CustomTextStyle.inconsolata(context),
-                ),
-              ],
-            ),
             Column(
               children: [
                 Text(
@@ -76,7 +78,7 @@ class ValidateLightControllerState extends State<ValidateLightController> {
                       if (lightAvailable) {
                         setState(() {
                           activeSensor = true;
-                          gate = !gate;
+                          sensorGate = !sensorGate;
                           sum = 0;
                           lights.clear();
                           averageRelevation = 0;
@@ -89,49 +91,111 @@ class ValidateLightControllerState extends State<ValidateLightController> {
                                   builder: (BuildContext context) =>
                                       const DialogView(
                                           message:
-                                              "This device doesen't integrate the appropriate sensor")));
+                                              "This device doesn't integrate the appropriate sensor")));
                         });
                       }
                     },
                     child: const Text('Check Data',
                         style: TextStyle(color: Colors.white)))),
-                (activeSensor && gate)
+            (activeSensor && sensorGate)
                 ? StreamBuilder<double>(
                     stream: environmentSensors.light,
                     builder: (context, snapshot) {
                       if (!snapshot.hasData) {
-                        return const CircularProgressIndicator();
+                        return const Center(child: CircularProgressIndicator());
                       } else {
                         lights.add(snapshot.data!);
                         sum += lights.last;
                         averageRelevation = double.parse(
                             (sum / lights.length).toStringAsFixed(2));
-                        return Column(children: [
-                          Row(children: [
-                            Text('Average Ambient Light: ',
-                                style: GoogleFonts.merriweather(
-                                    fontWeight: FontWeight.bold, fontSize: 16)),
-                            Text('$averageRelevation',
-                                style: GoogleFonts.inconsolata(fontSize: 16))
-                          ]),
-                          Row(children: [
-                            Text('Number of relevations: ',
-                                style:
-                                    CustomTextStyle.merriweatherBold(context)),
-                            Text('${lights.length}',
-                                style: CustomTextStyle.inconsolata(context))
-                          ]),
-                          Row(children: [
-                            FloatingActionButton(
-                                onPressed: () {},
-                                backgroundColor: CustomColors.green600(context),
-                                child: const Icon(Icons.check)),
-                            FloatingActionButton(
-                                onPressed: () {},
-                                backgroundColor: CustomColors.red600(context),
-                                child: const Icon(Icons.close)),
-                          ]),
-                        ]);
+                        return Padding(
+                            padding: EdgeInsets.only(
+                              top: DeviceDimension.deviceHeight(context) * 0.15,
+                              left: DeviceDimension.deviceWidth(context) * 0.09,
+                            ),
+                            child: Wrap(
+                                alignment: WrapAlignment
+                                    .spaceAround, // set your alignment
+                                children: [
+                                  Row(children: [
+                                    Text('Average Ambient Light: ',
+                                        style: CustomTextStyle.merriweatherBold(
+                                            context)),
+                                    Text('$averageRelevation',
+                                        style: CustomTextStyle.inconsolata(
+                                            context))
+                                  ]),
+                                  Row(children: [
+                                    Text('Number of relevations: ',
+                                        style: CustomTextStyle.merriweatherBold(
+                                            context)),
+                                    Text('${lights.length}',
+                                        style: CustomTextStyle.inconsolata(
+                                            context))
+                                  ]),
+                                  Row(children: [
+                                    Text('Average Relevation: ',
+                                        style: CustomTextStyle.merriweatherBold(
+                                            context)),
+                                    Text('$relevation ',
+                                        style: CustomTextStyle.inconsolata(
+                                            context)),
+                                  ]),
+                                  Row(children: [
+                                    Text(' On: ',
+                                        style: CustomTextStyle.merriweatherBold(
+                                            context)),
+                                    Text('$time',
+                                        style: CustomTextStyle.inconsolata(
+                                            context)),
+                                  ]),
+                                  FloatingActionButton(
+                                      onPressed: () async {
+                                        if(await ValidateLightModel.approveOrNot(campaignSelectedData['contractAddress'], hash, false))
+                                        {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(SnackBar(
+                                              content: Text(
+                                                'Data verified',
+                                                style: CustomTextStyle.spaceMonoWhite(context),
+                                              )));
+                                          Navigator.pushReplacementNamed(context, '/home');
+                                        } else {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(SnackBar(
+                                              content: Text(
+                                                'An Error occurred',
+                                                style: CustomTextStyle.spaceMonoWhite(context),
+                                              )));
+                                        }
+                                      },
+                                      backgroundColor:
+                                          CustomColors.green600(context),
+                                      child: const Icon(Icons.check)),
+                                  FloatingActionButton(
+                                      onPressed: () async {
+                                        if(await ValidateLightModel.approveOrNot(campaignSelectedData['contractAddress'], hash, false))
+                                        {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(SnackBar(
+                                              content: Text(
+                                                'Data verified',
+                                                style: CustomTextStyle.spaceMonoWhite(context),
+                                              )));
+                                          Navigator.pushReplacementNamed(context, '/home');
+                                        } else {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(SnackBar(
+                                              content: Text(
+                                                'An Error occurred',
+                                                style: CustomTextStyle.spaceMonoWhite(context),
+                                              )));
+                                        }
+                                      },
+                                      backgroundColor:
+                                          CustomColors.red600(context),
+                                      child: const Icon(Icons.close)),
+                                ]));
                       }
                     })
                 : const Text(

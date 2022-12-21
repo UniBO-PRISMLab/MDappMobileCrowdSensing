@@ -108,6 +108,11 @@ contract Campaign is Ownable, Initializable {
         checkedFiles++;
     }
 
+    function notValidateFile(string memory hash) public {
+        files[hash].status = true;
+        checkedFiles++;
+    }
+
     function closeCampaign() public {
         require(msg.sender == addressCrowdSourcer,'you are not the owner');
         require(msg.sender != address(0), "invalid address provided");
