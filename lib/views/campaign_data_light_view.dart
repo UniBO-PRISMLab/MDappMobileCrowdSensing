@@ -2,13 +2,13 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile_crowd_sensing/models/session_model.dart';
-import '../../models/file_manager_model.dart';
-import '../../models/ipfs_client_model.dart';
-import '../../models/smart_contract_model.dart';
-import '../../utils/worker_campaign_data_factory.dart';
+import '../models/file_manager_model.dart';
+import '../models/ipfs_client_model.dart';
+import '../models/smart_contract_model.dart';
+import '../utils/worker_campaign_data_factory.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:intl/intl.dart';
-import '../../utils/styles.dart';
+import '../utils/styles.dart';
 
 class CampaignDataLightView extends WorkerDataCampaignFactory {
   const CampaignDataLightView({super.key});

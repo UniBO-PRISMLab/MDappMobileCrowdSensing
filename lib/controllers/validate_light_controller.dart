@@ -3,7 +3,7 @@ import 'package:environment_sensors/environment_sensors.dart';
 import 'package:flutter/material.dart';
 import '../../utils/join_campaign_factory.dart';
 import '../../utils/styles.dart';
-import '../models/validate_light_model.dart';
+import '../models/validate_model.dart';
 import '../views/dialog_view.dart';
 
 class ValidateLightController extends JoinCampaignFactory {
@@ -27,7 +27,7 @@ class ValidateLightControllerState extends State<ValidateLightController> {
   List<double> lights = [];
 
   _prepareData() async {
-    data = await ValidateLightModel.downloadFiles(hash);
+    data = await ValidateModel.downloadFiles(hash);
     downloadGate = !downloadGate;
     time = DateTime.fromMillisecondsSinceEpoch(int.parse(data![0])).toString();
     relevation = double.parse(data![1]).toString();
@@ -41,64 +41,56 @@ class ValidateLightControllerState extends State<ValidateLightController> {
     if (hash != null && !downloadGate) {
       _prepareData();
     }
-    return SingleChildScrollView(
-        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-      Container(
-          padding:  EdgeInsets.only(
-                top: DeviceDimension.deviceHeight(context) * 0.01,
-                left: DeviceDimension.deviceWidth(context) * 0.01,
-                bottom: DeviceDimension.deviceHeight(context) * 0.06,
-              ),//const EdgeInsets.fromLTRB(20, 0, 20, 0),
-          child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            const SizedBox(height: 20),
-            Column(
-              children: [
-                Text(
-                  'ipfs hash: ',
-                  style: CustomTextStyle.spaceMonoBold(context),
-                ),
-                Text(
-                  '${campaignSelectedData['ipfsHash']}',
-                  style: CustomTextStyle.inconsolata(context),
-                ),
-              ],
-            ),
-            Center(
-                child: TextButton(
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(
-                          CustomColors.blue900(context)),
-                      maximumSize:
-                          MaterialStateProperty.all(const Size(200, 40)),
+    return ListView(
+        shrinkWrap: false,
+        children: [
+                Column(
+                  children: [
+                    Text(
+                      'ipfs hash: ',
+                      style: CustomTextStyle.spaceMonoBold(context),
                     ),
-                    onPressed: () async {
-                      bool lightAvailable = await environmentSensors
-                          .getSensorAvailable(SensorType.Light);
-                      if (lightAvailable) {
-                        setState(() {
-                          activeSensor = true;
-                          sensorGate = !sensorGate;
-                          sum = 0;
-                          lights.clear();
-                          averageRelevation = 0;
-                        });
-                      } else {
-                        setState(() {
-                          Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      const DialogView(
-                                          message:
-                                              "This device doesn't integrate the appropriate sensor")));
-                        });
-                      }
-                    },
-                    child: const Text('Check Data',
-                        style: TextStyle(color: Colors.white)))),
-            (activeSensor && sensorGate)
-                ? StreamBuilder<double>(
+                    Text(
+                      '${campaignSelectedData['ipfsHash']}',
+                      style: CustomTextStyle.inconsolata(context),
+                    ),
+                  ],
+                ),
+                Center(child: TextButton(
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all(
+                              CustomColors.blue900(context)),
+                          maximumSize:
+                              MaterialStateProperty.all(const Size(200, 40)),
+                        ),
+                        onPressed: () async {
+                          bool lightAvailable = await environmentSensors
+                              .getSensorAvailable(SensorType.Light);
+                          if (lightAvailable) {
+                            setState(() {
+                              activeSensor = true;
+                              sensorGate = !sensorGate;
+                              sum = 0;
+                              lights.clear();
+                              averageRelevation = 0;
+                            });
+                          } else {
+                            setState(() {
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          const DialogView(
+                                              message:
+                                                  "This device doesn't integrate the appropriate sensor")));
+                            });
+                          }
+                        },
+                        child: const Text('Check Data',
+                            style: TextStyle(color: Colors.white)))),
+            (activeSensor && sensorGate) ?
+                 StreamBuilder<double>(
+
                     stream: environmentSensors.light,
                     builder: (context, snapshot) {
                       if (!snapshot.hasData) {
@@ -150,9 +142,10 @@ class ValidateLightControllerState extends State<ValidateLightController> {
                                             context)),
                                   ]),
                                   FloatingActionButton(
+                                      heroTag: "verified",
                                       onPressed: () async {
-                                        if(await ValidateLightModel.approveOrNot(campaignSelectedData['contractAddress'], hash, false))
-                                        {
+                                        bool res = await ValidateModel.approveOrNot(campaignSelectedData['contractAddress'], hash, true);
+                                        if(res) {
                                           ScaffoldMessenger.of(context)
                                               .showSnackBar(SnackBar(
                                               content: Text(
@@ -173,9 +166,10 @@ class ValidateLightControllerState extends State<ValidateLightController> {
                                           CustomColors.green600(context),
                                       child: const Icon(Icons.check)),
                                   FloatingActionButton(
+                                      heroTag: "notVerified",
                                       onPressed: () async {
-                                        if(await ValidateLightModel.approveOrNot(campaignSelectedData['contractAddress'], hash, false))
-                                        {
+                                        bool res = await ValidateModel.approveOrNot(campaignSelectedData['contractAddress'], hash, false);
+                                        if(res) {
                                           ScaffoldMessenger.of(context)
                                               .showSnackBar(SnackBar(
                                               content: Text(
@@ -200,7 +194,6 @@ class ValidateLightControllerState extends State<ValidateLightController> {
                     })
                 : const Text(
                     "check data for get a relevation and compare the result")
-          ]))
-    ]));
+          ]);
   }
 }

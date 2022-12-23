@@ -84,11 +84,6 @@ class _SourcerCampaignViewState extends State<SourcerCampaignView> {
   Widget build(BuildContext context) {
     _getFilesCountes();
 
-    Text loadingText = Text(
-      'LOADING...',
-      style: CustomTextStyle.spaceMono(context),
-    );
-
     return Scaffold(
         appBar: AppBar(
           backgroundColor: CustomColors.blue900(context),
@@ -174,7 +169,7 @@ class _SourcerCampaignViewState extends State<SourcerCampaignView> {
                                       child: Column(children: <Widget>[
                                         Row(children: <Widget>[
                                           //loop
-                                          (name.isEmpty) ? loadingText :
+                                          (name.isEmpty) ? GlobalText.loadingText(context) :
                                            Expanded(
                                              flex: 5,
                                                child: Text(
@@ -184,7 +179,7 @@ class _SourcerCampaignViewState extends State<SourcerCampaignView> {
                                            ),
                                         ]),
                                         Row(children: <Widget>[
-                                          (latitude.isEmpty) ? loadingText
+                                          (latitude.isEmpty) ? GlobalText.loadingText(context)
                                               : Text(
                                                   "Latitude: $latitude",
                                                   style: GoogleFonts.spaceMono(
@@ -200,7 +195,7 @@ class _SourcerCampaignViewState extends State<SourcerCampaignView> {
                                                 ),
                                         ]),
                                         Row(children: <Widget>[
-                                          (longitude.isEmpty) ? loadingText
+                                          (longitude.isEmpty) ? GlobalText.loadingText(context)
                                               : Text(
                                                   "Longitude: $longitude",
                                                   style: CustomTextStyle.spaceMono(context)
@@ -209,14 +204,14 @@ class _SourcerCampaignViewState extends State<SourcerCampaignView> {
 
                                         Column(children: <Widget>[
                                           (readebleLocation == null)
-                                              ? loadingText
+                                              ? GlobalText.loadingText(context)
                                               : Text("Location: $readebleLocation",
                                             style: CustomTextStyle.spaceMono(context),
                                           ),
                                         ]),
 
                                         Row(children: <Widget>[
-                                          (range.isEmpty) ? loadingText
+                                          (range.isEmpty) ? GlobalText.loadingText(context)
                                               : Text(
                                                   "Range: $range",
                                                   style: CustomTextStyle.spaceMono(context),
@@ -224,7 +219,7 @@ class _SourcerCampaignViewState extends State<SourcerCampaignView> {
                                         ]),
 
                                         Row(children: <Widget>[
-                                          (type.isEmpty) ? loadingText
+                                          (type.isEmpty) ? GlobalText.loadingText(context)
                                               : Text(
                                             "Type: $type",
                                             style: CustomTextStyle.spaceMono(context),

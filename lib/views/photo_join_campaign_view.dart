@@ -2,10 +2,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../utils/join_campaign_factory.dart';
-import '../../utils/styles.dart';
-import '../camera_view.dart';
-import '../../models/session_model.dart';
+import '../utils/join_campaign_factory.dart';
+import '../utils/styles.dart';
+import 'camera_view.dart';
+import '../models/session_model.dart';
 
 class PhotoJoinCampaignView extends JoinCampaignFactory {
   const PhotoJoinCampaignView({super.key});

@@ -3,9 +3,9 @@ import 'package:environment_sensors/environment_sensors.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile_crowd_sensing/models/session_model.dart';
-import '../../utils/join_campaign_factory.dart';
-import '../../utils/styles.dart';
-import '../dialog_view.dart';
+import '../utils/join_campaign_factory.dart';
+import '../utils/styles.dart';
+import 'dialog_view.dart';
 
 class LightJoinCampaignView extends JoinCampaignFactory {
   const LightJoinCampaignView({super.key});

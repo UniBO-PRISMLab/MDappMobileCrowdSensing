@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
-import '../views/campaigns/photo_join_campaign_view.dart';
-import '../views/campaigns/light_join_campaign_view.dart';
+import '../views/photo_join_campaign_view.dart';
+import '../views/light_join_campaign_view.dart';
 
 abstract class JoinCampaignFactory extends StatefulWidget{
   const JoinCampaignFactory({super.key});
