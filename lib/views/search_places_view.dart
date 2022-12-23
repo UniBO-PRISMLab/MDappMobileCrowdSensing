@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_config/flutter_config.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:mobile_crowd_sensing/utils/styles.dart';
 import 'package:mobile_crowd_sensing/views/dialog_view.dart';
 import '../models/search_places_model.dart';
 import 'package:google_maps_webservice/places.dart';
@@ -26,9 +27,22 @@ class _SearchPlacesViewState extends State<SearchPlacesView> {
     parameters = ModalRoute.of(context)!.settings.arguments;
     formData = jsonDecode(jsonEncode(parameters));
 
-    return Scaffold(
+    return WillPopScope(
+        onWillPop: () async {
+          Navigator.pop(context, searchPlacesData);
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                  content: Text('Data position taken',
+                    style: CustomTextStyle.spaceMonoWhite(context),
+              ))
+          );
+          return false;
+        },
+    child: Scaffold(
       key: searchPlacesViewScaffoldKey,
-      appBar: AppBar(title: const Text("Where is located you Campaign?")),
+      appBar: AppBar(
+      backgroundColor: CustomColors.blue900(context),
+      title: const Text("Where is located you Campaign?")),
       body: Stack(
         children: [
           GoogleMap(
@@ -43,48 +57,17 @@ class _SearchPlacesViewState extends State<SearchPlacesView> {
             },
           ),
           ElevatedButton(
+              style: ButtonStyle(backgroundColor: MaterialStateProperty.all(CustomColors.blue900(context))),
               onPressed: () {
                 _handlePressSearchButton(context);
               },
               child: const Text('Search')),
-          Center(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    FloatingActionButton(
-                        onPressed: () {
-                          Navigator.pushReplacementNamed(
-                              context, '/campaignForm',
-                              arguments: {
-                                'address': searchPlacesData.selectedPosition.result.formattedAddress,
-                                'lat': searchPlacesData.selectedPosition.result.geometry?.location.lat,
-                                'lng': searchPlacesData.selectedPosition.result.geometry?.location.lng,
-                                'title' : formData['title'],
-                                'range' : formData['range'],
-                                'payment' : formData['payment'],
-                                'type' : formData['type']
-                              });
-                        },
-                        backgroundColor: Colors.blueAccent,
-                        child: const Icon(
-                          Icons.check,
-                          color: Colors.white,
-                        )),
-                  ],
-                ),
-              ],
-            ),
-          )
         ],
       ),
-    );
+    ));
   }
 
   Future<void> _handlePressSearchButton(context) async {
-    //searchPlacesData.getPrediction(context,searchPlacesViewScaffoldKey.currentState);
     Prediction? p = await PlacesAutocomplete.show(
         context: context,
         apiKey: FlutterConfig.get('GOOGLE_API_KEY'),

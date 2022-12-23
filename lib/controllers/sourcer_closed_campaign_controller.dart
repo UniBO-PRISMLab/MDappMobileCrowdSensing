@@ -120,22 +120,7 @@ class _SourcerClosedCampaignControllerState extends State<SourcerClosedCampaignC
                                     style: CustomTextStyle.spaceMono(context),
                                   ),
                                 ]),
-                                Row(children: <Widget>[
-                                  (addressCrowdSourcer.length != widget.contractAddress!.length) ? GlobalText.loadingText(context)
-                                      : Column(
-                                    //mainAxisAlignment: MainAxisAlignment.end,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "crowdsourcer:",
-                                        style: CustomTextStyle.spaceMono(context),
-                                      ),
-                                      Text(addressCrowdSourcer[index],
-                                        style: CustomTextStyle.spaceMono(context),
-                                      )
-                                    ],
-                                  ),
-                                ]),
+
                                 Row(children: <Widget>[
                                   (fileCount.length != widget.contractAddress!.length) ? GlobalText.loadingText(context)
                                       : Text(

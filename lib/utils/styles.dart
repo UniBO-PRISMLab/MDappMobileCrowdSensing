@@ -29,6 +29,11 @@ class CustomColors {
 }
 
 class CustomTextStyle {
+
+  static cameraDataFont(BuildContext context) {
+    return GoogleFonts.spaceMono(textStyle: TextStyle(color: Colors.white, letterSpacing: .5,backgroundColor: CustomColors.blue900(context)));
+  }
+
   static spaceMono(BuildContext context) {
     return GoogleFonts.spaceMono(textStyle: const TextStyle(color: Colors.black87, letterSpacing: .5));
   }

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:slider_button/slider_button.dart';
 import 'login_metamask_controller.dart';
@@ -11,7 +12,9 @@ class LoginController extends StatelessWidget{
   Widget build(BuildContext context) {
     SessionModel sessionData = SessionModel();
     sessionData.checkConnection();
-    print("DEBUG::::: ${sessionData.session}");
+    if (kDebugMode) {
+      print("DEBUG::::: ${sessionData.session}");
+    }
 
     return  SingleChildScrollView(
         child: Column(
@@ -55,25 +58,26 @@ class LoginController extends StatelessWidget{
                           .chainId != 5) ?
                       Row(
                           children: const [
-                            Icon(Icons.warning,
-                                color: Colors.redAccent, size: 15),
+                            Icon(Icons.warning, color: Colors.redAccent, size: 15),
                             Text('Network not supported. Switch to '),
                             Text('Goreli Testnet',
                               style: TextStyle(fontWeight: FontWeight.bold),)
                           ]) :
                       const SizedBox(height: 20),
-                      SliderButton(
-                        action: () async {
-                          Navigator.push(context, MaterialPageRoute(
-                              builder: (context) => const HomeView()));
-                        },
-                        label: const Text('Slide to login'),
-                        icon: const Icon(Icons.check),
-                      )
+                      Center(
+                          child:SliderButton(
+                              action: () async {
+                                Navigator.pushReplacement(context, MaterialPageRoute(
+                                    builder: (context) => const HomeView()));
+                              },
+                              label: const Text('Slide to login'),
+                              icon: Icon(Icons.arrow_forward_ios_rounded, color: CustomColors.blue900(context)),
+                      ))
                     ]))
                 : ElevatedButton(
+                style:ButtonStyle(backgroundColor: MaterialStateProperty.all(CustomColors.blue900(context))),
                 onPressed: () =>
-                    Navigator.push(context, MaterialPageRoute(
+                    Navigator.pushReplacement(context, MaterialPageRoute(
                         builder: (context) => const LoginMetamaskController())),
                 child: const Text("Connect with Metamask")),
           ],

@@ -1,8 +1,8 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import '../models/create_campaign_model.dart';
+import '../models/search_places_model.dart';
 import '../utils/styles.dart';
+import '../views/search_places_view.dart';
 
 class CreateCampaignFormController extends StatefulWidget {
   const CreateCampaignFormController({Key? key}) : super(key: key);
@@ -13,25 +13,16 @@ class CreateCampaignFormController extends StatefulWidget {
 
 class _CreateCampaignFormControllerState extends State<CreateCampaignFormController> {
 
-  dynamic positionSelectedData = {};
-  Object? parameters;
   final _formKey = GlobalKey<FormState>();
   String selectedValue = 'photo';
   double _howMuch = 5;
   int _howFar = 100;
   final titleController = TextEditingController();
-
+  String? address = '';
+  double? lat;
+  double? lng;
   @override
   Widget build(BuildContext context) {
-
-    parameters = ModalRoute.of(context)!.settings.arguments;
-    positionSelectedData = jsonDecode(jsonEncode(parameters));
-
-    String? address = '';
-    if(positionSelectedData.runtimeType != Null) {
-      address = positionSelectedData['address'];
-      titleController.text = positionSelectedData['title'];
-    }
 
     return Form(
         key: _formKey,
@@ -76,15 +67,25 @@ class _CreateCampaignFormControllerState extends State<CreateCampaignFormControl
                   ),
                   ElevatedButton(
                       style: ButtonStyle(backgroundColor: MaterialStateProperty.all(CustomColors.blue900(context))),
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/map', arguments: {
-                          'title' : titleController.text,
-                          'range' : _howFar,
-                          'payment' : _howMuch,
-                          'type' : selectedValue
-                        });
+                      onPressed: () async {
+                        SearchPlacesModel? res = await Navigator.of(context).push(
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    const SearchPlacesView()
+                            )
+                        );
+
+                        if (res != null) {
+                          setState(() {
+                            address = res.selectedPosition.result.formattedAddress;
+                            lat = res.selectedPosition.result.geometry?.location.lat;
+                            lng = res.selectedPosition.result.geometry?.location.lng;
+                          });
+                        }
+
                       },
-                      child: const Text('Get a place!')),
+                      child: const Text('Get a place!')
+                  ),
                   Padding(
                     padding: const EdgeInsets.all(10),
                     child: Column(
@@ -158,7 +159,7 @@ class _CreateCampaignFormControllerState extends State<CreateCampaignFormControl
                     backgroundColor: CustomColors.blue900(context),
                     onPressed: () async {
                       // Validate returns true if the form is valid, or false otherwise.
-                      if (_formKey.currentState!.validate()) {
+                      if (_formKey.currentState!.validate() && lat != null && lng != null) {
                         ScaffoldMessenger.of(context)
                             .showSnackBar(SnackBar(
                             content: Text(
@@ -168,8 +169,8 @@ class _CreateCampaignFormControllerState extends State<CreateCampaignFormControl
                         bool res = await CreateCampaignModel.createCampaign(
                             context,
                             titleController.text,
-                            BigInt.from((10000000 * positionSelectedData['lat'])),
-                            BigInt.from((10000000 * positionSelectedData['lng'])),
+                            BigInt.from((10000000 * lat!)),
+                            BigInt.from((10000000 * lng!)),
                             BigInt.from(_howFar),
                             selectedValue,
                             BigInt.from(_howMuch)
@@ -191,9 +192,13 @@ class _CreateCampaignFormControllerState extends State<CreateCampaignFormControl
                                 style: CustomTextStyle.spaceMonoWhite(context),
                               )));
                         }
-                          //'lat' : (10000000 * positionSelectedData['lat']).toInt(),
-                          //'lng' : (10000000 * positionSelectedData['lng']).toInt(),
-
+                      } else {
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(SnackBar(
+                            content: Text(
+                              'An error with position data',
+                              style: CustomTextStyle.spaceMonoWhite(context),
+                            )));
                       }
                     },
                     child: const Text('GO!'),

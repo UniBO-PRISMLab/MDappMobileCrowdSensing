@@ -23,7 +23,7 @@ class _WorkerCampaignViewState extends State<WorkerCampaignView> {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.blue[900],
-          title: const Text('List Of All Campaigns to Verify'),
+          title: const Text('List Of All Campaigns'),
           centerTitle: true,
         ),
         body: WorkerCampaignController(widget.contractsAddresses)

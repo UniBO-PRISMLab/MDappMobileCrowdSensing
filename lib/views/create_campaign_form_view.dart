@@ -20,6 +20,7 @@ class CreateCampaignFormViewState extends State<CreateCampaignFormView> {
       return Scaffold(
         resizeToAvoidBottomInset: false,
           appBar: AppBar(
+            centerTitle: true,
             title: const Text('Create New Campaign'),
             backgroundColor: CustomColors.blue900(context),
           ),

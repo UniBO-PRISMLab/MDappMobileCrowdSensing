@@ -14,9 +14,13 @@ class DataCollectionCameraController extends StatefulWidget {
   }
 }
 
-class DataCollectionCameraControllerState extends State<DataCollectionCameraController> {
+class DataCollectionCameraControllerState
+    extends State<DataCollectionCameraController> {
   late dynamic cameras;
   late dynamic camera;
+  bool showFocusCircle = false;
+  double x = 0;
+  double y = 0;
   late CameraController _controller;
   Future<void>? _initializeControllerFuture;
   List<Image> pictures = [];
@@ -24,7 +28,10 @@ class DataCollectionCameraControllerState extends State<DataCollectionCameraCont
   void getDeviceCamera() async {
     cameras = await availableCameras();
     camera = cameras.first;
-    _controller = CameraController(camera, ResolutionPreset.medium,);
+    _controller = CameraController(
+      camera,
+      ResolutionPreset.medium,
+    );
     setState(() {
       _initializeControllerFuture = _controller.initialize();
     });
@@ -42,37 +49,39 @@ class DataCollectionCameraControllerState extends State<DataCollectionCameraCont
     super.initState();
   }
 
+  Future<void> _onTap(TapUpDetails details) async {
+    if(_controller.value.isInitialized) {
+      showFocusCircle = true;
+      x = details.localPosition.dx;
+      y = details.localPosition.dy;
+      double fullWidth = MediaQuery.of(context).size.width;
+      double cameraHeight = fullWidth * _controller.value.aspectRatio;
+      double xp = x / fullWidth;
+      double yp = y / cameraHeight;
+      Offset point = Offset(xp,yp);
+      if (kDebugMode) {
+        print("point : $point");
+      }
+      await _controller.setFocusPoint(point);
+      _controller.setExposurePoint(point);
+      setState(() {
+        Future.delayed(const Duration(seconds: 2)).whenComplete(() {
+          setState(() {
+            showFocusCircle = false;
+          });
+        });
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Scaffold(
-        appBar: AppBar(title: const Text('Take a picture')),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () async {
-            try {
-              await _initializeControllerFuture;
-              _controller
-                ..setExposureMode(ExposureMode.auto)
-                ..setFlashMode(FlashMode.off);
-              final image = await _controller.takePicture();
-              if (!mounted) return;
-              Image? res = await Navigator.of(context).push(MaterialPageRoute(builder: (context) => DisplayPictureScreen(imagePath: image.path,)));
-
-              if (res != null) {
-                setState(() {
-                  pictures.add(res);
-                  if (kDebugMode) {
-                    print('____________________${pictures.length}_________________');
-                  }
-                });
-              }
-            } catch (e) {
-              if (kDebugMode) {
-                print(e);
-              }
-            }
-          },
-          child: const Icon(Icons.camera_alt),
-        ),
+        appBar: AppBar(
+            centerTitle: true,
+            backgroundColor: CustomColors.blue900(context),
+            title: const Text('Take a picture')),
         body: WillPopScope(
           onWillPop: () async {
             Navigator.pop(context, pictures);
@@ -82,23 +91,108 @@ class DataCollectionCameraControllerState extends State<DataCollectionCameraCont
             future: _initializeControllerFuture,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
-                return Column(
-                  children: [
-                    CameraPreview(_controller),
-                    Row(
-                      children: [
-                        Text(
-                          ' Photos taken: ',
-                          style: CustomTextStyle.merriweatherBold(context),
+                return GestureDetector(
+                    onTapUp: (details) {
+                  _onTap(details);
+                },
+              child:Stack(children: [
+                  SizedBox(
+                      width: size.width,
+                      height: size.height,
+                      child: CameraPreview(_controller)),
+                  Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                    Column(children: [
+                      ElevatedButton(
+                        onPressed: () {
+                          _controller.setFlashMode(FlashMode.off);
+                        },
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.transparent),
+                        child: const Text(
+                          "Flash Off",
+                          style: TextStyle(
+                              color: Colors.white,
+                              backgroundColor: Colors.transparent),
                         ),
-                        Text(
-                            '${pictures.length}',
-                            style: CustomTextStyle.inconsolata(context)
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          _controller.setFlashMode(FlashMode.always);
+                        },
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.transparent),
+                        child: const Text(
+                          "Flash On",
+                          style: TextStyle(
+                              color: Colors.white,
+                              backgroundColor: Colors.transparent),
                         ),
-                      ],
-                    ),
-                  ],
-                );
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          _controller.setFlashMode(FlashMode.auto);
+                        },
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.transparent),
+                        child: const Text(
+                          "Auto Flash",
+                          style: TextStyle(
+                              color: Colors.white,
+                              backgroundColor: Colors.transparent),
+                        ),
+                      ),
+                    ])
+                  ]),
+                  Row(
+                    children: [
+                      Text(
+                        ' Photos taken: ${pictures.length}',
+                        style: CustomTextStyle.cameraDataFont(context),
+                      ),
+                    ],
+                  ),
+                  Center(
+                      child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      SizedBox(
+                          height: 100.0,
+                          width: 100.0,
+                          child: FittedBox(
+                              child: FloatingActionButton(
+                            backgroundColor: CustomColors.blue900(context),
+                            onPressed: () async {
+                              try {
+                                await _initializeControllerFuture;
+                                _controller.setExposureMode(ExposureMode.auto);
+                                final image = await _controller.takePicture();
+                                if (!mounted) return;
+                                Image? res = await Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            DisplayPictureScreen(
+                                              imagePath: image.path,
+                                            )));
+
+                                if (res != null) {
+                                  setState(() {
+                                    pictures.add(res);
+                                    if (kDebugMode) {
+                                      print('_______${pictures.length}______');
+                                    }
+                                  });
+                                }
+                              } catch (e) {
+                                if (kDebugMode) {
+                                  print(e);
+                                }
+                              }
+                            },
+                            child: const Icon(Icons.camera_alt),
+                          ))),
+                    ],
+                  ))
+                ]));
               } else {
                 return const Center(child: CircularProgressIndicator());
               }
