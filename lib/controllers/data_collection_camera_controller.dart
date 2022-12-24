@@ -18,6 +18,8 @@ class DataCollectionCameraControllerState
     extends State<DataCollectionCameraController> {
   late dynamic cameras;
   late dynamic camera;
+  bool autoFlash = false,activeFlash = false,flashOff = false;
+
   bool showFocusCircle = false;
   double x = 0;
   double y = 0;
@@ -104,42 +106,43 @@ class DataCollectionCameraControllerState
                     Column(children: [
                       ElevatedButton(
                         onPressed: () {
-                          _controller.setFlashMode(FlashMode.off);
+                          setState(() => {
+                            _controller.setFlashMode(FlashMode.off),
+                            activeFlash = false,
+                            autoFlash = false,
+                            flashOff = !flashOff
+                          });
                         },
                         style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.transparent),
-                        child: const Text(
-                          "Flash Off",
-                          style: TextStyle(
-                              color: Colors.white,
-                              backgroundColor: Colors.transparent),
-                        ),
+                        child: Icon(Icons.flash_off_rounded,color:flashOff? Colors.orangeAccent : CustomColors.customWhite(context)),
                       ),
                       ElevatedButton(
                         onPressed: () {
-                          _controller.setFlashMode(FlashMode.always);
+                          setState(() => {
+                            _controller.setFlashMode(FlashMode.always),
+                            flashOff = false,
+                            autoFlash = false,
+                            activeFlash = !activeFlash,
+                          });
+
                         },
                         style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.transparent),
-                        child: const Text(
-                          "Flash On",
-                          style: TextStyle(
-                              color: Colors.white,
-                              backgroundColor: Colors.transparent),
-                        ),
+                        child: Icon(Icons.flash_on_rounded,color:activeFlash? Colors.orangeAccent : CustomColors.customWhite(context)),
                       ),
                       ElevatedButton(
                         onPressed: () {
-                          _controller.setFlashMode(FlashMode.auto);
+                          setState(() => {
+                            _controller.setFlashMode(FlashMode.auto),
+                            flashOff = false,
+                            activeFlash = false,
+                            autoFlash = !autoFlash,
+                          });
                         },
                         style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.transparent),
-                        child: const Text(
-                          "Auto Flash",
-                          style: TextStyle(
-                              color: Colors.white,
-                              backgroundColor: Colors.transparent),
-                        ),
+                        child: Icon(Icons.flash_auto_rounded,color:autoFlash? Colors.orangeAccent : CustomColors.customWhite(context)),
                       ),
                     ])
                   ]),

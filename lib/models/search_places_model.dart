@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_config/flutter_config.dart';
 import 'package:geolocator/geolocator.dart';
@@ -19,7 +20,9 @@ class SearchPlacesModel {
     position = await _getGeoLocationPosition();
     lng = position.longitude;
     lat = position.latitude;
-    print("__________________________________________________________________________POSITION: \n[lat]$lat\n[lng]$lng");
+    if (kDebugMode) {
+      print("__________________________________________________________________________POSITION: \n[lat]$lat\n[lng]$lng");
+    }
   }
 
   void updateLocalPositionAndCamera() async {
@@ -64,19 +67,23 @@ class SearchPlacesModel {
       GeocodingResponse response = await geocoding.searchByLocation(Location(lat: lat, lng: lng));
 
       for(GeocodingResult element in response.results) {
-        print(
+        if (kDebugMode) {
+          print(
             "DEBUG:::::::::::::::::::::::::::[getReadebleLocationFromLatLng]: ${element.formattedAddress}");
+        }
       }
       String? name = response.results.first.formattedAddress;
       return name;
     }catch (e){
-      print("[ERROR]: $e");
+      if (kDebugMode) {
+        print("[ERROR]: $e");
+      }
       return 'Error';
     }
   }
 
   Future<void> displayPrediction(
-      Prediction p, ScaffoldState? currentState) async {
+      Prediction p) async {
 
     GoogleMapsPlaces places = GoogleMapsPlaces(
         apiKey: FlutterConfig.get('GOOGLE_API_KEY'),
@@ -87,14 +94,9 @@ class SearchPlacesModel {
     var queryLat = selectedPosition.result.geometry!.location.lat;
     var queryLng = selectedPosition.result.geometry!.location.lng;
 
-    currentState!.setState(() {
-      markersList.clear();
-      markersList.add(Marker(
-          markerId: const MarkerId("0"),
-          position: LatLng(queryLat, queryLng),
-          infoWindow: InfoWindow(title: selectedPosition.result.name)));
-      googleMapController.animateCamera(
-          CameraUpdate.newLatLngZoom(LatLng(queryLat, queryLng), zoom));
-    });
+    googleMapController.animateCamera(
+        CameraUpdate.newLatLngZoom(LatLng(queryLat, queryLng), zoom)
+    );
+
   }
 }

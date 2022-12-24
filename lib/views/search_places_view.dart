@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_config/flutter_config.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
@@ -17,15 +16,10 @@ class SearchPlacesView extends StatefulWidget {
 
 class _SearchPlacesViewState extends State<SearchPlacesView> {
   final searchPlacesViewScaffoldKey = GlobalKey<ScaffoldState>();
-  Object? parameters;
-  dynamic formData = {};
   SearchPlacesModel searchPlacesData = SearchPlacesModel();
 
   @override
   Widget build(BuildContext context) {
-
-    parameters = ModalRoute.of(context)!.settings.arguments;
-    formData = jsonDecode(jsonEncode(parameters));
 
     return WillPopScope(
         onWillPop: () async {
@@ -46,6 +40,9 @@ class _SearchPlacesViewState extends State<SearchPlacesView> {
       body: Stack(
         children: [
           GoogleMap(
+            scrollGesturesEnabled: false,
+            zoomGesturesEnabled: false,
+            zoomControlsEnabled: false,
             initialCameraPosition: searchPlacesData.getCameraPosition(),
             markers: searchPlacesData.markersList,
             mapType: MapType.normal,
@@ -83,8 +80,18 @@ class _SearchPlacesViewState extends State<SearchPlacesView> {
                 borderSide: const BorderSide(color: Colors.blueAccent))),
         components: [
           Component(Component.country, "it"),
-        ]);
-    searchPlacesData.displayPrediction(p!, searchPlacesViewScaffoldKey.currentState);
+        ]
+    );
+
+    setState(() {
+      searchPlacesData.displayPrediction(p!);
+      searchPlacesData.markersList.clear();
+      searchPlacesData.markersList.add(Marker(
+          markerId: const MarkerId("0"),
+          position: LatLng(searchPlacesData.lat, searchPlacesData.lng),
+          infoWindow: InfoWindow(title: searchPlacesData.selectedPosition.result.name))
+      );
+    });
   }
 
   void onError(PlacesAutocompleteResponse response) {

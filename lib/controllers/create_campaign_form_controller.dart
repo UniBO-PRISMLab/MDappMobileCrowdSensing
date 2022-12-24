@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../models/create_campaign_model.dart';
 import '../models/search_places_model.dart';
@@ -18,12 +19,12 @@ class _CreateCampaignFormControllerState extends State<CreateCampaignFormControl
   double _howMuch = 5;
   int _howFar = 100;
   final titleController = TextEditingController();
-  String? address = '';
+  String? address;
   double? lat;
   double? lng;
+
   @override
   Widget build(BuildContext context) {
-
     return Form(
         key: _formKey,
         child:
@@ -56,7 +57,7 @@ class _CreateCampaignFormControllerState extends State<CreateCampaignFormControl
                     style: CustomTextStyle.spaceMono(context),
                   ),
                   TextFormField(
-                    initialValue: address,
+                    controller: TextEditingController()..text = (address!=null)? address! : '',
                     readOnly: true,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -68,6 +69,7 @@ class _CreateCampaignFormControllerState extends State<CreateCampaignFormControl
                   ElevatedButton(
                       style: ButtonStyle(backgroundColor: MaterialStateProperty.all(CustomColors.blue900(context))),
                       onPressed: () async {
+                        if (!mounted) return;
                         SearchPlacesModel? res = await Navigator.of(context).push(
                             MaterialPageRoute(
                                 builder: (context) =>
@@ -76,13 +78,16 @@ class _CreateCampaignFormControllerState extends State<CreateCampaignFormControl
                         );
 
                         if (res != null) {
-                          setState(() {
-                            address = res.selectedPosition.result.formattedAddress;
+                            address = res.selectedPosition.result.formattedAddress.toString();
                             lat = res.selectedPosition.result.geometry?.location.lat;
                             lng = res.selectedPosition.result.geometry?.location.lng;
-                          });
+                            if (kDebugMode) {
+                              print(" info gotten: $address LATITUDE: $lat LONGITUDE: $lng");
+                            }
                         }
+                        setState(() {
 
+                        });
                       },
                       child: const Text('Get a place!')
                   ),
@@ -177,20 +182,24 @@ class _CreateCampaignFormControllerState extends State<CreateCampaignFormControl
                         );
 
                         if(res) {
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(SnackBar(
-                              content: Text(
-                                'Campaign Created',
-                                style: CustomTextStyle.spaceMonoWhite(context),
-                              )));
-                          Navigator.pushReplacementNamed(context, '/home');
+                          setState(() {
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(SnackBar(
+                                content: Text(
+                                  'Campaign Created',
+                                  style: CustomTextStyle.spaceMonoWhite(context),
+                                )));
+                            Navigator.pushReplacementNamed(context, '/home');
+                          });
                         } else {
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(SnackBar(
-                              content: Text(
-                                'An Error occurred',
-                                style: CustomTextStyle.spaceMonoWhite(context),
-                              )));
+                          setState(() {
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(SnackBar(
+                                content: Text(
+                                  'An Error occurred',
+                                  style: CustomTextStyle.spaceMonoWhite(context),
+                                )));
+                          });
                         }
                       } else {
                         ScaffoldMessenger.of(context)
