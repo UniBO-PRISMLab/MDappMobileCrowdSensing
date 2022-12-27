@@ -18,14 +18,14 @@ class DataCollectionCameraControllerState
     extends State<DataCollectionCameraController> {
   late dynamic cameras;
   late dynamic camera;
-  bool autoFlash = false,activeFlash = false,flashOff = false;
+  bool autoFlash = true,activeFlash = false,flashOff = false;
 
   bool showFocusCircle = false;
   double x = 0;
   double y = 0;
   late CameraController _controller;
   Future<void>? _initializeControllerFuture;
-  List<Image> pictures = [];
+  List<File> pictures = [];
 
   void getDeviceCamera() async {
     cameras = await availableCameras();
@@ -170,7 +170,7 @@ class DataCollectionCameraControllerState
                                 _controller.setExposureMode(ExposureMode.auto);
                                 final image = await _controller.takePicture();
                                 if (!mounted) return;
-                                Image? res = await Navigator.of(context).push(
+                                File? res = await Navigator.of(context).push(
                                     MaterialPageRoute(
                                         builder: (context) =>
                                             DisplayPictureScreen(
@@ -226,7 +226,7 @@ class DisplayPictureScreen extends StatelessWidget {
                   heroTag: "addImg",
                   backgroundColor: Colors.green,
                   onPressed: () {
-                    Navigator.pop(context, Image.file(File(imagePath)));
+                    Navigator.pop(context, File(imagePath));
                   },
                   child: const Icon(
                     Icons.add_circle_outline,

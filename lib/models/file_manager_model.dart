@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 
 class FileManagerModel {
+
   static Future<String> get localPath async {
     final directory = await getApplicationDocumentsDirectory();
     return directory.path;
@@ -10,8 +12,10 @@ class FileManagerModel {
 
   static Future<String> get temporaryDirectoryPath async {
     final directory = await getTemporaryDirectory();
-    print(
+    if (kDebugMode) {
+      print(
         "There are ${directory.listSync().length} files in the tmp directory");
+    }
     return directory.path;
   }
 
@@ -20,23 +24,27 @@ class FileManagerModel {
     directory.deleteSync(recursive: true);
   }
 
-  static Future<File> get localFile async {
+
+  static Future<File> get localLightFile async {
     final path = await localPath;
     return File('$path/light.txt');
   }
 
-  static Future<String> readCounter() async {
-    try {
-      final File file = await localFile;
-      final contents = await file.readAsString();
-      return contents;
-    } catch (e) {
-      return "ERROR: $e";
-    }
-  }
-
-  static Future<File> writeLightRelevation(String content) async {
-    final file = await localFile;
+  static Future<File> writeLightInLocalLightFile(String content) async {
+    final file = await localLightFile;
     return file.writeAsString(content);
   }
+
+  static Future<Directory> writePhotosInLocalFile(List<File> photos) async {
+    final path = await localPath;
+    final dir = Directory('$path/photos');
+    if(await dir.exists()) {
+      for (File p in photos) {
+        File("${dir.path}/$p");
+      }
+    }
+    return dir;
+  }
+
+
 }

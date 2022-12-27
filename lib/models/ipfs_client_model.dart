@@ -9,19 +9,18 @@ import 'dart:async';
 import 'dart:io';
 
 class IpfsClientModel {
+  static final String _username = FlutterConfig.get('INFURA_PROJECT_ID');
+  static final String _password = FlutterConfig.get('INFURA_API_SECRET');
+  static final String _basicAuth = 'Basic ${base64.encode(utf8.encode("$_username:$_password"))}';
 
   static Future<String> uploadIPFS(File file) async {
-    String username = FlutterConfig.get('INFURA_PROJECT_ID');
-    String password = FlutterConfig.get('INFURA_API_SECRET');
-
     String fileContent = await file.readAsString();
     print("FILE that i try to upload: $fileContent");
-    String basicAuth = 'Basic ${base64.encode(utf8.encode("$username:$password"))}';
     var stream = http.ByteStream(file.openRead());
     var length = await file.length();
     var url = Uri.https('ipfs.infura.io:5001','/api/v0/add');
     var request = http.MultipartRequest("POST", url);
-    request.headers['Authorization'] = basicAuth;
+    request.headers['Authorization'] = _basicAuth;
     var multipartFile = http.MultipartFile('file', stream, length, filename: basename(file.path));
     request.files.add(multipartFile);
     var response = await request.send();
@@ -32,14 +31,11 @@ class IpfsClientModel {
   }
 
   static Future<String> getOnlyHashIPFS(File file) async {
-    String username = FlutterConfig.get('INFURA_PROJECT_ID');
-    String password = FlutterConfig.get('INFURA_API_SECRET');
-    String basicAuth = 'Basic ${base64.encode(utf8.encode("$username:$password"))}';
     var stream = http.ByteStream(file.openRead());
     var length = await file.length();
     var url = Uri.https('ipfs.infura.io:5001','/api/v0/add',{'only-hash':'true'});
     var request = http.MultipartRequest("POST", url);
-    request.headers['Authorization'] = basicAuth;
+    request.headers['Authorization'] = _basicAuth;
     var multipartFile = http.MultipartFile('file', stream, length, filename: basename(file.path));
     request.files.add(multipartFile);
     var response = await request.send();
@@ -49,10 +45,44 @@ class IpfsClientModel {
     return jsonResponse['Hash'];
   }
 
+  static Future<String> getOnlyHashIPFSDirectory(List<File> files) async {
+    try {
+      late dynamic stream;
+      late dynamic length;
+      late dynamic multipartFile;
+
+      var url = Uri.https('ipfs.infura.io:5001', '/api/v0/add',
+          {
+            'only-hash': 'true',
+            'recursive': 'true',
+            'wrap-with-directory': 'true',
+            'pin': 'true'
+          });
+      var request = http.MultipartRequest("POST", url);
+      request.headers['Authorization'] = _basicAuth;
+      for (File f in files) {
+        stream = http.ByteStream(f.openRead());
+        length = await f.length();
+        multipartFile = http.MultipartFile(
+            'file', stream, length, filename: basename(f.path));
+        request.files.add(multipartFile);
+      }
+      var response = await request.send();
+      Response result = await http.Response.fromStream(response);
+      String a = result.body.replaceAll('}', '},');
+      a = a.replaceRange(a.length-2,a.length, '');
+      a = "[\n$a\n]";
+      final List jsonResponse = jsonDecode(a);
+      print('PRE-IPFS-HASH: ${jsonResponse[files.length]['Hash']}');
+      return jsonResponse[files.length]['Hash'];
+    } catch (e) {
+      print('ERRORE');
+      print(e);
+      return 'null';
+    }
+  }
+
   static Future<String?> downloadItemIPFS(String hash,String localFolder) async {
-    String username = FlutterConfig.get('INFURA_PROJECT_ID');
-    String password = FlutterConfig.get('INFURA_API_SECRET');
-    String basicAuth = 'Basic ${base64.encode(utf8.encode("$username:$password"))}';
     String tmpPath = await FileManagerModel.temporaryDirectoryPath;
     Directory('$tmpPath/$localFolder/').create();
     var list = List<int>.generate(100, (i) => i)..shuffle();
@@ -63,7 +93,7 @@ class IpfsClientModel {
     }
     var url = Uri.https('ipfs.infura.io:5001','/api/v0/get',{'arg':hash ,'output': '$tmpPath/$localFolder/'});
     var request = http.MultipartRequest("POST", url);
-    request.headers['Authorization'] = basicAuth;
+    request.headers['Authorization'] = _basicAuth;
     StreamedResponse response = await request.send();
     var result = await http.Response.fromStream(response);
 
@@ -77,4 +107,25 @@ class IpfsClientModel {
     }
     return null;
   }
+
+
+  static Future<String> uploadMultipleFileIPFS(Directory directory) async {
+
+    var url = Uri.https('ipfs.infura.io:5001', '/api/v0/add');
+    var request = http.MultipartRequest("POST", url);
+    request.headers['Authorization'] = _basicAuth;
+
+    File file = File(directory.path);
+    var stream = http.ByteStream(file.openRead());
+    var length = await file.length();
+
+    var multipartFile = http.MultipartFile('file', stream, length, filename: basename(file.path));
+    request.files.add(multipartFile);
+    var response = await request.send();
+    var result = await http.Response.fromStream(response);
+    var jsonResponse = jsonDecode(result.body);
+    //print('IPFS-HASH: ${jsonResponse['Hash']}');
+    return jsonResponse['Hash'];
+  }
+
 }

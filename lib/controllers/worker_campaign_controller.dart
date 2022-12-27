@@ -44,8 +44,8 @@ class WorkerCampaignController extends StatelessWidget {
             List current = snapshot.data[index];
 
             String name = current[0];
-            String lat = current[1].toString();
-            String lng = current[2].toString();
+            String lat = (int.parse(current[1].toString())/10000000).round().toString();
+            String lng = (int.parse(current[2].toString())/10000000).round().toString();
             String range = current[3].toString();
             String type = current[4];
             String crowdsourcer = current[5].toString();

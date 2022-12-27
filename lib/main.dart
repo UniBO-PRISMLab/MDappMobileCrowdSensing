@@ -4,7 +4,6 @@ import 'package:mobile_crowd_sensing/views/all_campaign_view.dart';
 import 'package:mobile_crowd_sensing/views/close_campaign_view.dart';
 import 'package:mobile_crowd_sensing/views/create_campaign_form_view.dart';
 import 'package:mobile_crowd_sensing/controllers/sourcer_past_campaigns_controller.dart';
-import 'package:mobile_crowd_sensing/controllers/upload_light_ipfs_controller.dart';
 import 'package:mobile_crowd_sensing/utils/worker_campaign_data_factory.dart';
 import 'package:mobile_crowd_sensing/utils/join_campaign_factory.dart';
 import 'package:mobile_crowd_sensing/views/camera_view.dart';
@@ -37,7 +36,6 @@ class MyApp extends StatelessWidget {
         '/sourcer': (context) => const SourcerView(),
         '/worker': (context) => const AllCampaignView(cameFrom: 'worker'),
         '/verifier': (context) => const AllCampaignView(cameFrom: 'verifier'),
-        '/upload_light': (context) => const UploadLightIpfsController(),
         '/map': (context) => const SearchPlacesView(),
         '/sourcer_campaigns_provider': (context) => const MyCampaignView(),
         '/sourcer_close_campaign_provider': (context) => const SourcerPastCampaignsController(),

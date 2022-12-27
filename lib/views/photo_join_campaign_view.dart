@@ -1,11 +1,12 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-
+import '../models/upload_ipfs_model.dart';
 import '../utils/join_campaign_factory.dart';
 import '../utils/styles.dart';
 import 'camera_view.dart';
 import '../models/session_model.dart';
+import 'dart:io';
 
 class PhotoJoinCampaignView extends JoinCampaignFactory {
   const PhotoJoinCampaignView({super.key});
@@ -20,7 +21,8 @@ class PhotoJoinCampaignViewState extends State<PhotoJoinCampaignView> {
 
   dynamic campaignSelectedData = {};
   Object? parameters;
-  List<Image> pictures = [];
+  List<File> pictures = [];
+  bool gate = true;
 
   @override
   Widget build(BuildContext context) {
@@ -28,11 +30,11 @@ class PhotoJoinCampaignViewState extends State<PhotoJoinCampaignView> {
     parameters = ModalRoute.of(context)!.settings.arguments;
     campaignSelectedData = jsonDecode(jsonEncode(parameters));
     SessionModel sessionData = SessionModel();
-    int _index = 0;
-
+    int index = 0;
     return  Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
+        backgroundColor: CustomColors.blue900(context),
         centerTitle: true,
         title: const Text('Go to catch some Photos'),
       ),
@@ -63,19 +65,17 @@ class PhotoJoinCampaignViewState extends State<PhotoJoinCampaignView> {
                         children: [
                           Text(
                             'Name: ',
-                            style: GoogleFonts.merriweather(
-                                fontWeight: FontWeight.bold, fontSize: 16),
-                          ),
+                            style: CustomTextStyle.spaceMonoBold(context)),
                           Text(
                             '${campaignSelectedData['name']}',
-                            style: GoogleFonts.inconsolata(fontSize: 16),
+                            style: CustomTextStyle.inconsolata(context),
                           ),
                         ],),
                       Row(
                         children: [
                           Text(
                             'Latitude: ',
-                            style: CustomTextStyle.merriweatherBold(context),
+                            style: CustomTextStyle.spaceMonoBold(context),
                           ),
                           Text(
                             '${campaignSelectedData['lat']}',
@@ -83,34 +83,32 @@ class PhotoJoinCampaignViewState extends State<PhotoJoinCampaignView> {
                           ),
                           Text(
                             ' Longitude: ',
-                            style: GoogleFonts.merriweather(
-                                fontWeight: FontWeight.bold, fontSize: 16),
-                          ),
+                            style: CustomTextStyle.spaceMonoBold(context)),
                           Text(
                             '${campaignSelectedData['lng']}',
-                            style: GoogleFonts.inconsolata(fontSize: 16),
+                            style: CustomTextStyle.inconsolata(context),
                           ),
                         ],),
                       Row(
                         children: [
                           Text(
                             'Range: ',
-                            style: CustomTextStyle.merriweatherBold(context),
+                            style: CustomTextStyle.spaceMonoBold(context),
                           ),
                           Text(
                             '${campaignSelectedData['range']}',
                             style: CustomTextStyle.inconsolata(context),
                           ),
                         ],),
-
                       ElevatedButton.icon(
                         onPressed: () async {
-
                             pictures = await Navigator.of(context).push(
                                 MaterialPageRoute(builder: (
                                     context) => const DataCollectionCameraView()));
                             setState(()  {
-                            print("DEBUG::::::::::::::::::::::::::::::::::::: NUMBER OF PHOTOS: ${pictures.length}");
+                            if (kDebugMode) {
+                              print("DEBUG::::::::::::::::::::::::::::::::::::: NUMBER OF PHOTOS: ${pictures.length}");
+                            }
                           });
                         },
                         icon: const Icon(
@@ -123,7 +121,9 @@ class PhotoJoinCampaignViewState extends State<PhotoJoinCampaignView> {
                         onPressed: () {
                           pictures.clear();
                           setState(() {
-                            print("DEBUG::::::::::::::::::::::::::::::::::::: PHOTOS CLEARED: ${pictures.length}");
+                            if (kDebugMode) {
+                              print("DEBUG::::::::::::::::::::::::::::::::::::: PHOTOS CLEARED: ${pictures.length}");
+                            }
                           });
 
                         },
@@ -137,39 +137,72 @@ class PhotoJoinCampaignViewState extends State<PhotoJoinCampaignView> {
                         children: [
                           Text(
                             'Waiting Files: ',
-                            style: GoogleFonts.merriweather(
-                                fontWeight: FontWeight.bold, fontSize: 16),
+                            style: CustomTextStyle.spaceMonoBold(context),
                           ),
                           Text(
                             '$counterFiles',
-                            style: GoogleFonts.inconsolata(fontSize: 16),
+                            style: CustomTextStyle.inconsolata(context),
                           ),
                         ],),
-                       Center(
-                         child:
-                           FloatingActionButton(onPressed: (){}, child: const Icon(Icons.file_upload_sharp)),
-
-                       ),
 
                       Center(
                         child: SizedBox(
                           height: 200, // card height
                           child: PageView.builder(
-                            itemCount: pictures.length,
-                            controller: PageController(viewportFraction: 0.7),
-                            onPageChanged: (int index) => setState(() => _index = index),
-                            itemBuilder: (_, i) {
-                              return Transform.scale(
-                                scale: i == _index ? 1 : 0.9,
-                                child: Card(
-                                        elevation: 6,
-                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                                        child: Center(child: pictures[i])
-                                      ),
-                              );}
+                              itemCount: pictures.length,
+                              controller: PageController(viewportFraction: 0.7),
+                              onPageChanged: (int index) => setState(() => index = index),
+                              itemBuilder: (_, i) {
+                                return Transform.scale(
+                                  scale: 1,
+                                  child: Card(
+                                      elevation: 6,
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                                      child: Image.file(pictures[i],fit: BoxFit.cover)
+                                  ),
+                                );}
                           ),
                         ),
                       ),
+                      (gate)?
+                       Center(
+                         child:
+                           FloatingActionButton(onPressed: () async {
+                             setState(() {
+                               gate = false;
+                             });
+                             bool res =
+                                 await UploadIpfsModel.uploadPhotos(pictures,
+                                 campaignSelectedData[
+                                 'contractAddress']);
+
+                             if (res) {
+                               setState(() {
+                                 ScaffoldMessenger.of(context)
+                                     .showSnackBar(SnackBar(
+                                     content: Text(
+                                       'Data uploaded',
+                                       style: CustomTextStyle.spaceMonoWhite(
+                                           context),
+                                     )));
+                                 Navigator.pushReplacementNamed(
+                                     context, '/worker');
+                                 gate = true;
+                               });
+                             } else {
+                               setState(() {
+                                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                     content: Text(
+                                       'An error occurred.',
+                                       style: CustomTextStyle.spaceMonoWhite(context),
+                                     )
+                                 ));
+                               });
+                             }
+                           }, child: const Icon(Icons.file_upload_sharp)),
+
+                       ): const Center( child: CircularProgressIndicator()),
+
                     ])
             )
           ],

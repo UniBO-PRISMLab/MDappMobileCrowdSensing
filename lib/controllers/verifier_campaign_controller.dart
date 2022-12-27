@@ -6,6 +6,7 @@ import '../models/search_places_model.dart';
 import '../models/session_model.dart';
 
 
+// ignore: must_be_immutable
 class VerifierCampaignController extends StatelessWidget {
 
   List<dynamic>? contractsAddresses;
@@ -90,13 +91,13 @@ class VerifierCampaignController extends StatelessWidget {
                             ]),
                             Row(children: <Widget>[
                               Text(
-                                "Latitude: $lat",
+                                "Latitude: ${(int.parse(lat!)/10000000).round()}",
                                 style: CustomTextStyle.spaceMono(context),
                               ),
                             ]),
                             Row(children: <Widget>[
                               Text(
-                                "Longitude: $lng",
+                                "Longitude: ${(int.parse(lng!)/10000000).round()}",
                                 style: CustomTextStyle.spaceMono(context),
                               ),
                             ]),

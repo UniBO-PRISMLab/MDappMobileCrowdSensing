@@ -181,7 +181,7 @@ class _SourcerCampaignViewState extends State<SourcerCampaignView> {
                                         Row(children: <Widget>[
                                           (latitude.isEmpty) ? GlobalText.loadingText(context)
                                               : Text(
-                                                  "Latitude: $latitude",
+                                                  "Latitude: ${(int.parse(latitude)/10000000).round()}",
                                                   style: GoogleFonts.spaceMono(
                                                       textStyle:
                                                           const TextStyle(
@@ -197,7 +197,7 @@ class _SourcerCampaignViewState extends State<SourcerCampaignView> {
                                         Row(children: <Widget>[
                                           (longitude.isEmpty) ? GlobalText.loadingText(context)
                                               : Text(
-                                                  "Longitude: $longitude",
+                                                  "Longitude: ${(int.parse(longitude)/10000000).round()}",
                                                   style: CustomTextStyle.spaceMono(context)
                                                 ),
                                         ]),
