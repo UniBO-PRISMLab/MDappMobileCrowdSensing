@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:mobile_crowd_sensing/models/session_model.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -36,8 +37,11 @@ class SmartContractModel extends CustomTransactionSender{
       launchUrlString(sessionData.uri, mode: LaunchMode.externalApplication);
       final txBytes = await sendTransaction(transaction);
       return txBytes;
-    } catch (error) {
-      print('\x1B[31m [queryTransaction]:::::::: $error\x1B[0m');
+    } catch (e) {
+      if (kDebugMode) {
+        print('\x1B[31m [queryTransaction]:::::::: $e\x1B[0m');
+      }
+      return e.toString();
     }
   }
 
@@ -55,8 +59,10 @@ class SmartContractModel extends CustomTransactionSender{
       );
       return hash;
     } catch (e) {
-      print('\x1B[31m function-[sendTransaction] $e\x1B[0m');
-      return 'null';
+      if (kDebugMode) {
+        print('\x1B[31m function-[sendTransaction] $e\x1B[0m');
+      }
+      return e.toString();
     }
   }
 
@@ -77,10 +83,12 @@ class SmartContractModel extends CustomTransactionSender{
       //print('DEBUG:::::::::::::::::::::::::::[queryCall] result:  $res');
 
       return res;
-    } catch (error) {
-      print('\x1B[31m$error\x1B[0m');
+    } catch (e) {
+      if (kDebugMode) {
+        print('\x1B[31m$e\x1B[0m');
+      }
+      return null;
     }
-    return null;
   }
 
   @override

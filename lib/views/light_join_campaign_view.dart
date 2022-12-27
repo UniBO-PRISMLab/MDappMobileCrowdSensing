@@ -79,7 +79,8 @@ class LightJoinCampaignViewState extends State<LightJoinCampaignView> {
                       children: [
                         Text('Latitude: ',
                             style: CustomTextStyle.merriweatherBold(context)),
-                        Text('${(campaignSelectedData['lat'] * 10000000).round()}',
+                        Text(
+                            '${(campaignSelectedData['lat'] * 10000000).round()}',
                             style: CustomTextStyle.inconsolata(context)),
                         Text('Longitude: ',
                             style: CustomTextStyle.merriweatherBold(context)),
@@ -153,37 +154,49 @@ class LightJoinCampaignViewState extends State<LightJoinCampaignView> {
                                   ]),
                                   FloatingActionButton(
                                       onPressed: () async {
-                                        bool res =
+                                        String? res =
                                             await UploadIpfsModel.uploadLight(
                                                 lights,
                                                 averageRelevation,
                                                 campaignSelectedData[
                                                     'contractAddress']);
 
-                                        if (res) {
+                                        if (res != null) {
+                                          if (res == 'Data uploaded') {
+                                            setState(() {
+                                              lights.clear();
+                                              averageRelevation = 0;
+                                              sum = 0;
+                                              activeSensor = false;
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(SnackBar(
+                                                      content: Text(
+                                                'Data uploaded',
+                                                style: CustomTextStyle
+                                                    .spaceMonoWhite(context),
+                                              )));
+                                              Navigator.pushReplacementNamed(
+                                                  context, '/worker');
+                                            });
+                                          }
                                           setState(() {
-                                            lights.clear();
-                                            averageRelevation = 0;
-                                            sum = 0;
-                                            activeSensor = false;
                                             ScaffoldMessenger.of(context)
                                                 .showSnackBar(SnackBar(
                                                     content: Text(
-                                              'Data uploaded',
-                                              style: CustomTextStyle.spaceMonoWhite(
-                                                  context),
+                                              res,
+                                              style: CustomTextStyle
+                                                  .spaceMonoWhite(context),
                                             )));
-                                            Navigator.pushReplacementNamed(
-                                                context, '/worker');
                                           });
                                         } else {
                                           setState(() {
-                                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                                content: Text(
-                                                  'An error occurred.',
-                                                  style: CustomTextStyle.spaceMonoWhite(context),
-                                                )
-                                            ));
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(SnackBar(
+                                                    content: Text(
+                                              'Unhandled Error.',
+                                              style: CustomTextStyle
+                                                  .spaceMonoWhite(context),
+                                            )));
                                           });
                                         }
                                       },

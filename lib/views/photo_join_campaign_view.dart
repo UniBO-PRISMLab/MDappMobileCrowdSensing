@@ -23,14 +23,14 @@ class PhotoJoinCampaignViewState extends State<PhotoJoinCampaignView> {
   Object? parameters;
   List<File> pictures = [];
   bool gate = true;
-
+  bool visible = false;
   @override
   Widget build(BuildContext context) {
     int counterFiles = pictures.length;
     parameters = ModalRoute.of(context)!.settings.arguments;
     campaignSelectedData = jsonDecode(jsonEncode(parameters));
     SessionModel sessionData = SessionModel();
-    int index = 0;
+    (pictures.isNotEmpty)? visible = true : visible=false;
     return  Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -164,45 +164,62 @@ class PhotoJoinCampaignViewState extends State<PhotoJoinCampaignView> {
                           ),
                         ),
                       ),
-                      (gate)?
-                       Center(
-                         child:
-                           FloatingActionButton(onPressed: () async {
-                             setState(() {
-                               gate = false;
-                             });
-                             bool res =
-                                 await UploadIpfsModel.uploadPhotos(pictures,
-                                 campaignSelectedData[
-                                 'contractAddress']);
+                      (visible)?
+                        (gate) ?
+                        Center(
+                          child:
+                          FloatingActionButton(onPressed: () async {
+                            setState(() {
+                              gate = false;
+                            });
+                            String? res =
+                            await UploadIpfsModel.uploadPhotos(pictures,
+                                campaignSelectedData[
+                                'contractAddress']);
 
-                             if (res) {
-                               setState(() {
-                                 ScaffoldMessenger.of(context)
-                                     .showSnackBar(SnackBar(
-                                     content: Text(
-                                       'Data uploaded',
-                                       style: CustomTextStyle.spaceMonoWhite(
-                                           context),
-                                     )));
-                                 Navigator.pushReplacementNamed(
-                                     context, '/worker');
-                               });
-                             } else {
-                               setState(() {
-                                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                     content: Text(
-                                       'An error occurred.',
-                                       style: CustomTextStyle.spaceMonoWhite(context),
-                                     )
-                                 ));
-                                 gate = true;
-                               });
-                             }
-                           }, child: const Icon(Icons.file_upload_sharp)),
+                            if (res != null) {
+                              if (res == 'Data uploaded') {
+                                setState(() {
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(SnackBar(
+                                      content: Text(
+                                        res,
+                                        style: CustomTextStyle.spaceMonoWhite(
+                                            context),
+                                      )));
+                                  Navigator.pushReplacementNamed(
+                                      context, '/worker');
+                                });
+                              } else {
+                                setState(() {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                          content: Text(
+                                            res,
+                                            style: CustomTextStyle
+                                                .spaceMonoWhite(context),
+                                          )
+                                      ));
+                                  gate = true;
+                                });
+                              }
+                            } else {
+                              setState(() {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                        content: Text(
+                                          'Unhandled Error.',
+                                          style: CustomTextStyle.spaceMonoWhite(
+                                              context),
+                                        )
+                                    ));
+                                gate = true;
+                              });
+                            }
+                          }, child: const Icon(Icons.file_upload_sharp)),
 
-                       ): const Center( child: CircularProgressIndicator()),
-
+                        ) : const Center(child: CircularProgressIndicator())
+                       : Container()
                     ])
             )
           ],

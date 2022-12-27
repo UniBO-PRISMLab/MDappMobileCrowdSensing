@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:mobile_crowd_sensing/models/file_manager_model.dart';
 import 'package:path/path.dart';
 import 'package:http/http.dart' as http;
@@ -15,7 +16,9 @@ class IpfsClientModel {
 
   static Future<String> uploadIPFS(File file) async {
     String fileContent = await file.readAsString();
-    print("FILE that i try to upload: $fileContent");
+    if (kDebugMode) {
+      print("FILE that i try to upload: $fileContent");
+    }
     var stream = http.ByteStream(file.openRead());
     var length = await file.length();
     var url = Uri.https('ipfs.infura.io:5001','/api/v0/add');
@@ -30,22 +33,31 @@ class IpfsClientModel {
     return jsonResponse['Hash'];
   }
 
-  static Future<String> getOnlyHashIPFS(File file) async {
-    var stream = http.ByteStream(file.openRead());
-    var length = await file.length();
-    var url = Uri.https('ipfs.infura.io:5001','/api/v0/add',{'only-hash':'true'});
-    var request = http.MultipartRequest("POST", url);
-    request.headers['Authorization'] = _basicAuth;
-    var multipartFile = http.MultipartFile('file', stream, length, filename: basename(file.path));
-    request.files.add(multipartFile);
-    var response = await request.send();
-    var result = await http.Response.fromStream(response);
-    var jsonResponse = jsonDecode(result.body);
-    print('PRE-IPFS-HASH: ${jsonResponse['Hash']}');
-    return jsonResponse['Hash'];
+  static Future<String?> getOnlyHashIPFS(File file) async {
+    try {
+      var stream = http.ByteStream(file.openRead());
+      var length = await file.length();
+      var url = Uri.https('ipfs.infura.io:5001','/api/v0/add',{'only-hash':'true'});
+      var request = http.MultipartRequest("POST", url);
+      request.headers['Authorization'] = _basicAuth;
+      var multipartFile = http.MultipartFile('file', stream, length, filename: basename(file.path));
+      request.files.add(multipartFile);
+      var response = await request.send();
+      var result = await http.Response.fromStream(response);
+      var jsonResponse = jsonDecode(result.body);
+      if (kDebugMode) {
+        print('PRE-IPFS-HASH: ${jsonResponse['Hash']}');
+      }
+      return jsonResponse['Hash'];
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+      return null;
+    }
   }
 
-  static Future<String> getOnlyHashIPFSDirectory(List<File> files) async {
+  static Future<String?> getOnlyHashIPFSDirectory(List<File> files) async {
     try {
       late dynamic stream;
       late dynamic length;
@@ -73,12 +85,15 @@ class IpfsClientModel {
       a = a.replaceRange(a.length-2,a.length, '');
       a = "[\n$a\n]";
       final List jsonResponse = jsonDecode(a);
-      print('PRE-IPFS-HASH: ${jsonResponse[files.length]['Hash']}');
+      if (kDebugMode) {
+        print('PRE-IPFS-HASH: ${jsonResponse[files.length]['Hash']}');
+      }
       return jsonResponse[files.length]['Hash'];
     } catch (e) {
-      print('ERRORE');
-      print(e);
-      return 'null';
+      if (kDebugMode) {
+        print(e);
+      }
+      return null;
     }
   }
 
@@ -109,23 +124,43 @@ class IpfsClientModel {
   }
 
 
-  static Future<String> uploadMultipleFileIPFS(Directory directory) async {
+  static Future<String?> uploadMultipleFileIPFS(List<File> files) async {
+    try {
+      late dynamic stream;
+      late dynamic length;
+      late dynamic multipartFile;
 
-    var url = Uri.https('ipfs.infura.io:5001', '/api/v0/add');
-    var request = http.MultipartRequest("POST", url);
-    request.headers['Authorization'] = _basicAuth;
-
-    File file = File(directory.path);
-    var stream = http.ByteStream(file.openRead());
-    var length = await file.length();
-
-    var multipartFile = http.MultipartFile('file', stream, length, filename: basename(file.path));
-    request.files.add(multipartFile);
-    var response = await request.send();
-    var result = await http.Response.fromStream(response);
-    var jsonResponse = jsonDecode(result.body);
-    //print('IPFS-HASH: ${jsonResponse['Hash']}');
-    return jsonResponse['Hash'];
+      var url = Uri.https('ipfs.infura.io:5001', '/api/v0/add',
+          {
+            'recursive': 'true',
+            'wrap-with-directory': 'true',
+            'pin': 'true'
+          });
+      var request = http.MultipartRequest("POST", url);
+      request.headers['Authorization'] = _basicAuth;
+      for (File f in files) {
+        stream = http.ByteStream(f.openRead());
+        length = await f.length();
+        multipartFile = http.MultipartFile(
+            'file', stream, length, filename: basename(f.path));
+        request.files.add(multipartFile);
+      }
+      var response = await request.send();
+      Response result = await http.Response.fromStream(response);
+      String a = result.body.replaceAll('}', '},');
+      a = a.replaceRange(a.length-2,a.length, '');
+      a = "[\n$a\n]";
+      final List jsonResponse = jsonDecode(a);
+      if (kDebugMode) {
+        print('PRE-IPFS-HASH: ${jsonResponse[files.length]['Hash']}');
+      }
+      return jsonResponse[files.length]['Hash'];
+    } catch (e) {
+      if (kDebugMode) {
+        print(e);
+      }
+      return null;
+    }
   }
 
 }
