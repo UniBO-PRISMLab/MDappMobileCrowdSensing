@@ -187,7 +187,6 @@ class PhotoJoinCampaignViewState extends State<PhotoJoinCampaignView> {
                                      )));
                                  Navigator.pushReplacementNamed(
                                      context, '/worker');
-                                 gate = true;
                                });
                              } else {
                                setState(() {
@@ -197,6 +196,7 @@ class PhotoJoinCampaignViewState extends State<PhotoJoinCampaignView> {
                                        style: CustomTextStyle.spaceMonoWhite(context),
                                      )
                                  ));
+                                 gate = true;
                                });
                              }
                            }, child: const Icon(Icons.file_upload_sharp)),
