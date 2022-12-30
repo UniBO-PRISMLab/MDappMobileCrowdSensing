@@ -69,6 +69,7 @@ class LightJoinCampaignViewState extends State<CampaignDataPhotoView> {
     return Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
+          backgroundColor: CustomColors.blue900(context),
           centerTitle: true,
           title: Text(campaignSelectedData['name']),
         ),
