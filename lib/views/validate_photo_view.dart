@@ -26,7 +26,7 @@ class _VerifierCampaignDataLightViewState extends State<ValidatePhotoView> {
 
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.blue[900],
+          backgroundColor: Colors.red[900],
           title: Text(jsonParameters["name"]),
           centerTitle: true,
         ),

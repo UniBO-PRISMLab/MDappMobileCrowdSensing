@@ -59,8 +59,7 @@ class _VerifierCampaignDataLightControllerState
     VerifierCampaignDataModel.getData(contractAddress).then((counters) => {
           VerifierCampaignDataModel.getDataFileInfo(contractAddress)
               .then((info) => {
-                    if (mounted)
-                      {
+                    if (mounted) {
                         setState(() {
                           _formatData(counters, info);
                         })

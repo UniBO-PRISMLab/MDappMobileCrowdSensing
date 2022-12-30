@@ -27,7 +27,7 @@ class ValidateLightControllerState extends State<ValidateLightController> {
   List<double> lights = [];
 
   _prepareData() async {
-    data = await ValidateModel.downloadFiles(hash);
+    data = await ValidateModel.downloadLightFiles(hash);
     downloadGate = !downloadGate;
     time = DateTime.fromMillisecondsSinceEpoch(int.parse(data![0])).toString();
     relevation = double.parse(data![1]).toString();

@@ -8,6 +8,7 @@ import 'package:http/http.dart';
 import 'package:tar/tar.dart';
 import 'dart:async';
 import 'dart:io';
+import 'package:archive/archive_io.dart';
 
 class IpfsClientModel {
   static final String _username = FlutterConfig.get('INFURA_PROJECT_ID');
@@ -106,23 +107,47 @@ class IpfsClientModel {
     for (int i = 0; i<names.length; i++) {
       name += names[i].toString();
     }
-    var url = Uri.https('ipfs.infura.io:5001','/api/v0/get',{'arg':hash ,'output': '$tmpPath/$localFolder/'});
+    var url = Uri.https('ipfs.infura.io:5001','/api/v0/get',{'arg':hash,'output': '$tmpPath/$localFolder/'});
     var request = http.MultipartRequest("POST", url);
     request.headers['Authorization'] = _basicAuth;
     StreamedResponse response = await request.send();
     var result = await http.Response.fromStream(response);
-
     if (result.statusCode == 200) {
       File file = await File("$tmpPath/$localFolder/$name").writeAsBytes(result.bodyBytes);
       TarReader reader = TarReader(file.openRead());
       while (await reader.moveNext()) {
-        final entry = reader.current;
+        TarEntry entry = reader.current;
         return await entry.contents.transform(utf8.decoder).first;
       }
     }
     return null;
   }
 
+  static Future<Stream<FileSystemEntity>?> downloadDirectoryIPFS(String hash,String localFolder) async {
+    String tmpPath = await FileManagerModel.temporaryDirectoryPath;
+    Directory('$tmpPath/$localFolder/').create();
+    var list = List<int>.generate(100, (i) => i)..shuffle();
+    List<int> names = list.take(5).toList();
+    String name = '';
+    for (int i = 0; i<names.length; i++) {
+      name += names[i].toString();
+    }
+    name += '.tar';
+    var url = Uri.https('ipfs.infura.io:5001','/api/v0/get',{'arg':hash,'output': '$tmpPath/$localFolder/'});
+    var request = http.MultipartRequest("POST", url);
+    request.headers['Authorization'] = _basicAuth;
+    StreamedResponse response = await request.send();
+    var result = await http.Response.fromStream(response);
+    if (result.statusCode == 200) {
+      File compressedFile = await File("$tmpPath/$localFolder/$name").writeAsBytes(result.bodyBytes);
+      Directory dir = Directory("$tmpPath/$localFolder/out");
+      extractFileToDisk(compressedFile.path, dir.path);
+
+      Directory folderUncompressed = await dir.list().first as Directory;
+      return folderUncompressed.list();
+    }
+    return null;
+  }
 
   static Future<String?> uploadMultipleFileIPFS(List<File> files) async {
     try {

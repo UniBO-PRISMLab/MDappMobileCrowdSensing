@@ -35,7 +35,8 @@ class WorkerCampaignController extends StatelessWidget {
 
   // sta qui
   _buildPage(BuildContext context, AsyncSnapshot snapshot) {
-    return Container(
+    return (snapshot.data.length>0)?
+    Container(
       padding: const EdgeInsets.fromLTRB(10, 30, 10, 10),
       width: double.maxFinite,
       child: ListView.builder(
@@ -149,7 +150,7 @@ class WorkerCampaignController extends StatelessWidget {
               ),
             );
           }),
-    );
+    ): Center(child:Text("No Campaign active at the moment.",style: CustomTextStyle.spaceMono(context),));
   }
 
 

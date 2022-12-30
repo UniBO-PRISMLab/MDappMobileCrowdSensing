@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile_crowd_sensing/utils/styles.dart';
 
 class SourcerView extends StatefulWidget {
@@ -25,7 +24,7 @@ class _SourcerViewState extends State<SourcerView> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [TextButton.icon(
                 onPressed: () {
-                  Navigator.pushReplacementNamed(context,'/campaignForm');
+                  Navigator.pushNamed(context,'/campaignForm');
                 },
                 icon: const Icon(Icons.create),
                 label: Text(
@@ -36,7 +35,7 @@ class _SourcerViewState extends State<SourcerView> {
 
                 TextButton.icon(
                   onPressed: () {
-                    Navigator.pushReplacementNamed(context,'/sourcer_campaigns_provider');
+                    Navigator.pushNamed(context,'/sourcer_campaigns_provider');
                   },
                   icon: const Icon(Icons.dataset_rounded),
                   label: Text('Current Campaign', style: CustomTextStyle.spaceMono(context))
@@ -45,7 +44,7 @@ class _SourcerViewState extends State<SourcerView> {
 
                 TextButton.icon(
                     onPressed: () {
-                          Navigator.pushReplacementNamed(context,'/sourcer_close_campaign_provider');
+                          Navigator.pushNamed(context,'/sourcer_close_campaign_provider');
                     },
                     icon: const Icon(Icons.dataset_rounded),
                     label: Text(

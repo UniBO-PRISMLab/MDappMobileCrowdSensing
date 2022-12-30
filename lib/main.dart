@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_config/flutter_config.dart';
+import 'package:mobile_crowd_sensing/utils/verifier_campaign_data_factory.dart';
 import 'package:mobile_crowd_sensing/views/all_campaign_view.dart';
 import 'package:mobile_crowd_sensing/views/close_campaign_view.dart';
 import 'package:mobile_crowd_sensing/views/create_campaign_form_view.dart';
@@ -40,10 +41,11 @@ class MyApp extends StatelessWidget {
         '/sourcer_campaigns_provider': (context) => const MyCampaignView(),
         '/sourcer_close_campaign_provider': (context) => const SourcerPastCampaignsController(),
         '/sourcer_close_campaign_service_provider': (context) => const CloseCampaignView(),
+
         '/join_campaign':(context) => JoinCampaignFactory.fromTypeName(context),
-        '/camera':(context) => const DataCollectionCameraView(),
         '/data_campaign':(context) => WorkerDataCampaignFactory.fromTypeName(context),
-        "/verifier_campaign_data":(context) => const VerifierCampaignDataLightView(),
+        "/verifier_campaign_data":(context) => VerifierDataCampaignFactory.fromTypeName(context),
+        '/camera':(context) => const DataCollectionCameraView(),
         '/validate_light_view':(context) => const ValidateLightView(),
         '/validate_photo_view':(context) => const ValidatePhotoView(),
       },
