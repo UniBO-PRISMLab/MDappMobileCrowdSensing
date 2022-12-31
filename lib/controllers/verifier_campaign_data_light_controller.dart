@@ -30,11 +30,6 @@ class _VerifierCampaignDataLightControllerState
       contractAddress,
       readebleLocation;
 
-  @override
-  void initState() {
-    super.initState();
-  }
-
   _formatData(String counters, List<dynamic>? info) {
     jsonCounters = jsonDecode(counters);
     fileCount = jsonCounters['fileCount'].toString();

@@ -5,7 +5,6 @@ import '../utils/styles.dart';
 import '../models/search_places_model.dart';
 import '../models/session_model.dart';
 
-
 // ignore: must_be_immutable
 class VerifierCampaignController extends StatelessWidget {
 

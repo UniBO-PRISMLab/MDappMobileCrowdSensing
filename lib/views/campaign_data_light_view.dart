@@ -34,7 +34,7 @@ class LightJoinCampaignViewState extends State<CampaignDataLightView> {
   }
 
   _downloadFiles(hashToDownload) async {
-    print("DEBUG ::::::::::::::::::::::::::::::::::::::: [getFileIPFSHash]: $hashToDownload");
+    //print("DEBUG ::::::::::::::::::::::::::::::::::::::: [getFileIPFSHash]: $hashToDownload");
     String? res = await IpfsClientModel.downloadItemIPFS(hashToDownload,'lights');
     if (res != null) {
       List<String> value = res.split('/');
@@ -52,9 +52,9 @@ class LightJoinCampaignViewState extends State<CampaignDataLightView> {
   _preparePage() async {
     List<dynamic>? allfilesPathRes = await smartContract.queryCall('getValidFiles', [], null);
     if (allfilesPathRes != null) {
-      print("CHECK this: ${allfilesPathRes[0]}");
+      //print("CHECK this: ${allfilesPathRes[0]}");
       for (dynamic element in allfilesPathRes[0]) {
-        print('element: '+ element);
+        //print('element: '+ element);
         _downloadFiles(element);
       }
     }

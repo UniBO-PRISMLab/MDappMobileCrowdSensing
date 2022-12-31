@@ -11,11 +11,11 @@ import 'package:mobile_crowd_sensing/views/camera_view.dart';
 import 'package:mobile_crowd_sensing/views/home_view.dart';
 import 'package:mobile_crowd_sensing/views/login_view.dart';
 import 'package:mobile_crowd_sensing/views/my_campaign_view.dart';
+import 'package:mobile_crowd_sensing/views/sourcer_campaign_view.dart';
 import 'package:mobile_crowd_sensing/views/sourcer_view.dart';
 import 'package:mobile_crowd_sensing/views/search_places_view.dart';
 import 'package:mobile_crowd_sensing/views/validate_light_view.dart';
 import 'package:mobile_crowd_sensing/views/validate_photo_view.dart';
-import 'package:mobile_crowd_sensing/views/verifier_campaign_data_light_view.dart';
 
 Future<void> main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -48,6 +48,7 @@ class MyApp extends StatelessWidget {
         '/camera':(context) => const DataCollectionCameraView(),
         '/validate_light_view':(context) => const ValidateLightView(),
         '/validate_photo_view':(context) => const ValidatePhotoView(),
+        '/current_campaign':(context) => const SourcerCampaignView(),
       },
     );
   }

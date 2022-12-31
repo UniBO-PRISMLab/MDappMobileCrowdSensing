@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:mobile_crowd_sensing/models/my_campaign_model.dart';
 import 'package:mobile_crowd_sensing/utils/spalsh_screens.dart';
 import '../views/dialog_view.dart';
-import '../views/sourcer_campaign_view.dart';
 
 class MyCampaignController extends StatefulWidget {
   const MyCampaignController({super.key});
@@ -25,16 +24,21 @@ class _MyCampaignControllerState extends State<MyCampaignController> {
   }
 
   _getData() async {
-    await MyCampaignModel.getMyCampaign(context).then((value) => {
-      _goTo(value)
-    });
-  }
-
-  _goTo(result) {
-    if (result != null) {
-      setState(() {
-        Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) => SourcerCampaignView(contractAddress: result,)));
-      });
+    List result = [];
+    String? address = (await MyCampaignModel.getMyCampaign())?[0].toString();
+    if(address!=null) {
+      List? data = await MyCampaignModel.getCampaignData(address);
+      if(data != null) {
+        result = data;
+        result.add(address);
+        _goTo(result);
+      } else {
+        setState(() {
+          Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (BuildContext context) => const DialogView(goTo: "sourcer", message: "Error. can't retrieve data for the current campaign.")));
+        });
+      }
     } else {
       setState(() {
         Navigator.pushReplacement(
@@ -42,6 +46,22 @@ class _MyCampaignControllerState extends State<MyCampaignController> {
             MaterialPageRoute(builder: (BuildContext context) => const DialogView(goTo: "sourcer", message: 'No Campaign Aviable')));
       });
     }
+  }
+
+  _goTo(List result) {
+      setState(() {
+        Navigator.pushReplacementNamed(context,'/current_campaign',arguments: {
+          'name': result.first,
+          'lat': result[1].toString(),
+          'lng': result[2].toString(),
+          'range': result[3].toString(),
+          'campaignType': result[4].toString(),
+          'addressCrowdSourcer': result[5].toString(),
+          'fileCount': result[6].toString(),
+          'redebleLocation': result[7].toString(),
+          'contractAddress': result.last.toString(),
+        });
+      });
   }
 
 
