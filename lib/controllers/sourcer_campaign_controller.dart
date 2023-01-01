@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../models/sourcer_campaign_model.dart';
 import '../utils/styles.dart';
 
@@ -155,7 +154,7 @@ class _SourcerCampaignControllerState extends State<SourcerCampaignController> {
                           child: const Text('Yes'),
                           onPressed: () {
                             Navigator.of(ctx).pop(true);
-                            Navigator.pushReplacementNamed(context,
+                            Navigator.popAndPushNamed(context,
                                 "/sourcer_close_campaign_service_provider",
                                 arguments: {
                                   'address': contractAddress.toString(),

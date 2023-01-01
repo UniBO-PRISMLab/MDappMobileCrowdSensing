@@ -24,8 +24,6 @@ class SmartContractModel extends CustomTransactionSender{
 
   Future<dynamic> queryTransaction(String functionName, List<dynamic> args, BigInt? value) async {
     try {
-      //sessionData.checkConnection();
-      //print("[Transaction]:::::::::::::::::::::::::::::::::::::: [function]: $functionName [args]: $args");
       final contract = await loadContract(contractAddress);
       final ethFunction = contract.function(functionName);
       final transaction = Transaction.callContract(
@@ -68,20 +66,14 @@ class SmartContractModel extends CustomTransactionSender{
 
   Future<List<dynamic>?> queryCall(String functionName, List<dynamic> args, BigInt? value) async {
     try {
-      //sessionData.checkConnection();
       final contract = await loadContract(contractAddress);
       final ethFunction = contract.function(functionName);
-      //print('DEBUG:::::::::::::::::::::::::::[queryCall] transaction:  $functionName, $args, $value');
-
       final result = await sessionData.ethClient.call(
           sender: EthereumAddress.fromHex(sessionData.getAccountAddress()),
           contract: contract,
           function: ethFunction,
           params: args);
-
       List<dynamic> res = result;
-      //print('DEBUG:::::::::::::::::::::::::::[queryCall] result:  $res');
-
       return res;
     } catch (e) {
       if (kDebugMode) {

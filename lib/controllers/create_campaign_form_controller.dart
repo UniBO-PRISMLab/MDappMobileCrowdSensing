@@ -171,7 +171,7 @@ class _CreateCampaignFormControllerState extends State<CreateCampaignFormControl
                               'Processing Data',
                               style: CustomTextStyle.spaceMono(context),
                             )));
-                        bool res = await CreateCampaignModel.createCampaign(
+                        String res = await CreateCampaignModel.createCampaign(
                             context,
                             titleController.text,
                             BigInt.from((10000000 * lat!)),
@@ -181,7 +181,7 @@ class _CreateCampaignFormControllerState extends State<CreateCampaignFormControl
                             BigInt.from(_howMuch)
                         );
 
-                        if(res) {
+                        if(res == 'Campaign Created') {
                           setState(() {
                             ScaffoldMessenger.of(context)
                                 .showSnackBar(SnackBar(
@@ -196,7 +196,7 @@ class _CreateCampaignFormControllerState extends State<CreateCampaignFormControl
                             ScaffoldMessenger.of(context)
                                 .showSnackBar(SnackBar(
                                 content: Text(
-                                  'An Error occurred',
+                                  res,
                                   style: CustomTextStyle.spaceMonoWhite(context),
                                 )));
                           });
