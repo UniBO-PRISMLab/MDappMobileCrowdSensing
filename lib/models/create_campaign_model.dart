@@ -11,7 +11,6 @@ class CreateCampaignModel {
       SmartContractModel smartContractViewModel = SmartContractModel(FlutterConfig.get('MCSfactory_CONTRACT_ADDRESS'), 'MCSfactory', 'assets/abi.json', provider: sessionData.getProvider());
       List args = [name, lat, lng, range,type];
       dynamic res = await smartContractViewModel.queryTransaction('createCampaign', args,value);
-      print("DEBBY_______________________ ${res.toString()}");
       if (res.toString() != "null" &&
           res.toString() != "0x0000000000000000000000000000000000000000" &&
           !res.startsWith('JSON-RPC error')) {

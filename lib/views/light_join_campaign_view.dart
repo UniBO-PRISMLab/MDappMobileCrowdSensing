@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:environment_sensors/environment_sensors.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile_crowd_sensing/models/session_model.dart';
 import '../models/upload_ipfs_model.dart';
 import '../utils/join_campaign_factory.dart';
@@ -37,6 +36,7 @@ class LightJoinCampaignViewState extends State<LightJoinCampaignView> {
     return Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
+          backgroundColor: CustomColors.blue900(context),
           centerTitle: true,
           title: const Text('Go to catch the Ambient Light'),
         ),
@@ -65,13 +65,10 @@ class LightJoinCampaignViewState extends State<LightJoinCampaignView> {
                     Row(
                       children: [
                         Text(
-                          'Name: ',
-                          style: GoogleFonts.merriweather(
-                              fontWeight: FontWeight.bold, fontSize: 16),
-                        ),
+                          'Name: ', style: CustomTextStyle.merriweatherBold(context)),
                         Text(
                           '${campaignSelectedData['name']}',
-                          style: GoogleFonts.inconsolata(fontSize: 16),
+                          style: CustomTextStyle.inconsolata(context),
                         ),
                       ],
                     ),
@@ -80,13 +77,13 @@ class LightJoinCampaignViewState extends State<LightJoinCampaignView> {
                         Text('Latitude: ',
                             style: CustomTextStyle.merriweatherBold(context)),
                         Text(
-                            '${(campaignSelectedData['lat'] * 10000000).round()}',
+                            '${campaignSelectedData['lat']}',
                             style: CustomTextStyle.inconsolata(context)),
                         Text('Longitude: ',
                             style: CustomTextStyle.merriweatherBold(context)),
                         Text(
-                          '${(campaignSelectedData['lng'] * 10000000).round()}',
-                          style: GoogleFonts.inconsolata(fontSize: 16),
+                          '${campaignSelectedData['lng']}',
+                          style: CustomTextStyle.inconsolata(context),
                         ),
                       ],
                     ),
@@ -102,7 +99,8 @@ class LightJoinCampaignViewState extends State<LightJoinCampaignView> {
                         ),
                       ],
                     ),
-                    TextButton(
+                   Center(child: TextButton(
+                     style: ButtonStyle(backgroundColor: MaterialStateProperty.all(CustomColors.blue900(context))),
                         onPressed: () async {
                           bool lightAvailable = await environmentSensors
                               .getSensorAvailable(SensorType.Light);
@@ -122,7 +120,7 @@ class LightJoinCampaignViewState extends State<LightJoinCampaignView> {
                             });
                           }
                         },
-                        child: const Text('Take data')),
+                        child: Text('Take data',style: CustomTextStyle.spaceMonoWhite(context),))),
                     activeSensor
                         ? StreamBuilder<double>(
                             stream: environmentSensors.light,
@@ -137,12 +135,9 @@ class LightJoinCampaignViewState extends State<LightJoinCampaignView> {
                                 return Column(children: [
                                   Row(children: [
                                     Text('Average Ambient Light: ',
-                                        style: GoogleFonts.merriweather(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 16)),
+                                        style: CustomTextStyle.merriweatherBold(context)),
                                     Text('$averageRelevation',
-                                        style: GoogleFonts.inconsolata(
-                                            fontSize: 16))
+                                        style: CustomTextStyle.inconsolata(context))
                                   ]),
                                   Row(children: [
                                     Text('Number of relevations: ',

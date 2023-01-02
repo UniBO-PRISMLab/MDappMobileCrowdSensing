@@ -152,7 +152,8 @@ class ValidateLightControllerState extends State<ValidateLightController> {
                                                 'Data verified',
                                                 style: CustomTextStyle.spaceMonoWhite(context),
                                               )));
-                                          Navigator.pushReplacementNamed(context, '/home');
+                                          Navigator.of(context)
+                                              .pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false);
                                         } else {
                                           ScaffoldMessenger.of(context)
                                               .showSnackBar(SnackBar(
@@ -176,7 +177,8 @@ class ValidateLightControllerState extends State<ValidateLightController> {
                                                 'Data verified',
                                                 style: CustomTextStyle.spaceMonoWhite(context),
                                               )));
-                                          Navigator.pushReplacementNamed(context, '/home');
+                                          Navigator.of(context)
+                                              .pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false);
                                         } else {
                                           ScaffoldMessenger.of(context)
                                               .showSnackBar(SnackBar(

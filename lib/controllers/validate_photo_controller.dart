@@ -68,7 +68,7 @@ class ValidatePhotoState extends State<ValidatePhotoController> {
                     alignment: WrapAlignment.spaceAround, // set your alignment
                     children: [
                       Row(children: [
-                        Text('Number of relevations: ',
+                        Text('Number of photos: ',
                             style: CustomTextStyle.merriweatherBold(context)),
                         Text('${pictures.length}',
                             style: CustomTextStyle.inconsolata(context))
@@ -111,8 +111,8 @@ class ValidatePhotoState extends State<ValidatePhotoController> {
                                   style:
                                       CustomTextStyle.spaceMonoWhite(context),
                                 )));
-                                Navigator.pushReplacementNamed(
-                                    context, '/home');
+                                Navigator.of(context)
+                                    .pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false);
                               });
                             } else {
                               setState(() {
@@ -144,8 +144,8 @@ class ValidatePhotoState extends State<ValidatePhotoController> {
                                   style:
                                       CustomTextStyle.spaceMonoWhite(context),
                                 )));
-                                Navigator.pushReplacementNamed(
-                                    context, '/home');
+                                Navigator.of(context)
+                                    .pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false);
                               });
                             } else {
                               setState(() {

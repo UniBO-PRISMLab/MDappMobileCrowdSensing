@@ -189,7 +189,8 @@ class _CreateCampaignFormControllerState extends State<CreateCampaignFormControl
                                   'Campaign Created',
                                   style: CustomTextStyle.spaceMonoWhite(context),
                                 )));
-                            Navigator.pushReplacementNamed(context, '/home');
+                            Navigator.of(context)
+                                .pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false);
                           });
                         } else {
                           setState(() {
