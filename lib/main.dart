@@ -16,6 +16,7 @@ import 'package:mobile_crowd_sensing/views/sourcer_view.dart';
 import 'package:mobile_crowd_sensing/views/search_places_view.dart';
 import 'package:mobile_crowd_sensing/views/validate_light_view.dart';
 import 'package:mobile_crowd_sensing/views/validate_photo_view.dart';
+import 'package:mobile_crowd_sensing/views/wallet_view.dart';
 
 Future<void> main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -41,7 +42,7 @@ class MyApp extends StatelessWidget {
         '/sourcer_campaigns_provider': (context) => const MyCampaignView(),
         '/sourcer_close_campaign_provider': (context) => const SourcerPastCampaignsController(),
         '/sourcer_close_campaign_service_provider': (context) => const CloseCampaignView(),
-
+        '/wallet':(context) => const WalletView(),
         '/join_campaign':(context) => JoinCampaignFactory.fromTypeName(context),
         '/data_campaign':(context) => WorkerDataCampaignFactory.fromTypeName(context),
         "/verifier_campaign_data":(context) => VerifierDataCampaignFactory.fromTypeName(context),

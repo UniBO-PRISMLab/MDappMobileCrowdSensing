@@ -90,6 +90,7 @@ flutter:
     - assets/images/
     - assets/abi.json
     - assets/abi_campaign.json
+    - assets/abi_coin.json
     - .env
 
   #   - images/a_dot_ham.jpeg
