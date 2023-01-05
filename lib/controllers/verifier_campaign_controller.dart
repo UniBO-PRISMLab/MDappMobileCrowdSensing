@@ -57,7 +57,7 @@ class VerifierCampaignController extends StatelessWidget {
             }
             return GestureDetector(
               onTap: () {
-                Navigator.pushReplacementNamed(context, '/verifier_campaign_data',
+                Navigator.pushNamed(context, '/verifier_campaign_data',
                     arguments: {
                       'contractAddress': contractAddress,
                       'name': name,

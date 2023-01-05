@@ -55,7 +55,7 @@ class WorkerCampaignController extends StatelessWidget {
             String readebleLocation = current[8];
             return GestureDetector(
               onTap: () {
-                Navigator.pushReplacementNamed(context, '/join_campaign',
+                Navigator.pushNamed(context, '/join_campaign',
                     arguments: {
                       'name': name,
                       'lat': lat,

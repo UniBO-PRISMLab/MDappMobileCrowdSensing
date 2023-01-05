@@ -22,7 +22,6 @@ class AllCampaignController extends StatelessWidget {
           default:
             return _routingTo(context, snapshot.data,cameFrom);
         }
-
       }
     );
   }

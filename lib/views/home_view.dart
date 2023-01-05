@@ -39,7 +39,8 @@ class _HomeViewState extends State<HomeView> {
         body: _renderThis(),
         bottomNavigationBar:
         BottomNavigationBar(
-          backgroundColor:CustomColors.blue900(context),
+          type: BottomNavigationBarType.fixed,
+          backgroundColor: CustomColors.blue900(context),
           items: <BottomNavigationBarItem>[
             BottomNavigationBarItem(
               icon: Icon(Icons.home,color: CustomColors.customWhite(context),),
@@ -61,6 +62,7 @@ class _HomeViewState extends State<HomeView> {
           currentIndex: _selectedIndex,
           selectedItemColor: CustomColors.blue600(context),
           onTap: _onItemTapped,
+
         ),
     );
   }
