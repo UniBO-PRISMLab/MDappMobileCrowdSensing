@@ -17,13 +17,13 @@ class _WalletControllerState extends State<WalletController> {
   Object? parameters;
   dynamic jsonInfo = {};
   late Timer timer;
-  String balance="LOADING...",symbol="LOADING...";
+  String balance = "LOADING...", symbol = "LOADING...";
 
   Future<void> _getBalance() async {
-      String data = await WalletModel.getData();
-      jsonInfo = jsonDecode(data);
-      symbol = jsonInfo['symbol'].toString();
-      balance = jsonInfo['balance'].toString();
+    String data = await WalletModel.getData();
+    jsonInfo = jsonDecode(data);
+    symbol = jsonInfo['symbol'].toString();
+    balance = jsonInfo['balance'].toString();
   }
 
   @override
@@ -45,57 +45,66 @@ class _WalletControllerState extends State<WalletController> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-            child: Center(
+        child: Center(
+            child:
+                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+          Padding(
+              padding: const EdgeInsets.all(20),
               child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Column(
-              children: [
-                Text(
-                  "You are logged with the Account:",
-                  style: CustomTextStyle.spaceMonoBold(context),
-                ),
-                FittedBox(
-                    fit: BoxFit.fitWidth,
-                    child: Text(
-                      session.getAccountAddress(),
-                      style:
-                      CustomTextStyle.spaceMono(context),
-                    )
-                ),
-              ],
-                    )
-            ),
-                buildCoinWidget(balance,symbol)
-                  ])
-        ),
+                children: [
+                  Text(
+                    "You are logged with the Account:",
+                    style: CustomTextStyle.spaceMonoBold(context),
+                  ),
+                  FittedBox(
+                      fit: BoxFit.fitWidth,
+                      child: Text(
+                        session.getAccountAddress(),
+                        style: CustomTextStyle.spaceMono(context),
+                      )),
+                ],
+              )),
+          buildCoinWidget(balance, symbol)
+        ])),
         onWillPop: () async {
-              timer.cancel();
-          Navigator.pushReplacementNamed(context,'/home');
+          timer.cancel();
+          Navigator.of(context).pushNamedAndRemoveUntil(
+              '/home', (Route<dynamic> route) => false);
           return true;
         });
   }
 }
 
 Widget _formatBalance(String balance) {
-  if(double.tryParse(balance) != null) {
-    return Text('${balance.substring(0,2)},${balance.substring(3)}',style: const TextStyle(fontSize: 20,fontWeight: FontWeight.bold),);
+  if (double.tryParse(balance) != null) {
+    return Text(
+      '${balance.substring(0, 2)},${balance.substring(3)}',
+      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+    );
   } else {
-    return Text(balance,style: const TextStyle(fontSize: 20,fontWeight: FontWeight.bold),);
+    return Text(
+      balance,
+      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+    );
   }
 }
 
-Widget buildCoinWidget(String balance, String symbol){
+Widget buildCoinWidget(String balance, String symbol) {
   return Center(
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Text(symbol,style: const TextStyle(fontSize: 25),),
-        const SizedBox(height: 20,),
-        Image.asset('assets/images/coin.png',width: 150,height: 150),
-        const SizedBox(height: 20,),
+        Text(
+          symbol,
+          style: const TextStyle(fontSize: 25),
+        ),
+        const SizedBox(
+          height: 20,
+        ),
+        Image.asset('assets/images/coin.png', width: 150, height: 150),
+        const SizedBox(
+          height: 20,
+        ),
         _formatBalance(balance)
       ],
     ),
