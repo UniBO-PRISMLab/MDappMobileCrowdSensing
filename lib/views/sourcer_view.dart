@@ -46,7 +46,7 @@ class _SourcerViewState extends State<SourcerView> {
                     onPressed: () {
                           Navigator.pushNamed(context,'/sourcer_close_campaign_provider');
                     },
-                    icon: const Icon(Icons.dataset_rounded),
+                    icon: const Icon(Icons.dataset_linked_rounded),
                     label: Text(
                       'Closed Campaigns',
                       style: CustomTextStyle.spaceMono(context),

@@ -11,23 +11,31 @@ class AllCampaignController extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AllCampaignModelCampaignModel.getAllCampaign(context,cameFrom);
-    return CustomSplashScreen.fadingCubeBlueBg(context);
+    return FutureBuilder(
+      future: AllCampaignModelCampaignModel.getAllCampaign(),
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.none:
+            return const Center(child: Text('Sorry something goes wrong...'));
+          case ConnectionState.waiting:
+            return CustomSplashScreen.fadingCubeBlueBg(context);
+          default:
+            return _routingTo(context, snapshot.data,cameFrom);
+        }
+
+      }
+    );
   }
 
-  static routingTo(BuildContext context,List? result,String cameFrom) {
+  Widget _routingTo(BuildContext context,List? result,String cameFrom) {
     if (result != null) {
       if(cameFrom == 'worker') {
-        Navigator.pushReplacement(context, MaterialPageRoute(
-            builder: (context) =>
-                WorkerCampaignView(contractsAddresses: result[0],)));
+        return WorkerCampaignView(contractsAddresses: result[0],);
       } else {
-        Navigator.pushReplacement(context, MaterialPageRoute(
-            builder: (context) =>
-                VerifierCampaignView(contractsAddresses: result[0],)));
+        return VerifierCampaignView(contractsAddresses: result[0],);
       }
     } else {
-      Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) => const DialogView(message: 'No Campaigns aviable',)));
+      return const DialogView(message: 'No Campaigns aviable',);
     }
   }
 }

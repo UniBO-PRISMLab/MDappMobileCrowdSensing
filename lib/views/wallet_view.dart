@@ -9,11 +9,10 @@ class WalletView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:
-        AppBar(
-            centerTitle: true,
-            title: Text('Wallet',style:CustomTextStyle.spaceMonoWhite(context)),
-            backgroundColor: CustomColors.blue900(context),
+        appBar: AppBar(
+          title: const Text("HOME"),
+          centerTitle: true,
+          backgroundColor: CustomColors.blue900(context),
         ),
       body: Column(
         children: const [
