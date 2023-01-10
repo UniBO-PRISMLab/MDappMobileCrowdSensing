@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile_crowd_sensing/utils/styles.dart';
-import 'package:web3dart/credentials.dart';
 
 class DialogView extends StatefulWidget {
   final String message;
-  final String? goTo;
-  const DialogView({Key? key, required this.message, this.goTo}) : super(key: key);
+  const DialogView({Key? key, required this.message}) : super(key: key);
 
   @override
   State<DialogView> createState() => _DialogViewState();
@@ -17,7 +15,7 @@ class _DialogViewState extends State<DialogView> {
   Widget build(BuildContext context) {
     return Dialog(
       shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12.0)), //this right here
+          borderRadius: BorderRadius.circular(12.0)),
       child: SizedBox(
         height: 300.0,
         width: 300.0,
@@ -34,7 +32,8 @@ class _DialogViewState extends State<DialogView> {
             TextButton(
                 onPressed: () {
                   Future.delayed(Duration.zero, () {
-                          (widget.goTo != null) ? Navigator.pushReplacementNamed(context, '/${widget.goTo}') : Navigator.of(context).pop();
+                    Navigator.of(context)
+                        .pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false);
                   });
                 },
                 child: Text(

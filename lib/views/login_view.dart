@@ -9,6 +9,7 @@ class LoginView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+            centerTitle: true,
             backgroundColor: CustomColors.blue900(context),
             title: const Text('Login Page')),
         body: const LoginController()

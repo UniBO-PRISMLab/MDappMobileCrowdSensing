@@ -36,14 +36,14 @@ class _MyCampaignControllerState extends State<MyCampaignController> {
         setState(() {
           Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (BuildContext context) => const DialogView(goTo: "sourcer", message: "Error. can't retrieve data for the current campaign.")));
+              MaterialPageRoute(builder: (BuildContext context) => const DialogView(message: "No Campaign available")));
         });
       }
     } else {
       setState(() {
         Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (BuildContext context) => const DialogView(goTo: "sourcer", message: 'No Campaign Aviable')));
+            MaterialPageRoute(builder: (BuildContext context) => const DialogView(message: "Error. can't retrieve data for the current campaign.")));
       });
     }
   }

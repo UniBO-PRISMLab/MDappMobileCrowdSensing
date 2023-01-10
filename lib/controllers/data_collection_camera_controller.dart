@@ -18,7 +18,7 @@ class DataCollectionCameraControllerState
     extends State<DataCollectionCameraController> {
   late dynamic cameras;
   late dynamic camera;
-  bool autoFlash = true,activeFlash = false,flashOff = false;
+  bool autoFlash = true, activeFlash = false, flashOff = false;
 
   bool showFocusCircle = false;
   double x = 0;
@@ -52,7 +52,7 @@ class DataCollectionCameraControllerState
   }
 
   Future<void> _onTap(TapUpDetails details) async {
-    if(_controller.value.isInitialized) {
+    if (_controller.value.isInitialized) {
       showFocusCircle = true;
       x = details.localPosition.dx;
       y = details.localPosition.dy;
@@ -60,7 +60,7 @@ class DataCollectionCameraControllerState
       double cameraHeight = fullWidth * _controller.value.aspectRatio;
       double xp = x / fullWidth;
       double yp = y / cameraHeight;
-      Offset point = Offset(xp,yp);
+      Offset point = Offset(xp, yp);
       if (kDebugMode) {
         print("point : $point");
       }
@@ -95,107 +95,118 @@ class DataCollectionCameraControllerState
               if (snapshot.connectionState == ConnectionState.done) {
                 return GestureDetector(
                     onTapUp: (details) {
-                  _onTap(details);
-                },
-              child:Stack(children: [
-                  SizedBox(
-                      width: size.width,
-                      height: size.height,
-                      child: CameraPreview(_controller)),
-                  Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                    Column(children: [
-                      ElevatedButton(
-                        onPressed: () {
-                          setState(() => {
-                            _controller.setFlashMode(FlashMode.off),
-                            activeFlash = false,
-                            autoFlash = false,
-                            flashOff = !flashOff
-                          });
-                        },
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.transparent),
-                        child: Icon(Icons.flash_off_rounded,color:flashOff? Colors.orangeAccent : CustomColors.customWhite(context)),
-                      ),
-                      ElevatedButton(
-                        onPressed: () {
-                          setState(() => {
-                            _controller.setFlashMode(FlashMode.always),
-                            flashOff = false,
-                            autoFlash = false,
-                            activeFlash = !activeFlash,
-                          });
-
-                        },
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.transparent),
-                        child: Icon(Icons.flash_on_rounded,color:activeFlash? Colors.orangeAccent : CustomColors.customWhite(context)),
-                      ),
-                      ElevatedButton(
-                        onPressed: () {
-                          setState(() => {
-                            _controller.setFlashMode(FlashMode.auto),
-                            flashOff = false,
-                            activeFlash = false,
-                            autoFlash = !autoFlash,
-                          });
-                        },
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.transparent),
-                        child: Icon(Icons.flash_auto_rounded,color:autoFlash? Colors.orangeAccent : CustomColors.customWhite(context)),
-                      ),
-                    ])
-                  ]),
-                  Row(
-                    children: [
-                      Text(
-                        ' Photos taken: ${pictures.length}',
-                        style: CustomTextStyle.cameraDataFont(context),
-                      ),
-                    ],
-                  ),
-                  Center(
-                      child: Column(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
+                      _onTap(details);
+                    },
+                    child: Stack(children: [
                       SizedBox(
-                          height: 100.0,
-                          width: 100.0,
-                          child: FittedBox(
-                              child: FloatingActionButton(
-                            backgroundColor: CustomColors.blue900(context),
-                            onPressed: () async {
-                              try {
-                                await _initializeControllerFuture;
-                                _controller.setExposureMode(ExposureMode.auto);
-                                final image = await _controller.takePicture();
-                                if (!mounted) return;
-                                File? res = await Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            DisplayPictureScreen(
-                                              imagePath: image.path,
-                                            )));
-
-                                if (res != null) {
-                                  setState(() {
-                                    pictures.add(res);
-                                    if (kDebugMode) {
-                                      print('_______${pictures.length}______');
-                                    }
+                          width: size.width,
+                          height: size.height,
+                          child: CameraPreview(_controller)),
+                      Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                        Column(children: [
+                          ElevatedButton(
+                            onPressed: () {
+                              setState(() => {
+                                    _controller.setFlashMode(FlashMode.off),
+                                    activeFlash = false,
+                                    autoFlash = false,
+                                    flashOff = !flashOff
                                   });
-                                }
-                              } catch (e) {
-                                if (kDebugMode) {
-                                  print(e);
-                                }
-                              }
                             },
-                            child: const Icon(Icons.camera_alt),
-                          ))),
-                    ],
-                  ))
-                ]));
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.transparent),
+                            child: Icon(Icons.flash_off_rounded,
+                                color: flashOff
+                                    ? Colors.orangeAccent
+                                    : CustomColors.customWhite(context)),
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              setState(() => {
+                                    _controller.setFlashMode(FlashMode.always),
+                                    flashOff = false,
+                                    autoFlash = false,
+                                    activeFlash = !activeFlash,
+                                  });
+                            },
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.transparent),
+                            child: Icon(Icons.flash_on_rounded,
+                                color: activeFlash
+                                    ? Colors.orangeAccent
+                                    : CustomColors.customWhite(context)),
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              setState(() => {
+                                    _controller.setFlashMode(FlashMode.auto),
+                                    flashOff = false,
+                                    activeFlash = false,
+                                    autoFlash = !autoFlash,
+                                  });
+                            },
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.transparent),
+                            child: Icon(Icons.flash_auto_rounded,
+                                color: autoFlash
+                                    ? Colors.orangeAccent
+                                    : CustomColors.customWhite(context)),
+                          ),
+                        ])
+                      ]),
+                      Row(
+                        children: [
+                          Text(
+                            ' Photos taken: ${pictures.length}',
+                            style: CustomTextStyle.cameraDataFont(context),
+                          ),
+                        ],
+                      ),
+                      Center(
+                          child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          SizedBox(
+                              height: 100.0,
+                              width: 100.0,
+                              child: FittedBox(
+                                  child: FloatingActionButton(
+                                backgroundColor: CustomColors.blue900(context),
+                                onPressed: () async {
+                                  try {
+                                    await _initializeControllerFuture;
+                                    _controller
+                                        .setExposureMode(ExposureMode.auto);
+                                    final image =
+                                        await _controller.takePicture();
+                                    if (!mounted) return;
+                                    File? res = await Navigator.of(context)
+                                        .push(MaterialPageRoute(
+                                            builder: (context) =>
+                                                DisplayPictureScreen(
+                                                  imagePath: image.path,
+                                                )));
+
+                                    if (res != null) {
+                                      setState(() {
+                                        pictures.add(res);
+                                        if (kDebugMode) {
+                                          print(
+                                              '_______${pictures.length}______');
+                                        }
+                                      });
+                                    }
+                                  } catch (e) {
+                                    if (kDebugMode) {
+                                      print(e);
+                                    }
+                                  }
+                                },
+                                child: const Icon(Icons.camera_alt),
+                              ))),
+                        ],
+                      ))
+                    ]));
               } else {
                 return const Center(child: CircularProgressIndicator());
               }

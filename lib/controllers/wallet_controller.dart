@@ -76,8 +76,10 @@ class _WalletControllerState extends State<WalletController> {
 }
 
 Widget _formatBalance(String balance) {
-  if (double.tryParse(balance) != null) {
+  if (double.tryParse(balance) != null && balance != "0") {
+    print("DEBUG: $balance");
     return Text(
+
       '${balance.substring(0, 2)},${balance.substring(3)}',
       style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
     );

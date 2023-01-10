@@ -40,7 +40,7 @@ class _SourcerPastCampaignsControllerState extends State<SourcerPastCampaignsCon
       setState(() {
         Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (BuildContext context) => const DialogView(goTo: "sourcer", message: 'No Campaigns Aviable')));
+            MaterialPageRoute(builder: (BuildContext context) => const DialogView(message: 'No Campaigns Available')));
       });
     }
   }

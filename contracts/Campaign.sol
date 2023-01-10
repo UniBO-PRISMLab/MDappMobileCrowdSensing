@@ -3,8 +3,12 @@ pragma solidity ^0.8.17;
 import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./MCSfactory.sol";
+import "./MCScoin.sol";
 
 contract Campaign is Ownable, Initializable {
+
+    address constant public coinAddress = 0x55728Fa9357d8d3EC425a8A546EE51D610fa13d7;
+    MCSCoin internal coin = MCSCoin(coinAddress);
 
     string internal name;
     int256 internal lat;
@@ -13,17 +17,10 @@ contract Campaign is Ownable, Initializable {
     string internal campaignType;
 
     address public addressCrowdSourcer;
-
-    struct File {
-        bool status;
-        bool validity;
-        address  uploader;
-        string hash;
-    }
-
     uint256 public fileCount = 0;
     uint256 public checkedFiles = 0;
     uint256 public numberOfActiveWorkers = 0;
+    uint256 public numberOfActiveVerifiers = 0;
     bool public isClosed;
 
 
@@ -31,6 +28,14 @@ contract Campaign is Ownable, Initializable {
     mapping(string => File) public files; // ipfs hash -> file info
 
     string[] public allfilesPath;
+
+    struct File {
+        bool status;
+        bool validity;
+        address  uploader;
+        address verifier;
+        string hash;
+    }
 
     function getAllFilesInfo() public view returns(File[] memory){
         File[] memory out = new File[](allfilesPath.length);
@@ -75,7 +80,7 @@ contract Campaign is Ownable, Initializable {
         fileCount++;
         numberOfActiveWorkers++;
         allfilesPath.push(ipfspath);
-        files[ipfspath] = File(false,false,(msg.sender),ipfspath);
+        files[ipfspath] = File(false,false,(msg.sender),address(0),ipfspath);
         emit FileUploaded((msg.sender));
     }
 
@@ -105,18 +110,48 @@ contract Campaign is Ownable, Initializable {
     function validateFile(string memory hash) public {
         files[hash].validity = true;
         files[hash].status = true;
+        files[hash].verifier = msg.sender;
         checkedFiles++;
+        numberOfActiveVerifiers++;
     }
 
     function notValidateFile(string memory hash) public {
         files[hash].status = true;
+        files[hash].verifier = msg.sender;
         checkedFiles++;
+        numberOfActiveVerifiers++;
     }
 
+    function getCampaignBalance() public view returns(uint256 balance) {
+        return coin.balanceOf(address(this));
+    }
+
+    // tenuta per debug
     function closeCampaign() public {
         require(msg.sender == addressCrowdSourcer,'you are not the owner');
         require(msg.sender != address(0), "invalid address provided");
         isClosed = factoryContractAddress.closeCampaign();
     }
 
+    function closeCampaignAndPay() public {
+        require(msg.sender == addressCrowdSourcer,'you are not the owner');
+        require(msg.sender != address(0), "invalid address provided");
+        isClosed = factoryContractAddress.closeCampaign();
+
+        for(uint i; i<allfilesPath.length; i++) {
+            File memory currentFile = files[allfilesPath[i]];
+            if (currentFile.status == true) {
+                uint256 balance = getCampaignBalance();
+                uint256 verifiesTotalReward = (balance * 50 / 100);
+                uint256 verifierReward = verifiesTotalReward / numberOfActiveVerifiers;
+                uint256 workerReward =  (balance - verifiesTotalReward) / numberOfActiveWorkers;
+                if (currentFile.validity == true) { // se il file caricato è valido allora paga l'uploader
+                    coin.transfer(currentFile.verifier,verifierReward);
+                    coin.transfer(currentFile.uploader,workerReward);
+                } else { // se il file caricato NON è valido allora paga solo il verifier
+                    coin.transfer(currentFile.verifier,verifierReward);
+                }
+            }
+        }
+    }
 }

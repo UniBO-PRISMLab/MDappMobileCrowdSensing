@@ -2,50 +2,17 @@
 pragma solidity ^0.8.17;
 
 import "./Campaign.sol";
+import "./MCScoin.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/utils/structs/EnumerableMap.sol";
 import "hardhat/console.sol";
-import "@openzeppelin/contracts/utils/Strings.sol";
 
 contract CampaignFactory {
-    mapping( address => Campaign) public activeCampaigns;
-    mapping( address => Campaign[]) public closedCampaigns;
-
-    address[] public addressKeyLUT;
-    address[] public addressClosedKeyLUT;
-
-    function getLUT() public view returns (address[] memory){
-        address[] memory out = new address[](addressKeyLUT.length);
-        for (uint i = 0; i < addressKeyLUT.length; i++){
-            out[i] = addressKeyLUT[i];
-        }
-        return out;
-    }
-
-
-
-    uint256 public campaignCount = 0;
-
-    event CampaignCreated(address addressNewCampaign);
-
-    function createCampaign(string memory _name,int256 _lat,int256 _lng, int256 _range, string memory _type) public payable returns (address ) {
-        require(msg.sender != address(0), "invalid address provided");
-        // require(msg.value >= 1, "not enough found");
-        require(!searchSourcerAddress(msg.sender),"this sourcer already has an active campaign");
-        Campaign newCampaign = new Campaign(_name, _lat, _lng,_range,_type,(msg.sender),(address(this)));
-        //newCampaign.initialize(_name, _lat, _lng,_range,_type,msg.sender);
-        activeCampaigns[msg.sender] = newCampaign;
-        addressKeyLUT.push(msg.sender);
-        campaignCount++;
-        emit CampaignCreated(address(newCampaign));
-        // bisogna trasferire il denaro pagato all'indirizzo della factory a quello della campagna
-        return (address(newCampaign));
-    }
-
-    function _burnLUT(uint index) internal {
-        require(index < addressKeyLUT.length);
-        addressKeyLUT[index] = addressKeyLUT[addressKeyLUT.length-1];
-        addressKeyLUT.pop();
-    }
+    MCSCoin public coin = MCSCoin(0xd9145CCE52D386f254917e481eB44e9943F39138);
+    mapping( address => Campaign) public activeCampaigns; // address sourcer -> campagna
+    mapping( address => Campaign[]) public closedCampaigns; // address sourcer -> lista di campagne
+    address[] internal addressKeyLUT;
+    address[] internal addressClosedKeyLUT;
 
     function searchSourcerAddress(address _address) public view returns (bool) {
         require(msg.sender != address(0), "invalid address provided");
@@ -55,6 +22,29 @@ contract CampaignFactory {
             }
         }
         return false;
+    }
+
+    function createCampaign(string memory _name,int256 _lat,int256 _lng, int256 _range, string memory _type,uint256 _value) public payable returns (address ) {
+        require(msg.sender != address(0), "invalid address provided");
+        require(_value >= 1,"not enough value in message");
+        address sender = payable(msg.sender);
+        uint256 balance = coin.balanceOf(sender);
+        require(balance >= _value,"not enough found in your balance");
+        require(!searchSourcerAddress(msg.sender),"this sourcer already has an active campaign");
+        Campaign newCampaign = new Campaign(_name, _lat, _lng,_range,_type,(msg.sender),(address(this)));
+        address newCampaignAddress = payable(address(newCampaign));
+        coin.approve(payable(address(this)),_value);
+        uint256 allowed = allowance(payable(address(this)),sender);
+        coin.transferFrom(sender,newCampaignAddress,_value);
+        activeCampaigns[msg.sender] = newCampaign;
+        addressKeyLUT.push(msg.sender);
+        return (newCampaignAddress);
+    }
+
+    function _burnLUT(uint index) internal {
+        require(index < addressKeyLUT.length);
+        addressKeyLUT[index] = addressKeyLUT[addressKeyLUT.length-1];
+        addressKeyLUT.pop();
     }
 
     function getAllCampaigns() public view returns (Campaign[] memory) {
@@ -71,8 +61,6 @@ contract CampaignFactory {
     }
 
     function closeCampaign() external returns (bool){
-        console.log(tx.origin);
-        console.log(address(activeCampaigns[tx.origin]));
         if(address(activeCampaigns[tx.origin])!=address(0)) {
             require(tx.origin == activeCampaigns[tx.origin].addressCrowdSourcer(),'you are not the campaign owner');
             closedCampaigns[tx.origin].push(activeCampaigns[tx.origin]);
@@ -84,7 +72,6 @@ contract CampaignFactory {
                 }
             }
             return true;
-
         } else {
             return false;
         }
