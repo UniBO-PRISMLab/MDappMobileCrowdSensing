@@ -78,9 +78,9 @@ class _CreateCampaignFormControllerState extends State<CreateCampaignFormControl
                         );
 
                         if (res != null) {
-                            address = res.selectedPosition.result.formattedAddress.toString();
-                            lat = res.selectedPosition.result.geometry?.location.lat;
-                            lng = res.selectedPosition.result.geometry?.location.lng;
+                            address = res.address;
+                            lat = res.lat;
+                            lng = res.lng;
                             if (kDebugMode) {
                               print(" info gotten: $address LATITUDE: ${(lat! / 10000000).round()} LONGITUDE: ${(lng! / 10000000).round()}");
                             }

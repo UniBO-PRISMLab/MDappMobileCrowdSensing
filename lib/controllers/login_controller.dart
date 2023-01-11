@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:slider_button/slider_button.dart';
 import 'login_metamask_controller.dart';
@@ -12,9 +11,6 @@ class LoginController extends StatelessWidget{
   Widget build(BuildContext context) {
     SessionModel sessionData = SessionModel();
     sessionData.checkConnection();
-    if (kDebugMode) {
-      print("DEBUG::::: ${sessionData.session}");
-    }
 
     return  SingleChildScrollView(
         child: Column(
@@ -46,9 +42,7 @@ class LoginController extends StatelessWidget{
                               style: CustomTextStyle.inconsolata(context),
                             ),
                             Text(
-                              sessionData.getNetworkName(sessionData
-                                  .session
-                                  .chainId),
+                              sessionData.getNetworkName(sessionData.session?.chainId),
                               style: CustomTextStyle.inconsolata(context),
                             ),
                           ]),

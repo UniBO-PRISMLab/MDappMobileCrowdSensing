@@ -39,15 +39,11 @@ dependencies:
   google_fonts: ^3.0.1
   slider_button: ^2.0.0
   web3dart: ^2.4.1
-  flutter_google_places: ^0.3.0
-  google_maps_flutter: ^2.2.1
-  google_api_headers: ^1.5.0
   geolocator: #latest version
   geocoding:  #latest version
   flutter_intl: ^0.0.1
   flutter_config: ^2.0.0
   http: ^0.13.5
-  google_maps_webservice: ^0.0.20-nullsafety.5
   camera: ^0.10.0+4
   path_provider: ^2.0.11
   path: ^1.8.2
@@ -60,8 +56,8 @@ dependencies:
   tar: ^0.5.6
   flutter_native_splash: ^2.2.16
   permission_handler: ^10.2.0
-  dio: ^4.0.6
   archive: ^3.3.5
+  open_street_map_search_and_pick: ^0.0.15
 
 dev_dependencies:
   flutter_test:
