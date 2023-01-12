@@ -8,7 +8,7 @@ class AllCampaignModelCampaignModel {
   static Future<List?> getAllCampaign() async {
     try {
       SessionModel sessionData = SessionModel();
-      SmartContractModel smartContractViewModel = SmartContractModel(FlutterConfig.get('MCSfactory_CONTRACT_ADDRESS'),'MCSfactory','assets/abi.json', provider: sessionData.getProvider());
+      SmartContractModel smartContractViewModel = SmartContractModel(contractAddress: FlutterConfig.get('MCSfactory_CONTRACT_ADDRESS'),abiName: 'MCSfactory',abiFileRoot: 'assets/abi.json', provider: sessionData.getProvider());
       return await smartContractViewModel.queryCall('getAllCampaigns',[]);
 
     } catch (error) {

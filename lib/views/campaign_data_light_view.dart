@@ -23,19 +23,24 @@ class LightJoinCampaignViewState extends State<CampaignDataLightView> {
   dynamic campaignSelectedData = {};
   Object? parameters;
   SessionModel sessionData = SessionModel();
-  late SmartContractModel smartContract = SmartContractModel(campaignSelectedData['contractAddress'], 'Campaign', 'assets/abi_campaign.json', provider: sessionData.getProvider());
+  late SmartContractModel smartContract = SmartContractModel(
+      contractAddress: campaignSelectedData['contractAddress'],
+      abiName: 'Campaign',
+      abiFileRoot: 'assets/abi_campaign.json',
+      provider: sessionData.getProvider());
   late List<String> hashes = [];
   List<LightData> contents = [];
 
   @override
-  initState(){
+  initState() {
     super.initState();
     FileManagerModel.clearTemporaryDirectory();
   }
 
   _downloadFiles(hashToDownload) async {
     //print("DEBUG ::::::::::::::::::::::::::::::::::::::: [getFileIPFSHash]: $hashToDownload");
-    String? res = await IpfsClientModel.downloadItemIPFS(hashToDownload,'lights');
+    String? res =
+        await IpfsClientModel.downloadItemIPFS(hashToDownload, 'lights');
     if (res != null) {
       List<String> value = res.split('/');
       if (mounted) {
@@ -50,7 +55,8 @@ class LightJoinCampaignViewState extends State<CampaignDataLightView> {
   }
 
   _preparePage() async {
-    List<dynamic>? allfilesPathRes = await smartContract.queryCall('getValidFiles', []);
+    List<dynamic>? allfilesPathRes =
+        await smartContract.queryCall('getValidFiles', []);
     if (allfilesPathRes != null) {
       //print("CHECK this: ${allfilesPathRes[0]}");
       for (dynamic element in allfilesPathRes[0]) {
@@ -73,11 +79,13 @@ class LightJoinCampaignViewState extends State<CampaignDataLightView> {
           centerTitle: true,
           title: Text(campaignSelectedData['name']),
         ),
-        body: (contents.isNotEmpty)?
-          SingleChildScrollView(
-            child: Container(
-                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                  child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        body: (contents.isNotEmpty)
+            ? SingleChildScrollView(
+                child: Container(
+                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
                           Text(
                             'Account',
                             style: CustomTextStyle.merriweatherBold(context),
@@ -87,33 +95,33 @@ class LightJoinCampaignViewState extends State<CampaignDataLightView> {
                             style: CustomTextStyle.inconsolata(context),
                           ),
                           Container(
-                            padding: const EdgeInsets.fromLTRB(10, 30, 10, 10),
-                            width: double.maxFinite,
-                            child: Center(
-                              child: SfCartesianChart(
-                                  primaryXAxis: CategoryAxis(),
-                                  series: <LineSeries<LightData, String>>[
+                              padding:
+                                  const EdgeInsets.fromLTRB(10, 30, 10, 10),
+                              width: double.maxFinite,
+                              child: Center(
+                                  child: SfCartesianChart(
+                                      primaryXAxis: CategoryAxis(),
+                                      series: <LineSeries<LightData, String>>[
                                     LineSeries<LightData, String>(
-                                        dataSource:  contents,
-                                        xValueMapper: (LightData sales, _) => DateFormat('dd/MM/yyyy, HH:mm').format(sales.timeStamp),
-                                        yValueMapper: (LightData sales, _) => sales.value
-                                    )
-                                  ]
-                              )
-                            )
-                          )
-                  ])
-            )
-          ) : Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Center(
-                    child: Text('No files for this Campaign', style: GoogleFonts.inconsolata(fontSize: 16),),
+                                        dataSource: contents,
+                                        xValueMapper: (LightData sales, _) =>
+                                            DateFormat('dd/MM/yyyy, HH:mm')
+                                                .format(sales.timeStamp),
+                                        yValueMapper: (LightData sales, _) =>
+                                            sales.value)
+                                  ])))
+                        ])))
+            : Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+                Center(
+                  child: Text(
+                    'No files for this Campaign',
+                    style: GoogleFonts.inconsolata(fontSize: 16),
                   ),
-                ])
-        );
+                ),
+              ]));
   }
 }
+
 class LightData {
   LightData(this.timeStamp, this.value);
   final DateTime timeStamp;

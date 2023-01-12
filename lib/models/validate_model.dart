@@ -7,7 +7,8 @@ import 'ipfs_client_model.dart';
 
 class ValidateModel {
   static downloadLightFiles(hashToDownload) async {
-    String? res = await IpfsClientModel.downloadItemIPFS(hashToDownload,'lights');
+    String? res =
+        await IpfsClientModel.downloadItemIPFS(hashToDownload, 'lights');
     if (res != null) {
       List<String> value = res.split('/');
       return value;
@@ -15,20 +16,26 @@ class ValidateModel {
     return null;
   }
 
-  static Future<Stream<FileSystemEntity>?> downloadPhotosFiles(hashToDownload) async {
-    Stream<FileSystemEntity>? res = await IpfsClientModel.downloadDirectoryIPFS(hashToDownload,'photos');
+  static Future<Stream<FileSystemEntity>?> downloadPhotosFiles(
+      hashToDownload) async {
+    Stream<FileSystemEntity>? res =
+        await IpfsClientModel.downloadDirectoryIPFS(hashToDownload, 'photos');
     if (res != null) {
       return res;
     }
     return null;
   }
 
-  static Future<bool> approveOrNot(contractAddress,hash,bool status) async {
+  static Future<bool> approveOrNot(contractAddress, hash, bool status) async {
     SessionModel sessionData = SessionModel();
     if (kDebugMode) {
       print(contractAddress);
     }
-    SmartContractModel smartContractViewModel = SmartContractModel(contractAddress,'Campaign','assets/abi_campaign.json', provider: sessionData.getProvider());
+    SmartContractModel smartContractViewModel = SmartContractModel(
+        contractAddress: contractAddress,
+        abiName: 'Campaign',
+        abiFileRoot: 'assets/abi_campaign.json',
+        provider: sessionData.getProvider());
     if (status) {
       if (kDebugMode) {
         print("try to validate");

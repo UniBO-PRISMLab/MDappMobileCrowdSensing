@@ -29,7 +29,7 @@ class _SourcerClosedCampaignControllerState extends State<SourcerClosedCampaignC
   initState() {
     if (widget.contractAddress != null) {
       for (int i = 0; i < widget.contractAddress!.length; i++) {
-        SmartContractModel smartContractViewModel = SmartContractModel(widget.contractAddress![i].toString(), 'Campaign', 'assets/abi_campaign.json', provider: sessionData.getProvider());
+        SmartContractModel smartContractViewModel = SmartContractModel(contractAddress: widget.contractAddress![i].toString(),abiName: 'Campaign',abiFileRoot: 'assets/abi_campaign.json', provider: sessionData.getProvider());
         smartContractViewModel.queryCall('getInfo', []).then((value) => {
           setState(() {
             if (value != null) {

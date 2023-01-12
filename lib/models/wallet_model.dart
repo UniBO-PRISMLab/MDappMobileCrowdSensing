@@ -12,9 +12,9 @@ class WalletModel {
     SessionModel sessionData = SessionModel();
 
     late SmartContractModel smartContract = SmartContractModel(
-        FlutterConfig.get('COIN_CONTRACT'),
-        'MCSCoin',
-        'assets/abi_coin.json',
+        contractAddress:FlutterConfig.get('COIN_CONTRACT'),
+        abiName: 'MCSCoin',
+        abiFileRoot: 'assets/abi_coin.json',
         provider: sessionData.getProvider()
     );
     EthereumAddress address = EthereumAddress.fromHex(sessionData.getAccountAddress());

@@ -11,7 +11,7 @@ class MyCampaignModel {
     try {
       SessionModel sessionData = SessionModel();
       String sourcerAddress = sessionData.getAccountAddress();
-      SmartContractModel smartContractViewModel = SmartContractModel(FlutterConfig.get('MCSfactory_CONTRACT_ADDRESS'),'MCSfactory','assets/abi.json', provider: sessionData.getProvider());
+      SmartContractModel smartContractViewModel = SmartContractModel(contractAddress:FlutterConfig.get('MCSfactory_CONTRACT_ADDRESS'),abiName: 'MCSfactory',abiFileRoot: 'assets/abi.json', provider: sessionData.getProvider());
       EthereumAddress address = EthereumAddress.fromHex(sourcerAddress);
       return await smartContractViewModel.queryCall('activeCampaigns',[address]);
     } catch (error) {
@@ -27,9 +27,9 @@ class MyCampaignModel {
     SearchPlacesModel searchPlacesViewModel = SearchPlacesModel();
     List? resInfo = [];
     SmartContractModel smartContractViewModel = SmartContractModel(
-        contractAddress,
-        'Campaign',
-        'assets/abi_campaign.json',
+        contractAddress:contractAddress,
+        abiName: 'Campaign',
+        abiFileRoot: 'assets/abi_campaign.json',
         provider: sessionData.getProvider()
     );
     resInfo = await smartContractViewModel.queryCall('getInfo', []);

@@ -11,7 +11,7 @@ class SourcerCampaignModel {
     late SmartContractModel smartContract;
 
     if (contractAddress != "0x0000000000000000000000000000000000000000") {
-      smartContract = SmartContractModel(contractAddress, 'Campaign', 'assets/abi_campaign.json',
+      smartContract = SmartContractModel(contractAddress:contractAddress,abiName: 'Campaign',abiFileRoot: 'assets/abi_campaign.json',
           provider: sessionData.getProvider());
       List<dynamic>? fileCountRaw =
       await smartContract.queryCall('fileCount', []);
@@ -47,7 +47,7 @@ class SourcerCampaignModel {
     late SmartContractModel smartContract;
 
     if (contractAddress != "0x0000000000000000000000000000000000000000") {
-      smartContract = SmartContractModel(contractAddress, 'Campaign', 'assets/abi_campaign.json',
+      smartContract = SmartContractModel(contractAddress:contractAddress,abiName: 'Campaign',abiFileRoot: 'assets/abi_campaign.json',
           provider: sessionData.getProvider());
 
       List<dynamic>? allFilesInfoRaw =

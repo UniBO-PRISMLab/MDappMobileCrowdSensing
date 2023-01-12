@@ -11,7 +11,7 @@ class SourcerPastCampaignsModel {
   static Future<List<String>?> getMyClosedCampaign(BuildContext context) async {
     try {
       SessionModel sessionData = SessionModel();
-      SmartContractModel smartContractViewModel = SmartContractModel(FlutterConfig.get('MCSfactory_CONTRACT_ADDRESS'),'MCSfactory','assets/abi.json', provider: sessionData.getProvider());
+      SmartContractModel smartContractViewModel = SmartContractModel(contractAddress:FlutterConfig.get('MCSfactory_CONTRACT_ADDRESS'),abiName: 'MCSfactory',abiFileRoot: 'assets/abi.json', provider: sessionData.getProvider());
       EthereumAddress address = EthereumAddress.fromHex(sessionData.getAccountAddress());
       List<String>? result = [];
       int index = 0;

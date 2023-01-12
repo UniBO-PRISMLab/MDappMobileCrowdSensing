@@ -14,7 +14,7 @@ class UploadIpfsModel {
         "${DateTime.now().millisecondsSinceEpoch}/${averageRelevation.toString()}");
     try {
       SmartContractModel smartContractViewModel = SmartContractModel(
-          contractAddress, 'Campaign', 'assets/abi_campaign.json',
+          contractAddress:contractAddress, abiName: 'Campaign', abiFileRoot: 'assets/abi_campaign.json',
           provider: sessionData.getProvider());
       SearchPlacesModel position = SearchPlacesModel();
       await position.updateLocalPosition();
@@ -54,7 +54,7 @@ class UploadIpfsModel {
     try {
       SessionModel sessionData = SessionModel();
       SmartContractModel smartContractViewModel = SmartContractModel(
-          contractAddress, 'Campaign', 'assets/abi_campaign.json',
+          contractAddress:contractAddress,abiName: 'Campaign',abiFileRoot: 'assets/abi_campaign.json',
           provider: sessionData.getProvider());
       SearchPlacesModel position = SearchPlacesModel();
       await position.updateLocalPosition();

@@ -7,7 +7,7 @@ import 'package:web3dart/src/crypto/secp256k1.dart';
 import 'package:web3dart/web3dart.dart';
 
 class SmartContractModel extends CustomTransactionSender{
-  SmartContractModel(this.contractAddress, this.abiName, this.abiFileRoot, {required this.provider});
+  SmartContractModel({required this.contractAddress, required this.abiName, required this.abiFileRoot, required this.provider});
   final EthereumWalletConnectProvider provider;
 
   final String contractAddress;
