@@ -7,7 +7,6 @@ class SearchPlacesModel {
   double lat = 40;
   double lng = 10;
   String address = "";
-  final double zoom = 19.5;
   late Position position;
   var client = http.Client();
 
@@ -20,9 +19,6 @@ class SearchPlacesModel {
     if (kDebugMode) {
       print("__________________________________________________________________________POSITION: \n[lat]$lat\n[lng]$lng");
     }
-  }
-  void updateLocalPositionAndCamera() async {
-    await updateLocalPosition();
   }
 
   Future<Position> _getGeoLocationPosition() async {

@@ -5,7 +5,6 @@ import 'package:open_street_map_search_and_pick/open_street_map_search_and_pick.
 import '../models/search_places_model.dart';
 import '../utils/spalsh_screens.dart';
 
-
 class SearchPlacesView extends StatefulWidget {
   const SearchPlacesView({Key? key}) : super(key: key);
 
@@ -32,6 +31,7 @@ class _SearchPlacesViewState extends State<SearchPlacesView> {
           })
     ]);
   }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -47,15 +47,18 @@ class _SearchPlacesViewState extends State<SearchPlacesView> {
       child: Scaffold(
           key: searchPlacesViewScaffoldKey,
           appBar: AppBar(
+              centerTitle: true,
               backgroundColor: CustomColors.blue900(context),
-              title: const Text("Where is located your Campaign?")),
+              title: const FittedBox(
+                  fit: BoxFit.fitWidth,
+                  child: Text("Where is located your Campaign?"))),
           body: FutureBuilder(
             future: searchPlacesData.updateLocalPosition(),
             builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-
               switch (snapshot.connectionState) {
                 case ConnectionState.none:
-                  return const Center(child: Text('Sorry something goes wrong...'));
+                  return const Center(
+                      child: Text('Sorry something goes wrong...'));
                 case ConnectionState.waiting:
                   return CustomSplashScreen.fadingCubeBlueBg(context);
                 default:

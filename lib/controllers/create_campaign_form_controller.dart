@@ -9,11 +9,12 @@ class CreateCampaignFormController extends StatefulWidget {
   const CreateCampaignFormController({Key? key}) : super(key: key);
 
   @override
-  State<CreateCampaignFormController> createState() => _CreateCampaignFormControllerState();
+  State<CreateCampaignFormController> createState() =>
+      _CreateCampaignFormControllerState();
 }
 
-class _CreateCampaignFormControllerState extends State<CreateCampaignFormController> {
-
+class _CreateCampaignFormControllerState
+    extends State<CreateCampaignFormController> {
   final _formKey = GlobalKey<FormState>();
   String selectedValue = 'photo';
   double _howMuch = 5;
@@ -27,8 +28,7 @@ class _CreateCampaignFormControllerState extends State<CreateCampaignFormControl
   Widget build(BuildContext context) {
     return Form(
         key: _formKey,
-        child:
-        Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
           Padding(
               padding: const EdgeInsets.all(10),
               child: Column(
@@ -37,15 +37,17 @@ class _CreateCampaignFormControllerState extends State<CreateCampaignFormControl
                     'Title?',
                     style: CustomTextStyle.spaceMono(context),
                   ),
-                  TextFormField(
-                    controller: titleController,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter the title';
-                      }
-                      return null;
-                    },
-                  ),
+                  SizedBox(
+                      width: DeviceDimension.deviceWidth(context) * 0.8,
+                      child: TextFormField(
+                        controller: titleController,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter the title';
+                          }
+                          return null;
+                        },
+                      )),
                 ],
               )),
           Padding(
@@ -56,41 +58,44 @@ class _CreateCampaignFormControllerState extends State<CreateCampaignFormControl
                     'Where?',
                     style: CustomTextStyle.spaceMono(context),
                   ),
-                  TextFormField(
-                    controller: TextEditingController()..text = (address!=null)? address! : '',
-                    readOnly: true,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please select a location';
-                      }
-                      return null;
-                    },
-                  ),
+                  SizedBox(
+                      width: DeviceDimension.deviceWidth(context) * 0.8,
+                      child: TextFormField(
+                        keyboardType: TextInputType.multiline,
+                        maxLines: null,
+                        controller: TextEditingController()
+                          ..text = (address != null) ? address! : '',
+                        readOnly: true,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please select a location';
+                          }
+                          return null;
+                        },
+                      )),
                   ElevatedButton(
-                      style: ButtonStyle(backgroundColor: MaterialStateProperty.all(CustomColors.blue900(context))),
+                      style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all(
+                              CustomColors.blue900(context))),
                       onPressed: () async {
                         if (!mounted) return;
-                        SearchPlacesModel? res = await Navigator.of(context).push(
-                            MaterialPageRoute(
+                        SearchPlacesModel? res = await Navigator.of(context)
+                            .push(MaterialPageRoute(
                                 builder: (context) =>
-                                    const SearchPlacesView()
-                            )
-                        );
+                                    const SearchPlacesView()));
 
                         if (res != null) {
-                            address = res.address;
-                            lat = res.lat;
-                            lng = res.lng;
-                            if (kDebugMode) {
-                              print(" info gotten: $address LATITUDE: ${(lat! / 10000000).round()} LONGITUDE: ${(lng! / 10000000).round()}");
-                            }
+                          address = res.address;
+                          lat = res.lat;
+                          lng = res.lng;
+                          if (kDebugMode) {
+                            print(
+                                " info gotten: $address LATITUDE: ${(lat! / 10000000).round()} LONGITUDE: ${(lng! / 10000000).round()}");
+                          }
                         }
-                        setState(() {
-
-                        });
+                        setState(() {});
                       },
-                      child: const Text('Get a place!')
-                  ),
+                      child: const Text('Get a place!')),
                   Padding(
                     padding: const EdgeInsets.all(10),
                     child: Column(
@@ -164,13 +169,14 @@ class _CreateCampaignFormControllerState extends State<CreateCampaignFormControl
                     backgroundColor: CustomColors.blue900(context),
                     onPressed: () async {
                       // Validate returns true if the form is valid, or false otherwise.
-                      if (_formKey.currentState!.validate() && lat != null && lng != null) {
-                        ScaffoldMessenger.of(context)
-                            .showSnackBar(SnackBar(
+                      if (_formKey.currentState!.validate() &&
+                          lat != null &&
+                          lng != null) {
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             content: Text(
-                              'Processing Data',
-                              style: CustomTextStyle.spaceMono(context),
-                            )));
+                          'Processing Data',
+                          style: CustomTextStyle.spaceMono(context),
+                        )));
                         String res = await CreateCampaignModel.createCampaign(
                             context,
                             titleController.text,
@@ -178,37 +184,33 @@ class _CreateCampaignFormControllerState extends State<CreateCampaignFormControl
                             BigInt.from((10000000 * lng!)),
                             BigInt.from(_howFar),
                             selectedValue,
-                            BigInt.from(_howMuch)
-                        );
+                            BigInt.from(_howMuch));
 
-                        if(res == 'Campaign Created') {
+                        if (res == 'Campaign Created') {
                           setState(() {
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(SnackBar(
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                 content: Text(
-                                  'Campaign Created',
-                                  style: CustomTextStyle.spaceMonoWhite(context),
-                                )));
-                            Navigator.of(context)
-                                .pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false);
+                              'Campaign Created',
+                              style: CustomTextStyle.spaceMonoWhite(context),
+                            )));
+                            Navigator.of(context).pushNamedAndRemoveUntil(
+                                '/home', (Route<dynamic> route) => false);
                           });
                         } else {
                           setState(() {
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(SnackBar(
+                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                 content: Text(
-                                  res,
-                                  style: CustomTextStyle.spaceMonoWhite(context),
-                                )));
+                              res,
+                              style: CustomTextStyle.spaceMonoWhite(context),
+                            )));
                           });
                         }
                       } else {
-                        ScaffoldMessenger.of(context)
-                            .showSnackBar(SnackBar(
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             content: Text(
-                              'An error with position data',
-                              style: CustomTextStyle.spaceMonoWhite(context),
-                            )));
+                          'An error with position data',
+                          style: CustomTextStyle.spaceMonoWhite(context),
+                        )));
                       }
                     },
                     child: const Text('GO!'),
