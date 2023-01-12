@@ -14,11 +14,11 @@ class SourcerCampaignModel {
       smartContract = SmartContractModel(contractAddress, 'Campaign', 'assets/abi_campaign.json',
           provider: sessionData.getProvider());
       List<dynamic>? fileCountRaw =
-      await smartContract.queryCall('fileCount', [], null);
+      await smartContract.queryCall('fileCount', []);
       List<dynamic>? fileCheckedRaw =
-      await smartContract.queryCall('checkedFiles', [], null);
+      await smartContract.queryCall('checkedFiles', []);
       List<dynamic>? workersCountRaw =
-      await smartContract.queryCall('numberOfActiveWorkers', [], null);
+      await smartContract.queryCall('numberOfActiveWorkers', []);
 
       if (fileCheckedRaw != null) {
         fileChecked = fileCheckedRaw[0].toString();
@@ -51,7 +51,7 @@ class SourcerCampaignModel {
           provider: sessionData.getProvider());
 
       List<dynamic>? allFilesInfoRaw =
-      await smartContract.queryCall('getAllFilesInfo', [], null);
+      await smartContract.queryCall('getAllFilesInfo', []);
 
       if (allFilesInfoRaw != null) {
         allFilesInfo = allFilesInfoRaw[0];

@@ -64,7 +64,7 @@ class SmartContractModel extends CustomTransactionSender{
     }
   }
 
-  Future<List<dynamic>?> queryCall(String functionName, List<dynamic> args, BigInt? value) async {
+  Future<List<dynamic>?> queryCall(String functionName, List<dynamic> args) async {
     try {
       final contract = await loadContract(contractAddress);
       final ethFunction = contract.function(functionName);

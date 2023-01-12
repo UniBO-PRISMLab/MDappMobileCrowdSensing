@@ -13,7 +13,7 @@ class MyCampaignModel {
       String sourcerAddress = sessionData.getAccountAddress();
       SmartContractModel smartContractViewModel = SmartContractModel(FlutterConfig.get('MCSfactory_CONTRACT_ADDRESS'),'MCSfactory','assets/abi.json', provider: sessionData.getProvider());
       EthereumAddress address = EthereumAddress.fromHex(sourcerAddress);
-      return await smartContractViewModel.queryCall('activeCampaigns',[address],null);
+      return await smartContractViewModel.queryCall('activeCampaigns',[address]);
     } catch (error) {
       if (kDebugMode) {
         print('\x1B[31m$error\x1B[0m');
@@ -32,7 +32,7 @@ class MyCampaignModel {
         'assets/abi_campaign.json',
         provider: sessionData.getProvider()
     );
-    resInfo = await smartContractViewModel.queryCall('getInfo', [], null);
+    resInfo = await smartContractViewModel.queryCall('getInfo', []);
     resInfo?.add(
           (await searchPlacesViewModel.getReadebleLocationFromLatLng(
               (double.parse(resInfo[1].toString())) / 10000000,

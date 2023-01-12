@@ -18,7 +18,7 @@ class SourcerPastCampaignsModel {
       List<dynamic>? query = [];
 
       do {
-        query = await smartContractViewModel.queryCall('closedCampaigns', [address, BigInt.from(index)], null);
+        query = await smartContractViewModel.queryCall('closedCampaigns', [address, BigInt.from(index)]);
 
         if (query.toString() != "null") {
           result.add(query![0].toString());

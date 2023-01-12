@@ -9,7 +9,7 @@ class AllCampaignModelCampaignModel {
     try {
       SessionModel sessionData = SessionModel();
       SmartContractModel smartContractViewModel = SmartContractModel(FlutterConfig.get('MCSfactory_CONTRACT_ADDRESS'),'MCSfactory','assets/abi.json', provider: sessionData.getProvider());
-      return await smartContractViewModel.queryCall('getAllCampaigns',[],null);
+      return await smartContractViewModel.queryCall('getAllCampaigns',[]);
 
     } catch (error) {
       if (kDebugMode) {

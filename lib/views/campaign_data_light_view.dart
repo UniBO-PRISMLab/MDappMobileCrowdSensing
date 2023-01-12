@@ -50,7 +50,7 @@ class LightJoinCampaignViewState extends State<CampaignDataLightView> {
   }
 
   _preparePage() async {
-    List<dynamic>? allfilesPathRes = await smartContract.queryCall('getValidFiles', [], null);
+    List<dynamic>? allfilesPathRes = await smartContract.queryCall('getValidFiles', []);
     if (allfilesPathRes != null) {
       //print("CHECK this: ${allfilesPathRes[0]}");
       for (dynamic element in allfilesPathRes[0]) {

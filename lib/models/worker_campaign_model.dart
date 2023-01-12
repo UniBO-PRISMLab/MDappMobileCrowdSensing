@@ -17,7 +17,7 @@ class WorkerCampaignModel {
             contractAddress[i].toString(), 'Campaign',
             'assets/abi_campaign.json', provider: sessionData.getProvider());
         dataFirstPart =
-        await smartContractViewModel.queryCall('getInfo', [], null);
+        await smartContractViewModel.queryCall('getInfo', []);
         dataFirstPart?.add(contractAddress[i].toString());
         dataFirstPart?.add(
             (await searchPlacesViewModel.getReadebleLocationFromLatLng(

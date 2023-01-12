@@ -20,9 +20,9 @@ class WalletModel {
     EthereumAddress address = EthereumAddress.fromHex(sessionData.getAccountAddress());
 
     List<dynamic>? balanceRow =
-    await smartContract.queryCall('balanceOf', [address], null);
+    await smartContract.queryCall('balanceOf', [address]);
     List<dynamic>? symbolRow =
-    await smartContract.queryCall('symbol', [], null);
+    await smartContract.queryCall('symbol', []);
 
     if (balanceRow != null) {
       balance = balanceRow[0].toString();
