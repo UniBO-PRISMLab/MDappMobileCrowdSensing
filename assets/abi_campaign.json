@@ -35,9 +35,14 @@
         "internalType": "address",
         "name": "_factoryAddress",
         "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_coinContractAddress",
+        "type": "address"
       }
     ],
-    "stateMutability": "nonpayable",
+    "stateMutability": "payable",
     "type": "constructor"
   },
   {
@@ -163,6 +168,26 @@
   },
   {
     "inputs": [],
+    "name": "closeCampaignAndPay",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "coinAddress",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "fileCount",
     "outputs": [
       {
@@ -200,6 +225,11 @@
         "type": "address"
       },
       {
+        "internalType": "address",
+        "name": "verifier",
+        "type": "address"
+      },
+      {
         "internalType": "string",
         "name": "hash",
         "type": "string"
@@ -230,6 +260,11 @@
             "type": "address"
           },
           {
+            "internalType": "address",
+            "name": "verifier",
+            "type": "address"
+          },
+          {
             "internalType": "string",
             "name": "hash",
             "type": "string"
@@ -238,6 +273,19 @@
         "internalType": "struct Campaign.File[]",
         "name": "",
         "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getCampaignBalance",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "balance",
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -347,6 +395,19 @@
     "name": "notValidateFile",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "numberOfActiveVerifiers",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {

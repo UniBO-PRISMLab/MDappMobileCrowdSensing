@@ -31,6 +31,7 @@ class _VerifierCampaignDataPhotoViewState extends State<VerifierCampaignDataPhot
           title: Text(jsonParameters["name"]),
           centerTitle: true,
         ),
+        resizeToAvoidBottomInset: false,
         body: const VerifierCampaignDataPhotoController()
     );
   }

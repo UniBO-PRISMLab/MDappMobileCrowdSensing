@@ -24,7 +24,7 @@ Future<void> main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
   await FlutterConfig.loadEnvVariables();
   final database = openDatabase(
-    join(await getDatabasesPath(), 'doggie_database.db'),
+    join(await getDatabasesPath(), 'followed_campaigns.db'),
     onCreate: (db, version) {
       return db.execute(
         'CREATE TABLE campaigns(id INTEGER PRIMARY KEY, name TEXT, age INTEGER)',

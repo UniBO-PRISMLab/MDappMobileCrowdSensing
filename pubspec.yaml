@@ -58,6 +58,7 @@ dependencies:
   permission_handler: ^10.2.0
   archive: ^3.3.5
   open_street_map_search_and_pick: ^0.0.15
+  sqflite: ^2.2.3
 
 dev_dependencies:
   flutter_test:

@@ -44,6 +44,7 @@ class LightJoinCampaignViewState extends State<CampaignDataPhotoView> {
     jsonParameters = jsonDecode(jsonEncode(parameters));
     contractAddress = jsonParameters["contractAddress"];
 
+    print("campaign_data_photo_view");
     if (downloadGate) {
       VerifierCampaignDataModel.getDataFileInfo(contractAddress)
           .then((info) => {

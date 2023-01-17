@@ -29,33 +29,32 @@ class _SourcerCampaignControllerState extends State<SourcerCampaignController> {
       readebleLocation ='';
 
   _formatData(String contractAddress) async {
-
-    String counters = await SourcerCampaignModel.getCountersData(contractAddress);
-    jsonCounters = jsonDecode(counters);
-    fileCount = jsonCounters['fileCount'].toString();
-    fileChecked = jsonCounters['fileChecked'].toString();
-    workersCount = jsonCounters['workersCount'].toString();
-    setState((){});
+    if(mounted){
+      String counters = await SourcerCampaignModel.getCountersData(contractAddress);
+      jsonCounters = jsonDecode(counters);
+      fileCount = jsonCounters['fileCount'].toString();
+      fileChecked = jsonCounters['fileChecked'].toString();
+      workersCount = jsonCounters['workersCount'].toString();
+      setState((){});
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-      if(mounted) {
-        parameters = ModalRoute
-            .of(context)!
-            .settings
-            .arguments;
-        jsonParameters = jsonDecode(jsonEncode(parameters));
-        name = jsonParameters["name"];
-        lat = jsonParameters["lat"];
-        lng = jsonParameters["lng"];
-        range = jsonParameters["range"];
-        type = jsonParameters["campaignType"];
-        crowdsourcer = jsonParameters["addressCrowdSourcer"];
-        contractAddress = jsonParameters["contractAddress"];
-        readebleLocation = jsonParameters["redebleLocation"];
-        _formatData(contractAddress);
-      }
+      parameters = ModalRoute
+          .of(context)!
+          .settings
+          .arguments;
+      jsonParameters = jsonDecode(jsonEncode(parameters));
+      name = jsonParameters["name"];
+      lat = jsonParameters["lat"];
+      lng = jsonParameters["lng"];
+      range = jsonParameters["range"];
+      type = jsonParameters["campaignType"];
+      crowdsourcer = jsonParameters["addressCrowdSourcer"];
+      contractAddress = jsonParameters["contractAddress"];
+      readebleLocation = jsonParameters["redebleLocation"];
+      _formatData(contractAddress);
     return  _buildPage(context);
   }
 

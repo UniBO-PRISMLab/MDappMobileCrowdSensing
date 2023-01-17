@@ -54,7 +54,6 @@ class VerifierCampaignDataModel {
 
       List<dynamic>? allFilesInfoRaw =
           await smartContract.queryCall('getAllFilesInfo', []);
-
       if (allFilesInfoRaw != null) {
         allFilesInfo = allFilesInfoRaw[0];
       }

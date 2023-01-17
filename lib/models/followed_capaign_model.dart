@@ -24,14 +24,4 @@ class FollowedCampaign {
   String toString() {
     return 'FollowedCampaign{id: $id, name: $name, age: $age}';
   }
-
-  Future<void> insertCampaign(FollowedCampaign campaign) async {
-    final db = await database;
-
-    await db.insert(
-      'Campaigns',
-      campaign.toMap(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
-  }
 }

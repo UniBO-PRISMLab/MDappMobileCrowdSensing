@@ -3,12 +3,8 @@ pragma solidity ^0.8.17;
 import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./MCSfactory.sol";
-import "./MCScoin.sol";
 
 contract Campaign is Ownable, Initializable {
-
-    address constant public coinAddress = 0x55728Fa9357d8d3EC425a8A546EE51D610fa13d7;
-    MCSCoin internal coin = MCSCoin(coinAddress);
 
     string internal name;
     int256 internal lat;
@@ -23,8 +19,10 @@ contract Campaign is Ownable, Initializable {
     uint256 public numberOfActiveVerifiers = 0;
     bool public isClosed;
 
-
     CampaignFactory internal factoryContractAddress;
+    address public coinAddress;
+    MCSCoin internal coin;
+
     mapping(string => File) public files; // ipfs hash -> file info
 
     string[] public allfilesPath;
@@ -59,7 +57,9 @@ contract Campaign is Ownable, Initializable {
         return(name,lat,lng,range,campaignType,addressCrowdSourcer,fileCount);
     }
 
-    constructor(string memory _name,int256 _lat,int256 _lng,int256 _range,string memory _type,address  _addressCrowdSourcer,address  _factoryAddress)  onlyOwner initializer {
+    constructor(string memory _name,int256 _lat,int256 _lng,int256 _range,string memory _type,address  _addressCrowdSourcer,address  _factoryAddress,address _coinContractAddress) onlyOwner payable initializer {
+        coinAddress =_coinContractAddress;
+        coin = MCSCoin(coinAddress);
         name = _name;
         lat = _lat;
         lng = _lng;
@@ -83,29 +83,6 @@ contract Campaign is Ownable, Initializable {
         files[ipfspath] = File(false,false,(msg.sender),address(0),ipfspath);
         emit FileUploaded((msg.sender));
     }
-
-    function sqrt(int256 x) internal pure returns (int256 y) {
-        int256 z = (x + 1) / 2;
-        y = x;
-        while (z < y) {
-            y = z;
-            z = (x / z + z) / 2;
-        }
-        return y;
-    }
-
-    function calculateDistance(int256 latFile, int256 lonFile) public view returns (int256 dist) {
-        int256 distance = sqrt((latFile - lat)**2 + (lonFile - lng)**2);
-        return int256(distance);
-    }
-
-    function isInRange(int256 latFile, int256 lonFile) public view returns (bool answer){
-        if ((range*1000) >= calculateDistance(latFile,lonFile)) {
-            return true;
-        }
-        return false;
-    }
-
 
     function validateFile(string memory hash) public {
         files[hash].validity = true;
@@ -133,7 +110,7 @@ contract Campaign is Ownable, Initializable {
         isClosed = factoryContractAddress.closeCampaign();
     }
 
-    function closeCampaignAndPay() public {
+    function closeCampaignAndPay() public payable {
         require(msg.sender == addressCrowdSourcer,'you are not the owner');
         require(msg.sender != address(0), "invalid address provided");
         isClosed = factoryContractAddress.closeCampaign();
@@ -153,5 +130,27 @@ contract Campaign is Ownable, Initializable {
                 }
             }
         }
+    }
+
+    function sqrt(int256 x) internal pure returns (int256 y) {
+        int256 z = (x + 1) / 2;
+        y = x;
+        while (z < y) {
+            y = z;
+            z = (x / z + z) / 2;
+        }
+        return y;
+    }
+
+    function calculateDistance(int256 latFile, int256 lonFile) public view returns (int256 dist) {
+        int256 distance = sqrt((latFile - lat)**2 + (lonFile - lng)**2);
+        return int256(distance);
+    }
+
+    function isInRange(int256 latFile, int256 lonFile) public view returns (bool answer){
+        if ((range*1000) >= calculateDistance(latFile,lonFile)) {
+            return true;
+        }
+        return false;
     }
 }

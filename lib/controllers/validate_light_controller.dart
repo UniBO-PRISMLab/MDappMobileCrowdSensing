@@ -35,6 +35,8 @@ class ValidateLightControllerState extends State<ValidateLightController> {
 
   @override
   Widget build(BuildContext context) {
+    print("validate_light_controller");
+
     parameters = ModalRoute.of(context)!.settings.arguments;
     campaignSelectedData = jsonDecode(jsonEncode(parameters));
     hash = campaignSelectedData['ipfsHash'];

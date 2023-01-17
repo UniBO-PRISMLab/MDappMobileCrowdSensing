@@ -19,19 +19,23 @@ class ValidatePhotoState extends State<ValidatePhotoController> {
   dynamic campaignSelectedData = {};
   Object? parameters;
 
-  bool downloadGate = false;
+  bool downloadGate = true;
   late String? hash;
   late List<File> pictures = [];
 
   _prepareData() async {
-    Stream<FileSystemEntity>? res = await ValidateModel.downloadPhotosFiles(hash);
-    if (res != null) {
-      res.forEach((element) {
-        pictures.add(File(element.path));
-      });
-      downloadGate = !downloadGate;
-      if (kDebugMode) {
-        print("PREPARING DATA: ${pictures.length}");
+    if(mounted) {
+      pictures.clear();
+      Stream<FileSystemEntity>? res = await ValidateModel.downloadPhotosFiles(
+          hash);
+      if (res != null) {
+        res.forEach((element) {
+          pictures.add(File(element.path));
+        });
+        downloadGate = !downloadGate;
+        if (kDebugMode) {
+          print("PREPARING DATA: ${pictures.length}");
+        }
       }
       setState(() {});
     }
@@ -39,11 +43,13 @@ class ValidatePhotoState extends State<ValidatePhotoController> {
 
   @override
   Widget build(BuildContext context) {
+    print("validate_photo_controller");
+
     parameters = ModalRoute.of(context)!.settings.arguments;
     campaignSelectedData = jsonDecode(jsonEncode(parameters));
     hash = campaignSelectedData['ipfsHash'];
-    if (hash != null && !downloadGate) {
-      _prepareData();
+    if (hash != null && downloadGate) {
+        _prepareData();
     }
     return (pictures.isNotEmpty)
         ? ListView(shrinkWrap: false, children: [

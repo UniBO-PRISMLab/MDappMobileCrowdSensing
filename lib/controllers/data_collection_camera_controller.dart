@@ -224,7 +224,10 @@ class DisplayPictureScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Display the Picture')),
+      appBar: AppBar(
+          backgroundColor: CustomColors.blue900(context),
+          centerTitle: true,
+          title: const Text('Keep this photo?')),
       body: Column(
         children: [
           Image.file(File(imagePath)),

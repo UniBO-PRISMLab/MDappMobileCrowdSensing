@@ -18,7 +18,6 @@ class PhotoJoinCampaignView extends JoinCampaignFactory {
 }
 
 class PhotoJoinCampaignViewState extends State<PhotoJoinCampaignView> {
-
   dynamic campaignSelectedData = {};
   Object? parameters;
   List<File> pictures = [];
@@ -26,12 +25,14 @@ class PhotoJoinCampaignViewState extends State<PhotoJoinCampaignView> {
   bool visible = false;
   @override
   Widget build(BuildContext context) {
+    dynamic space = DeviceDimension.deviceWidth(context) * 0.05;
+
     int counterFiles = pictures.length;
     parameters = ModalRoute.of(context)!.settings.arguments;
     campaignSelectedData = jsonDecode(jsonEncode(parameters));
     SessionModel sessionData = SessionModel();
-    (pictures.isNotEmpty)? visible = true : visible=false;
-    return  Scaffold(
+    (pictures.isNotEmpty) ? visible = true : visible = false;
+    return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         backgroundColor: CustomColors.blue900(context),
@@ -42,11 +43,8 @@ class PhotoJoinCampaignViewState extends State<PhotoJoinCampaignView> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset(
-              'assets/images/Circle-icons-camera.svg.png',
-                height: 150,
-                fit:BoxFit.fill
-            ),
+            Image.asset('assets/images/Circle-icons-camera.svg.png',
+                height: 150, fit: BoxFit.fill),
             Container(
                 padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                 child: Column(
@@ -63,14 +61,14 @@ class PhotoJoinCampaignViewState extends State<PhotoJoinCampaignView> {
                       const SizedBox(height: 20),
                       Row(
                         children: [
-                          Text(
-                            'Name: ',
-                            style: CustomTextStyle.spaceMonoBold(context)),
+                          Text('Name: ',
+                              style: CustomTextStyle.spaceMonoBold(context)),
                           Text(
                             '${campaignSelectedData['name']}',
                             style: CustomTextStyle.inconsolata(context),
                           ),
-                        ],),
+                        ],
+                      ),
                       Row(
                         children: [
                           Text(
@@ -81,14 +79,14 @@ class PhotoJoinCampaignViewState extends State<PhotoJoinCampaignView> {
                             '${campaignSelectedData['lat']}',
                             style: CustomTextStyle.inconsolata(context),
                           ),
-                          Text(
-                            ' Longitude: ',
-                            style: CustomTextStyle.spaceMonoBold(context)),
+                          Text(' Longitude: ',
+                              style: CustomTextStyle.spaceMonoBold(context)),
                           Text(
                             '${campaignSelectedData['lng']}',
                             style: CustomTextStyle.inconsolata(context),
                           ),
-                        ],),
+                        ],
+                      ),
                       Row(
                         children: [
                           Text(
@@ -99,40 +97,65 @@ class PhotoJoinCampaignViewState extends State<PhotoJoinCampaignView> {
                             '${campaignSelectedData['range']}',
                             style: CustomTextStyle.inconsolata(context),
                           ),
-                        ],),
-                      ElevatedButton.icon(
-                        onPressed: () async {
-                            pictures = await Navigator.of(context).push(
-                                MaterialPageRoute(builder: (
-                                    context) => const DataCollectionCameraView()));
-                            setState(()  {
-                            if (kDebugMode) {
-                              print("DEBUG::::::::::::::::::::::::::::::::::::: NUMBER OF PHOTOS: ${pictures.length}");
-                            }
-                          });
-                        },
-                        icon: const Icon(
-                          Icons.camera_alt_outlined,
-                          size: 24.0,
-                        ),
-                        label: const Text('Take data'),
+                        ],
                       ),
-                      ElevatedButton.icon(
-                        onPressed: () {
-                          pictures.clear();
-                          setState(() {
-                            if (kDebugMode) {
-                              print("DEBUG::::::::::::::::::::::::::::::::::::: PHOTOS CLEARED: ${pictures.length}");
-                            }
-                          });
-
-                        },
-                        icon: const Icon(
-                          Icons.delete_forever_outlined,
-                          size: 24.0,
-                        ),
-                        label: const Text('Delete data'),
-                      ),
+                      Container(
+                          padding: EdgeInsets.all(space),
+                          height: 100,
+                          child: Row(children: [
+                            Expanded(
+                                child: SizedBox(
+                                    height: 100,
+                                    child: ElevatedButton.icon(
+                                      style: ButtonStyle(
+                                          backgroundColor:
+                                              MaterialStateProperty.all(
+                                                  CustomColors.blue900(
+                                                      context))),
+                                      onPressed: () async {
+                                        pictures = await Navigator.of(context)
+                                            .push(MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const DataCollectionCameraView()));
+                                        setState(() {
+                                          if (kDebugMode) {
+                                            print(
+                                                "DEBUG::::::::::::::::::::::::::::::::::::: NUMBER OF PHOTOS: ${pictures.length}");
+                                          }
+                                        });
+                                      },
+                                      icon: const Icon(
+                                        Icons.camera_alt_outlined,
+                                        size: 24.0,
+                                      ),
+                                      label: const Text('Take data'),
+                                    ))),
+                            Expanded(
+                                child: Container(
+                                    padding: EdgeInsets.only(left: space),
+                                    height: 100,
+                                    child: ElevatedButton.icon(
+                                      style: ButtonStyle(
+                                          backgroundColor:
+                                              MaterialStateProperty.all(
+                                                  CustomColors.blue900(
+                                                      context))),
+                                      onPressed: () {
+                                        pictures.clear();
+                                        setState(() {
+                                          if (kDebugMode) {
+                                            print(
+                                                "DEBUG::::::::::::::::::::::::::::::::::::: PHOTOS CLEARED: ${pictures.length}");
+                                          }
+                                        });
+                                      },
+                                      icon: const Icon(
+                                        Icons.delete_forever_outlined,
+                                        size: 24.0,
+                                      ),
+                                      label: const Text('Delete data'),
+                                    ))),
+                          ])),
                       Row(
                         children: [
                           Text(
@@ -143,85 +166,89 @@ class PhotoJoinCampaignViewState extends State<PhotoJoinCampaignView> {
                             '$counterFiles',
                             style: CustomTextStyle.inconsolata(context),
                           ),
-                        ],),
-
+                        ],
+                      ),
                       Center(
                         child: SizedBox(
                           height: 200, // card height
                           child: PageView.builder(
                               itemCount: pictures.length,
                               controller: PageController(viewportFraction: 0.7),
-                              onPageChanged: (int index) => setState(() => index = index),
+                              onPageChanged: (int index) =>
+                                  setState(() => index = index),
                               itemBuilder: (_, i) {
                                 return Transform.scale(
                                   scale: 1,
                                   child: Card(
                                       elevation: 6,
-                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                                      child: Image.file(pictures[i],fit: BoxFit.cover)
-                                  ),
-                                );}
-                          ),
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(20)),
+                                      child: Image.file(pictures[i],
+                                          fit: BoxFit.cover)),
+                                );
+                              }),
                         ),
                       ),
-                      (visible)?
-                        (gate) ?
-                        Center(
-                          child:
-                          FloatingActionButton(onPressed: () async {
-                            setState(() {
-                              gate = false;
-                            });
-                            String? res =
-                            await UploadIpfsModel.uploadPhotos(pictures,
-                                campaignSelectedData[
-                                'contractAddress']);
+                      (visible)
+                          ? (gate)
+                              ? Center(
+                                  child: FloatingActionButton(
+                                      backgroundColor: CustomColors.blue900(context),
+                                      onPressed: () async {
+                                        setState(() {
+                                          gate = false;
+                                        });
+                                        String? res =
+                                            await UploadIpfsModel.uploadPhotos(
+                                                pictures,
+                                                campaignSelectedData[
+                                                    'contractAddress']);
 
-                            if (res != null) {
-                              if (res == 'Data uploaded') {
-                                setState(() {
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(SnackBar(
-                                      content: Text(
-                                        res,
-                                        style: CustomTextStyle.spaceMonoWhite(
-                                            context),
-                                      )));
-                                  Navigator.pushReplacementNamed(
-                                      context, '/worker');
-                                });
-                              } else {
-                                setState(() {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                          content: Text(
-                                            res,
-                                            style: CustomTextStyle
-                                                .spaceMonoWhite(context),
-                                          )
-                                      ));
-                                  gate = true;
-                                });
-                              }
-                            } else {
-                              setState(() {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                        content: Text(
-                                          'Unhandled Error.',
-                                          style: CustomTextStyle.spaceMonoWhite(
-                                              context),
-                                        )
-                                    ));
-                                gate = true;
-                              });
-                            }
-                          }, child: const Icon(Icons.file_upload_sharp)),
-
-                        ) : const Center(child: CircularProgressIndicator())
-                       : Container()
-                    ])
-            )
+                                        if (res != null) {
+                                          if (res == 'Data uploaded') {
+                                            setState(() {
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(SnackBar(
+                                                      content: Text(
+                                                res,
+                                                style: CustomTextStyle
+                                                    .spaceMonoWhite(context),
+                                              )));
+                                              Navigator.pushReplacementNamed(
+                                                  context, '/worker');
+                                            });
+                                          } else {
+                                            setState(() {
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(SnackBar(
+                                                      content: Text(
+                                                res,
+                                                style: CustomTextStyle
+                                                    .spaceMonoWhite(context),
+                                              )));
+                                              gate = true;
+                                            });
+                                          }
+                                        } else {
+                                          setState(() {
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(SnackBar(
+                                                    content: Text(
+                                              'Unhandled Error.',
+                                              style: CustomTextStyle
+                                                  .spaceMonoWhite(context),
+                                            )));
+                                            gate = true;
+                                          });
+                                        }
+                                      },
+                                      child:
+                                          const Icon(Icons.file_upload_sharp)),
+                                )
+                              : const Center(child: CircularProgressIndicator())
+                          : Container()
+                    ]))
           ],
         ),
       ),

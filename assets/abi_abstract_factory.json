@@ -3,17 +3,6 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "_addressCoinContract",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "payable",
-    "type": "constructor"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
         "name": "",
         "type": "address"
       }
@@ -59,19 +48,6 @@
     "outputs": [
       {
         "internalType": "contract Campaign",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "coinAddress",
-    "outputs": [
-      {
-        "internalType": "address",
         "name": "",
         "type": "address"
       }
