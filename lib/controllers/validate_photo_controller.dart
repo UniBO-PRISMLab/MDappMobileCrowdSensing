@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../../utils/join_campaign_factory.dart';
 import '../../utils/styles.dart';
+import '../models/file_manager_model.dart';
 import '../models/validate_model.dart';
 
 class ValidatePhotoController extends JoinCampaignFactory {
@@ -20,14 +21,13 @@ class ValidatePhotoState extends State<ValidatePhotoController> {
   Object? parameters;
 
   bool downloadGate = true;
-  late String? hash;
   late List<File> pictures = [];
 
   _prepareData() async {
     if(mounted) {
       pictures.clear();
       Stream<FileSystemEntity>? res = await ValidateModel.downloadPhotosFiles(
-          hash);
+          campaignSelectedData['ipfsHash']);
       if (res != null) {
         res.forEach((element) {
           pictures.add(File(element.path));
@@ -43,12 +43,13 @@ class ValidatePhotoState extends State<ValidatePhotoController> {
 
   @override
   Widget build(BuildContext context) {
-    print("validate_photo_controller");
+    if (kDebugMode) {
+      print("validate_photo_controller");
+    }
 
     parameters = ModalRoute.of(context)!.settings.arguments;
     campaignSelectedData = jsonDecode(jsonEncode(parameters));
-    hash = campaignSelectedData['ipfsHash'];
-    if (hash != null && downloadGate) {
+    if (campaignSelectedData['ipfsHash'] != null && downloadGate) {
         _prepareData();
     }
     return (pictures.isNotEmpty)
@@ -106,7 +107,7 @@ class ValidatePhotoState extends State<ValidatePhotoController> {
                           onPressed: () async {
                             bool res = await ValidateModel.approveOrNot(
                                 campaignSelectedData['contractAddress'],
-                                hash,
+                                campaignSelectedData['ipfsHash'],
                                 true);
                             if (res) {
                               setState(() {
@@ -139,7 +140,7 @@ class ValidatePhotoState extends State<ValidatePhotoController> {
                           onPressed: () async {
                             bool res = await ValidateModel.approveOrNot(
                                 campaignSelectedData['contractAddress'],
-                                hash,
+                                campaignSelectedData['ipfsHash'],
                                 false);
                             if (res) {
                               setState(() {

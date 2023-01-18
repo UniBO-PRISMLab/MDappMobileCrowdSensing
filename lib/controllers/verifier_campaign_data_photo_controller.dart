@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:mobile_crowd_sensing/utils/styles.dart';
+import '../models/file_manager_model.dart';
 import '../models/verifier_campaign_data_model.dart';
 
 class VerifierCampaignDataPhotoController extends StatefulWidget {
@@ -31,8 +32,9 @@ class _VerifierCampaignDataPhotoControllerState
       readebleLocation;
 
   @override
-  void initState() {
+  initState() {
     super.initState();
+    FileManagerModel.clearTemporaryDirectory();
   }
 
   _formatData(String counters, List<dynamic>? info) {

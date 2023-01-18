@@ -67,44 +67,53 @@ class _VerifierCampaignDataLightControllerState
             padding: const EdgeInsets.fromLTRB(10, 30, 10, 0),
             width: double.maxFinite,
             child: Column(children: <Widget>[
-              Expanded(
-                  flex: 1,
-                  child: Column(children: [
-                    Row(children: <Widget>[
-                      Expanded(
-                          flex: 5,
-                          child: Text("contractAddress:\n$contractAddress",
-                              style: CustomTextStyle.spaceMono(context))),
+               Column(children: [
+                 Column(children: <Widget>[
+                   Text("contractAddress:",
+                       style: CustomTextStyle.spaceMonoBold(context)),
+                   FittedBox(
+                       fit: BoxFit.fitWidth,
+                       child: Text(contractAddress,
+                           style: CustomTextStyle.spaceMono(context))),
                     ]),
-                    Row(children: <Widget>[
-                      Expanded(
-                          flex: 5,
-                          child: Text("Crowdsourcer:\n$crowdsourcer",
-                              style: CustomTextStyle.spaceMono(context))),
-                    ]),
-                    Column(children: <Widget>[
-                      Text(
-                        "Location:\n$readebleLocation",
-                        style: CustomTextStyle.spaceMono(context),
-                      ),
-                    ]),
-                    Row(children: <Widget>[
-                      Text(
-                        "Range: $range ",
-                        style: CustomTextStyle.spaceMono(context),
-                      ),
-                      Text(
-                        "Type: $type",
-                        style: CustomTextStyle.spaceMono(context),
-                      )
-                    ]),
+                 Column(children: <Widget>[
+                   Text("Crowdsourcer:",
+                       style: CustomTextStyle.spaceMonoBold(context)),
+                   FittedBox(
+                       fit: BoxFit.fitWidth,
+                       child: Text(crowdsourcer,
+                           style: CustomTextStyle.spaceMono(context))),
+                 ]),
+                 Column(children: <Widget>[
+                   Text("Location:",
+                       style: CustomTextStyle.spaceMonoBold(context)),
+                   Text(readebleLocation,
+                       style: CustomTextStyle.spaceMono(context)),
+                 ]),
+                 Row(children: <Widget>[
+                   Text(
+                     "Range: ",
+                     style: CustomTextStyle.spaceMonoBold(context),
+                   ),
+                   Text(
+                     range,
+                     style: CustomTextStyle.spaceMono(context),
+                   ),
+                   Text(
+                     "Type: ",
+                     style: CustomTextStyle.spaceMonoBold(context),
+                   ),
+                   Text(type,
+                     style: CustomTextStyle.spaceMono(context),
+                   )
+                 ]),
                     Padding(
                         padding: const EdgeInsets.all(40),
                         child:Text(
                       "uploaded $fileCount files\nchecked $fileChecked of $fileCount",
                       style: CustomTextStyle.spaceMonoBold(context),
                     )),
-                  ])),
+                  ]),
               Expanded(
                   flex: 1,
                   child: ListView.builder(
@@ -117,7 +126,7 @@ class _VerifierCampaignDataLightControllerState
                         String status = current[0].toString();
                         String validity = current[1].toString();
                         String uploader = current[2].toString();
-                        String ipfsHash = current[3].toString();
+                        String ipfsHash = current[4].toString();
                         if (status == 'false') {
                           return GestureDetector(
                             onTap: () {

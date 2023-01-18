@@ -126,7 +126,7 @@ class LightJoinCampaignViewState extends State<LightJoinCampaignView> {
                             stream: environmentSensors.light,
                             builder: (context, snapshot) {
                               if (!snapshot.hasData) {
-                                return const CircularProgressIndicator();
+                                return const Center(child:CircularProgressIndicator());
                               } else {
                                 lights.add(snapshot.data!);
                                 sum += lights.last;
@@ -170,8 +170,8 @@ class LightJoinCampaignViewState extends State<LightJoinCampaignView> {
                                                 style: CustomTextStyle
                                                     .spaceMonoWhite(context),
                                               )));
-                                              Navigator.pushReplacementNamed(
-                                                  context, '/worker');
+                                              Navigator.of(context).pushNamedAndRemoveUntil(
+                                                  '/home', (Route<dynamic> route) => false);
                                             });
                                           }
                                           setState(() {
@@ -195,6 +195,7 @@ class LightJoinCampaignViewState extends State<LightJoinCampaignView> {
                                           });
                                         }
                                       },
+                                      backgroundColor: CustomColors.blue900(context),
                                       child:
                                           const Icon(Icons.file_upload_sharp)),
                                 ]);

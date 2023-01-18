@@ -17,21 +17,10 @@ import 'package:mobile_crowd_sensing/views/search_places_view.dart';
 import 'package:mobile_crowd_sensing/views/validate_light_view.dart';
 import 'package:mobile_crowd_sensing/views/validate_photo_view.dart';
 import 'package:mobile_crowd_sensing/views/wallet_view.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:path/path.dart';
 
 Future<void> main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
   await FlutterConfig.loadEnvVariables();
-  final database = openDatabase(
-    join(await getDatabasesPath(), 'followed_campaigns.db'),
-    onCreate: (db, version) {
-      return db.execute(
-        'CREATE TABLE campaigns(id INTEGER PRIMARY KEY, name TEXT, age INTEGER)',
-      );
-    },
-    version: 1,
-  );
   runApp(const MyApp());
 }
 

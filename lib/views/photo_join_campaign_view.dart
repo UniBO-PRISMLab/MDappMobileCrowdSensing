@@ -141,7 +141,18 @@ class PhotoJoinCampaignViewState extends State<PhotoJoinCampaignView> {
                                                   CustomColors.blue900(
                                                       context))),
                                       onPressed: () {
-                                        pictures.clear();
+                                        if (pictures.isEmpty) {
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(SnackBar(
+                                                  content: Text(
+                                            'No photos to delete',
+                                            style:
+                                                CustomTextStyle.spaceMonoWhite(
+                                                    context),
+                                          )));
+                                        } else {
+                                          pictures.clear();
+                                        }
                                         setState(() {
                                           if (kDebugMode) {
                                             print(
@@ -194,7 +205,8 @@ class PhotoJoinCampaignViewState extends State<PhotoJoinCampaignView> {
                           ? (gate)
                               ? Center(
                                   child: FloatingActionButton(
-                                      backgroundColor: CustomColors.blue900(context),
+                                      backgroundColor:
+                                          CustomColors.blue900(context),
                                       onPressed: () async {
                                         setState(() {
                                           gate = false;
