@@ -59,6 +59,12 @@ dependencies:
   archive: ^3.3.5
   open_street_map_search_and_pick: ^0.0.15
   sqflite: ^2.2.3
+  flutter_local_notifications: ^13.0.0
+  flutter_background_service: ^2.4.6
+  device_info_plus: ^8.0.0
+  shared_preferences: ^2.0.16
+  workmanager: ^0.5.1
+  flutter_foreground_task: ^3.10.0
 
 dev_dependencies:
   flutter_test:

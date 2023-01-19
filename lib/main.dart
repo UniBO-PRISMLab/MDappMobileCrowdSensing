@@ -17,10 +17,17 @@ import 'package:mobile_crowd_sensing/views/search_places_view.dart';
 import 'package:mobile_crowd_sensing/views/validate_light_view.dart';
 import 'package:mobile_crowd_sensing/views/validate_photo_view.dart';
 import 'package:mobile_crowd_sensing/views/wallet_view.dart';
+import 'package:workmanager/workmanager.dart';
+import 'models/backgorund_service_model.dart';
 
 Future<void> main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
   await FlutterConfig.loadEnvVariables();
+  await Workmanager().initialize(
+    callbackDispatcher,
+    isInDebugMode: true,
+  );
+  await initializePeriodicTasks();
   runApp(const MyApp());
 }
 
@@ -29,6 +36,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return MaterialApp(
       initialRoute: '/login',
       routes: {

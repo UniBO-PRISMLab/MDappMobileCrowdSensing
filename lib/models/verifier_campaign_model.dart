@@ -1,3 +1,4 @@
+import 'db_capaign_model.dart';
 import 'smart_contract_model.dart';
 import 'search_places_model.dart';
 import 'session_model.dart';
@@ -9,6 +10,10 @@ class VerifierCampaignModel {
 
     List? resInfo = [];
     List? dataFirstPart = [];
+
+    DbCampaignModel db = DbCampaignModel();
+    List<Campaign> res = await db.campaigns();
+
     if (contractAddress != null) {
       SmartContractModel smartContractViewModel;
       for (int i = 0; i < contractAddress.length; i++) {
@@ -25,9 +30,20 @@ class VerifierCampaignModel {
                     (double.parse(dataFirstPart[2].toString())) / 10000000))
                 .toString()
                 .replaceAll(RegExp(r'[^\w\s]+'), ''));
+        dataFirstPart?.add((await _checkIfIsInCampaignsDb(res,dataFirstPart[7].toString())).toString());
         resInfo.add(dataFirstPart);
       }
     }
     return resInfo;
+  }
+
+  static Future<bool> _checkIfIsInCampaignsDb(List<Campaign> storedCampaigns,String campaignAddress) async {
+    Campaign result = storedCampaigns.singleWhere((element) => element.address == campaignAddress,
+        orElse: () => const Campaign('fake',null, null, address: ''));
+    if (result.title != "fake") {
+      return true;
+    } else {
+      return false;
+    }
   }
 }

@@ -40,6 +40,8 @@ class DbCampaignModel {
       cmp.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
+    print("DEBUG:::::: dentro al db ci sono: \n${(await campaigns()).length} campagne");
+
   }
 
   Future<List<Campaign>> campaigns() async {
@@ -48,10 +50,10 @@ class DbCampaignModel {
 
     return List.generate(maps.length, (i) {
       return Campaign(
+        maps[i]['title'],
+        maps[i]['lat'],
+        maps[i]['lng'],
         address: maps[i]['address'],
-        title: maps[i]['title'],
-        lat: maps[i]['lat'],
-        lng: maps[i]['lng'],
       );
     });
   }
@@ -73,18 +75,23 @@ class DbCampaignModel {
       where: 'address = ?',
       whereArgs: [address],
     );
+    print("DEBUG:::::: dentro al db ci sono: \n${(await campaigns()).length} campagne");
+
   }
 }
 
 class Campaign {
-  final String address, title, lat, lng;
+  final String address;
+  final String? title, lat, lng;
 
-  const Campaign({
-    required this.address,
-    required this.title,
-    required this.lat,
-    required this.lng,
-  });
+  const Campaign(
+      this.title,
+      this.lat,
+      this.lng,
+      {
+        required this.address,
+      }
+  );
 
   Map<String, dynamic> toMap() {
     return {
