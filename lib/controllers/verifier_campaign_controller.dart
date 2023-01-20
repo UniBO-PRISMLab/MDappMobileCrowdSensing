@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile_crowd_sensing/models/verifier_campaign_model.dart';
+import '../models/backgorund_service_model.dart';
 import '../models/db_capaign_model.dart';
 import '../utils/styles.dart';
 import '../models/search_places_model.dart';
@@ -74,7 +75,6 @@ class _VerifierCampaignControllerState extends State<VerifierCampaignController>
                     itemCount: snapshot.data.length,
                     itemBuilder: (context, index) {
                       List? current = snapshot.data[index];
-                      print("\n\n DEBUG[current]: \n\n${current.toString()}\n");
                       String? name,
                           lat,
                           lng,
@@ -139,8 +139,10 @@ class _VerifierCampaignControllerState extends State<VerifierCampaignController>
                                       onPressed: () async {
                                         if (isSubscribed == 'true') {
                                           await db.deleteCampaign(contractAddress!);
+                                          //await removeTask(contractAddress);
                                         } else {
                                           await db.insertCampaign(Campaign(name, lat, lng, address: contractAddress!));
+                                          //await addPeriodicTask(name!,contractAddress);
                                         }
                                         setState(() {});
                                       },

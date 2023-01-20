@@ -1,5 +1,4 @@
-
-
+import 'package:timezone/timezone.dart' as tz;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class NotificationApi {
@@ -10,8 +9,11 @@ class NotificationApi {
       android: AndroidNotificationDetails(
           "channelId",
           "channelName",
-          channelDescription:"channelDescription",
-          importance: Importance.max
+          channelDescription: "channelDescription",
+          importance: Importance.max,
+          priority: Priority.max,
+          ticker: 'ticker',
+          icon: 'ic_bg_service_small',
       ),
     );
   }
@@ -26,4 +28,20 @@ class NotificationApi {
     await _notificationDetails(),
     payload: payload
   );
+
+  static void showScheduledNotification({
+    int id = 0,
+    String? title, body, payload,
+    required DateTime scheduleDate,
+  }) async =>
+      _notifications.zonedSchedule(
+          id,
+          title,
+          body,
+          tz.TZDateTime.from(scheduleDate, tz.local),
+          await _notificationDetails(),
+          payload: payload,
+          uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
+          androidAllowWhileIdle: true,
+      );
 }

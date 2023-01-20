@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_config/flutter_config.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:mobile_crowd_sensing/models/session_model.dart';
 import 'package:mobile_crowd_sensing/utils/verifier_campaign_data_factory.dart';
 import 'package:mobile_crowd_sensing/views/all_campaign_view.dart';
 import 'package:mobile_crowd_sensing/views/close_campaign_view.dart';
@@ -23,11 +25,11 @@ import 'models/backgorund_service_model.dart';
 Future<void> main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
   await FlutterConfig.loadEnvVariables();
-  await Workmanager().initialize(
-    callbackDispatcher,
-    isInDebugMode: true,
-  );
-  await initializePeriodicTasks();
+  // await Workmanager().initialize(
+  //             callbackDispatcher,
+  //             isInDebugMode: true,
+  //           );
+  // await initializePeriodicTasks();
   runApp(const MyApp());
 }
 
@@ -36,7 +38,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return MaterialApp(
       initialRoute: '/login',
       routes: {
@@ -48,16 +49,21 @@ class MyApp extends StatelessWidget {
         '/verifier': (context) => const AllCampaignView(cameFrom: 'verifier'),
         '/map': (context) => const SearchPlacesView(),
         '/sourcer_campaigns_provider': (context) => const MyCampaignView(),
-        '/sourcer_close_campaign_provider': (context) => const SourcerPastCampaignsController(),
-        '/sourcer_close_campaign_service_provider': (context) => const CloseCampaignView(),
-        '/wallet':(context) => const WalletView(),
-        '/join_campaign':(context) => JoinCampaignFactory.fromTypeName(context),
-        '/data_campaign':(context) => WorkerDataCampaignFactory.fromTypeName(context),
-        "/verifier_campaign_data":(context) => VerifierDataCampaignFactory.fromTypeName(context),
-        '/camera':(context) => const DataCollectionCameraView(),
-        '/validate_light_view':(context) => const ValidateLightView(),
-        '/validate_photo_view':(context) => const ValidatePhotoView(),
-        '/current_campaign':(context) => const SourcerCampaignView(),
+        '/sourcer_close_campaign_provider': (context) =>
+            const SourcerPastCampaignsController(),
+        '/sourcer_close_campaign_service_provider': (context) =>
+            const CloseCampaignView(),
+        '/wallet': (context) => const WalletView(),
+        '/join_campaign': (context) =>
+            JoinCampaignFactory.fromTypeName(context),
+        '/data_campaign': (context) =>
+            WorkerDataCampaignFactory.fromTypeName(context),
+        "/verifier_campaign_data": (context) =>
+            VerifierDataCampaignFactory.fromTypeName(context),
+        '/camera': (context) => const DataCollectionCameraView(),
+        '/validate_light_view': (context) => const ValidateLightView(),
+        '/validate_photo_view': (context) => const ValidatePhotoView(),
+        '/current_campaign': (context) => const SourcerCampaignView(),
       },
     );
   }

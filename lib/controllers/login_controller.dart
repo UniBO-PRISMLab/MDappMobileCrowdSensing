@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:slider_button/slider_button.dart';
-import '../models/backgorund_service_model.dart';
 import 'login_metamask_controller.dart';
 import '../utils/styles.dart';
 import '../models/session_model.dart';
@@ -18,8 +17,13 @@ class _LoginControllerState extends State<LoginController> {
   SessionModel sessionData = SessionModel();
 
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    // TODO: implement initState
+    super.initState();
     sessionData.checkConnection();
+  }
+  @override
+  Widget build(BuildContext context) {
     return SingleChildScrollView(
         child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -28,7 +32,7 @@ class _LoginControllerState extends State<LoginController> {
           'assets/images/main_page_image.png',
           fit: BoxFit.fitHeight,
         ),
-        (sessionData.session != null)?
+        (sessionData.connector.connected)?
         Container(
                 padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                 child: Column(
@@ -50,12 +54,12 @@ class _LoginControllerState extends State<LoginController> {
                         ),
                         Text(
                           sessionData
-                              .getNetworkName(sessionData.session?.chainId),
+                              .getNetworkName(sessionData.connector.session.chainId),
                           style: CustomTextStyle.inconsolata(context),
                         ),
                       ]),
                       const SizedBox(height: 20),
-                      (sessionData.session.chainId != 5)
+                      (sessionData.connector.session.chainId != 5)
                           ? Row(children: const [
                               Icon(Icons.warning,
                                   color: Colors.redAccent, size: 15),
@@ -69,6 +73,7 @@ class _LoginControllerState extends State<LoginController> {
                       Center(
                           child: SliderButton(
                         action: () async {
+                          sessionData.killConnection();
                           Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
