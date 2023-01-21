@@ -73,7 +73,6 @@ class _LoginControllerState extends State<LoginController> {
                       Center(
                           child: SliderButton(
                         action: () async {
-                          sessionData.killConnection();
                           Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(

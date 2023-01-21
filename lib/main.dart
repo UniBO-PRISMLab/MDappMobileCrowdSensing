@@ -19,17 +19,14 @@ import 'package:mobile_crowd_sensing/views/search_places_view.dart';
 import 'package:mobile_crowd_sensing/views/validate_light_view.dart';
 import 'package:mobile_crowd_sensing/views/validate_photo_view.dart';
 import 'package:mobile_crowd_sensing/views/wallet_view.dart';
+import 'package:walletconnect_dart/walletconnect_dart.dart';
 import 'package:workmanager/workmanager.dart';
 import 'models/backgorund_service_model.dart';
 
 Future<void> main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
   await FlutterConfig.loadEnvVariables();
-  // await Workmanager().initialize(
-  //             callbackDispatcher,
-  //             isInDebugMode: true,
-  //           );
-  // await initializePeriodicTasks();
+  WalletConnectSession? s = await SessionModel().connector.sessionStorage?.getSession();
   runApp(const MyApp());
 }
 

@@ -1,3 +1,4 @@
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:walletconnect_dart/walletconnect_dart.dart';
 import 'package:web3dart/web3dart.dart';
 import 'package:flutter_config/flutter_config.dart';
@@ -32,7 +33,6 @@ class SessionModel {
         )
     );
     provider = EthereumWalletConnectProvider(connector);
-
     return provider;
   }
 
