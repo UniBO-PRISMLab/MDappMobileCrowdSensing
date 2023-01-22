@@ -38,7 +38,7 @@ dependencies:
   walletconnect_dart: ^0.0.11
   google_fonts: ^3.0.1
   slider_button: ^2.0.0
-  web3dart: ^2.4.1
+  web3dart: #latest version
   geolocator: #latest version
   geocoding:  #latest version
   flutter_intl: ^0.0.1
@@ -65,8 +65,6 @@ dependencies:
   shared_preferences: ^2.0.16
   workmanager: ^0.5.1
   flutter_foreground_task: ^3.10.0
-  flutter_timezone: ^1.0.4
-  observer: ^0.0.1
 
 dev_dependencies:
   flutter_test:

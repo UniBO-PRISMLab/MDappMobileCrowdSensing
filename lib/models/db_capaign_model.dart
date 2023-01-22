@@ -24,7 +24,8 @@ class DbCampaignModel {
                 'address TEXT PRIMARY KEY,'
                 ' title TEXT,'
                 ' lat TEXT,'
-                ' lng TEXT)',
+                ' lng TEXT,'
+                ' radius TEXT)',
           );
         },
         version: 1,
@@ -50,9 +51,10 @@ class DbCampaignModel {
 
     return List.generate(maps.length, (i) {
       return Campaign(
-        maps[i]['title'],
-        maps[i]['lat'],
-        maps[i]['lng'],
+        title: maps[i]['title'],
+        lat: maps[i]['lat'],
+        lng: maps[i]['lng'],
+        radius: maps[i]['radius'],
         address: maps[i]['address'],
       );
     });
@@ -81,14 +83,14 @@ class DbCampaignModel {
 }
 
 class Campaign {
-  final String address;
-  final String? title, lat, lng;
+  final String address, title, lat, lng, radius;
 
   const Campaign(
-      this.title,
-      this.lat,
-      this.lng,
       {
+        required this.title,
+        required this.lat,
+        required this.lng,
+        required this.radius,
         required this.address,
       }
   );
@@ -98,13 +100,14 @@ class Campaign {
       'address': address,
       'title': title,
       'lat': lat,
-      'lng': lng
+      'lng': lng,
+      'radius': radius,
     };
   }
 
   @override
   String toString() {
-    return 'Campaign{address: $address, name: $title, lat: $lat, lng: $lng}';
+    return 'Campaign{address: $address, name: $title, lat: $lat, lng: $lng, radius: $radius}';
   }
 
 }

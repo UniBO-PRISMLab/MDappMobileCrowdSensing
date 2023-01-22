@@ -21,7 +21,7 @@ import 'package:mobile_crowd_sensing/views/validate_photo_view.dart';
 import 'package:mobile_crowd_sensing/views/wallet_view.dart';
 import 'package:walletconnect_dart/walletconnect_dart.dart';
 import 'package:workmanager/workmanager.dart';
-import 'models/backgorund_service_model.dart';
+import 'services/closed_campaign_service.dart';
 
 Future<void> main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();

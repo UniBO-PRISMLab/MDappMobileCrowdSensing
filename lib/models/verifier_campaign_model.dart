@@ -39,7 +39,7 @@ class VerifierCampaignModel {
 
   static Future<bool> _checkIfIsInCampaignsDb(List<Campaign> storedCampaigns,String campaignAddress) async {
     Campaign result = storedCampaigns.singleWhere((element) => element.address == campaignAddress,
-        orElse: () => const Campaign('fake',null, null, address: ''));
+        orElse: () => const Campaign(title: 'fake', lat: '', lng: '', radius: '', address: ''));
     if (result.title != "fake") {
       return true;
     } else {
