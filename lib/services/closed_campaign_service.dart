@@ -13,146 +13,168 @@ import 'dart:ui';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_background_service_android/flutter_background_service_android.dart';
 
-//@pragma('vm:entry-point')
-void onStart(ServiceInstance service) async {
-  // Only available for flutter 3.0.0 and later
-  DartPluginRegistrant.ensureInitialized();
+class ClosedCampaignService {
 
-  if (service is AndroidServiceInstance) {
-    service.on('setAsForeground').listen((event) {
-      print('\x1B[31mSet in foreground\x1B[0m');
-      service.setAsForegroundService();
-    });
 
-    service.on('setAsBackground').listen((event) {
-      print('\x1B[31mSet in background\x1B[0m');
-      service.setAsBackgroundService();
-    });
+  static final ClosedCampaignService _instance = ClosedCampaignService._internal();
+
+  static late bool isInitialized;
+
+  void setIsInizialized(bool status) {
+    ClosedCampaignService.isInitialized = status;
   }
 
-  service.on('stopService').listen((event) {
-    print('\x1B[31m stop service\x1B[0m');
-    service.stopSelf();
-  });
+  bool checkIfInitialized() {
+    return ClosedCampaignService.isInitialized;
+  }
 
-  DbCampaignModel db = DbCampaignModel();
-  List<Campaign> res = await db.campaigns();
-  SmartContractModel_Bs smartContract;
-  if (res.isNotEmpty) {
-    final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-        FlutterLocalNotificationsPlugin();
-    int counter = 0;
-    for (Campaign c in res) {
-      Timer.periodic(const Duration(seconds: 10), (timer) async {
-        if (kDebugMode) {
-          print('\x1B[31mEseguo _process per la $counter volta.\x1B[0m');
-        }
+  factory ClosedCampaignService() {
+    return _instance;
+  }
 
-        SharedPreferences shared = await SharedPreferences.getInstance();
-        String? accountAddress = shared.getString('address');
-        if (accountAddress == null) {
-          throw NullThrownError();
-        }
-        String address = c.address;
-        String title = c.title!;
+  ClosedCampaignService._internal() {
+    ClosedCampaignService.isInitialized = false;
+  }
 
-        smartContract = SmartContractModel_Bs(
-            contractAddress: address,
-            abiName: 'Campaign',
-            abiFileRoot: 'assets/abi_campaign.json',
-            accountAddress: accountAddress);
+  static void onStart(ServiceInstance service) async {
+    DartPluginRegistrant.ensureInitialized();
 
-        List<dynamic>? isClosedRaw =
-            await smartContract.queryCall('isClosed', []);
-        if (isClosedRaw != null) {
-          String answer = isClosedRaw[0].toString();
-
-          if (answer == "true") {
-            if (kDebugMode) {
-              print('\x1B[31mThe campaign was closed\x1B[0m');
-            }
-            if (service is AndroidServiceInstance) {
-              if (await service.isForegroundService()) {
-
-                flutterLocalNotificationsPlugin.show(
-                  888,
-                  'Campaign Closed',
-                  'The campaign [$title] \nat address $address \n was closed by crowdsourcer',
-                  const NotificationDetails(
-                    android: AndroidNotificationDetails(
-                      'important_channel',
-                      'MY FOREGROUND SERVICE',
-                      icon: 'ic_bg_service_small',
-                      ongoing: true,
-                    ),
-                  ),
-                );
-              }
-            }
-            await db.deleteCampaign(address);
-          } else if (answer == "false") {
-            print('\x1B[31mThe campaign still open: nothing to notify\x1B[0m');
+    Timer.periodic(const Duration(seconds: 10), (timer) async {
+      DbCampaignModel db = DbCampaignModel();
+      List<Campaign> res = await db.campaigns();
+      SmartContractModelBs smartContract;
+      if (kDebugMode) {
+        print(
+            '\x1B[31m[CLOSED CAMPAIGN SERVICE]check db. IS EMPTY? ${res.isEmpty} \x1B[0m');
+      }
+      if (res.isNotEmpty) {
+        final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+            FlutterLocalNotificationsPlugin();
+        int counter = 0;
+        for (Campaign c in res) {
+          if (kDebugMode) {
+            print(
+                '\x1B[31m [CLOSED CAMPAIGN SERVICE]Execution of _process for the $counter time.\x1B[0m');
           }
-        } else {
-          return Future.error(StackTrace);
+
+          SharedPreferences shared = await SharedPreferences.getInstance();
+          String? accountAddress = shared.getString('address');
+          if (accountAddress == null) {
+            throw NullThrownError();
+          }
+          String address = c.address;
+          String title = c.title;
+
+          smartContract = SmartContractModelBs(
+              contractAddress: address,
+              abiName: 'Campaign',
+              abiFileRoot: 'assets/abi_campaign.json',
+              accountAddress: accountAddress);
+
+          List<dynamic>? isClosedRaw =
+              await smartContract.queryCall('isClosed', []);
+          if (isClosedRaw != null) {
+            String answer = isClosedRaw[0].toString();
+
+            if (answer == "true") {
+              // the campaign result closed
+              if (kDebugMode) {
+                print('\x1B[31mThe campaign was closed\x1B[0m');
+              }
+              if (service is AndroidServiceInstance) {
+                if (await service.isForegroundService()) {
+                  flutterLocalNotificationsPlugin.show(
+                    888,
+                    'Campaign Closed',
+                    'The campaign [$title] \nat address $address \n was closed by crowdsourcer',
+                    const NotificationDetails(
+                      android: AndroidNotificationDetails(
+                        'important_channel',
+                        'MY FOREGROUND SERVICE',
+                        icon: 'ic_bg_service_small',
+                        ongoing: true,
+                      ),
+                    ),
+                  );
+                }
+              }
+              await db.deleteCampaign(address);
+            } else {
+              print(
+                  '\x1B[31mThe campaign still open: nothing to notify\x1B[0m');
+            }
+          } else {
+            return Future.error(StackTrace);
+          }
+
+          counter++;
         }
-      });
-      counter++;
+        if (kDebugMode) {
+          print(
+              "\n [CLOSED CAMPAIGN SERVICE]registered : $counter periodic Tasks\n");
+        }
+      } else {
+        if (kDebugMode) {
+          print(
+              '\x1B[31m [CLOSED CAMPAIGN SERVICE] No campaigns to follow. stop the service.\x1B[0m');
+        }
+        ClosedCampaignService().setIsInizialized(false);
+        print('\x1B[31m[DEBUG CANCELLAZIONE SERVIZIO]${ ClosedCampaignService().checkIfInitialized() }\x1B[0m');
+        timer.cancel();
+        service.stopSelf();
+      }
+    });
+  }
+
+  Future<void> initializeClosedCampaignService() async {
+    ClosedCampaignService().setIsInizialized(true);
+    DbCampaignModel db = DbCampaignModel();
+    List<Campaign> res = await db.campaigns();
+    if (res.isNotEmpty) {
+      print(
+          '\x1B[31m [CLOSED CAMPAIGN SERVICE]Initialize service [CLOSED CAMPAIGN]\x1B[0m');
+
+      final service = FlutterBackgroundService();
+
+      final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+          FlutterLocalNotificationsPlugin();
+
+      await flutterLocalNotificationsPlugin
+          .resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin>()
+          ?.createNotificationChannel(NotificationChannel.importantChannel);
+
+      await service.configure(
+        androidConfiguration: AndroidConfiguration(
+// this will be executed when app is in foreground or background in separated isolate
+          onStart: onStart,
+
+// auto start service
+          autoStart: true,
+          isForegroundMode: true,
+
+          notificationChannelId: 'important_channel',
+          initialNotificationTitle: 'closing campaign service',
+          initialNotificationContent:
+              'this service notify eventually submitted campaign closed',
+          foregroundServiceNotificationId: 888,
+        ),
+        iosConfiguration: IosConfiguration(),
+      );
+
+      service.startService();
+    } else {
+      if (kDebugMode) {
+        print(
+            '\x1B[31m [CLOSED CAMPAIGN SERVICE]The database is empty. no services to initialize\x1B[0m');
+      }
     }
-    if (kDebugMode) {
-      print("\nsono stati registrati : $counter Tasks periodici\n");
-    }
-  } else {
-    if (kDebugMode) {
-      print('\x1B[31mNessuna camapagna da seguire\x1B[0m');
-    }
-    service.invoke("stopService");
   }
 }
 
-Future<void> initializeClosedCampaignService() async {
-  DbCampaignModel db = DbCampaignModel();
-  List<Campaign> res = await db.campaigns();
-  if (res.isNotEmpty) {
-    print(
-        '\x1B[31mInizializzazione del servizio [CLOSED CAMPAIGN]\x1B[0m');
 
-    final service = FlutterBackgroundService();
-
-    final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-        FlutterLocalNotificationsPlugin();
-
-    await flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
-        ?.createNotificationChannel(NotificationChannel.importantChannel);
-
-    await service.configure(
-      androidConfiguration: AndroidConfiguration(
-        // this will be executed when app is in foreground or background in separated isolate
-        onStart: onStart,
-
-        // auto start service
-        autoStart: true,
-        isForegroundMode: true,
-
-        notificationChannelId: 'important_channel',
-        initialNotificationTitle: 'closing campaign service',
-        initialNotificationContent:
-            'this service notify eventually submitted campaign closed',
-        foregroundServiceNotificationId: 888,
-      ),
-      iosConfiguration: IosConfiguration(),
-    );
-
-    service.startService();
-  } else {
-    print('\x1B[31mThe database is empty. no services to initialize\x1B[0m');
-  }
-}
-
-class SmartContractModel_Bs {
-  SmartContractModel_Bs(
+class SmartContractModelBs {
+  SmartContractModelBs(
       {required this.accountAddress,
       required this.contractAddress,
       required this.abiName,

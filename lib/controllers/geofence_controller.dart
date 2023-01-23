@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:mobile_crowd_sensing/models/geofence_model.dart';
 import '../models/db_capaign_model.dart';
-import '../utils/geofence_status.dart';
+import '../services/geofence_status.dart';
 
 class GeofenceController {
 

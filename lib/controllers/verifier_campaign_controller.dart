@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile_crowd_sensing/models/verifier_campaign_model.dart';
+import 'package:numberpicker/numberpicker.dart';
 import '../models/db_capaign_model.dart';
 import '../utils/styles.dart';
 import '../models/search_places_model.dart';
@@ -12,15 +13,13 @@ class VerifierCampaignController extends StatefulWidget {
   SessionModel sessionData = SessionModel();
   SearchPlacesModel searchPlacesViewModel = SearchPlacesModel();
 
-
   @override
   _VerifierCampaignControllerState createState() =>
       _VerifierCampaignControllerState();
 }
 
-class _VerifierCampaignControllerState extends State<VerifierCampaignController> {
-
-
+class _VerifierCampaignControllerState
+    extends State<VerifierCampaignController> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -30,15 +29,67 @@ class _VerifierCampaignControllerState extends State<VerifierCampaignController>
             case ConnectionState.none:
               return const Center(child: Text('Sorry something goes wrong...'));
             case ConnectionState.waiting:
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
+              return Container(
+                  padding: const EdgeInsets.fromLTRB(10, 30, 10, 10),
+                  width: double.maxFinite,
+                  child: Column(children: [
+                    Row(children: [
+                      Text(
+                        "filters: ",
+                        style: CustomTextStyle.spaceMono(context),
+                      ),
+                      DropdownButton(
+                          value: selectedValue,
+                          items: const [
+                            DropdownMenuItem(
+                              value: 'All Campaigns',
+                              child: Text("All Campaigns"),
+                            ),
+                            DropdownMenuItem(
+                              value: 'Near Me',
+                              child: Text("Near Me"),
+                            ),
+                            DropdownMenuItem(
+                              value: 'Subscribed',
+                              child: Text("Subscribed"),
+                            ),
+                          ],
+                          onChanged: (value) {
+                            (context as Element).markNeedsBuild();
+                            setState(() {
+                              selectedValue = value as String;
+                            });
+                          }),
+                      (selectedValue == "Near Me")?
+                      Column(children: [
+                        NumberPicker(
+                          itemHeight: 18,
+                          value: _currentIntValue,
+                          minValue: 0,
+                          maxValue: 100,
+                          step: 10,
+                          haptics: true,
+                          onChanged: (value) => setState(() => _currentIntValue = value),
+                        ),
+                      ])
+                          :
+                      Container(),
+                    ]),
+                    Expanded(
+                        child: Column(
+                            mainAxisSize: MainAxisSize.max,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: const [
+                          CircularProgressIndicator(),
+                        ]))
+                  ]));
             default:
               return _buildPage(context, snapshot);
           }
         });
   }
-
+  int _currentIntValue = 10;
   String selectedValue = 'All Campaigns';
   DbCampaignModel db = DbCampaignModel();
 
@@ -48,30 +99,47 @@ class _VerifierCampaignControllerState extends State<VerifierCampaignController>
             padding: const EdgeInsets.fromLTRB(10, 30, 10, 10),
             width: double.maxFinite,
             child: Column(children: [
-              Row( children: [
-                Text("filters: ",style: CustomTextStyle.spaceMono(context),),
+              Row(children: [
+                Text(
+                  "filters: ",
+                  style: CustomTextStyle.spaceMono(context),
+                ),
                 DropdownButton(
-                  value: selectedValue,
-                  items: const [
-                    DropdownMenuItem(
-                      value: 'All Campaigns',
-                      child: Text("All Campaigns"),
-                    ),
-                    DropdownMenuItem(
-                      value: 'Near Me',
-                      child: Text("Near Me"),
-                    ),
-                    DropdownMenuItem(
-                      value: 'Subscribed',
-                      child: Text("Subscribed"),
-                    ),
-                  ],
-                  onChanged: (value) {
-                    (context as Element).markNeedsBuild();
-                    setState(() {
-                      selectedValue = value as String;
-                    });
-                  })
+                    value: selectedValue,
+                    items: const [
+                      DropdownMenuItem(
+                        value: 'All Campaigns',
+                        child: Text("All Campaigns"),
+                      ),
+                      DropdownMenuItem(
+                        value: 'Near Me',
+                        child: Text("Near Me"),
+                      ),
+                      DropdownMenuItem(
+                        value: 'Subscribed',
+                        child: Text("Subscribed"),
+                      ),
+                    ],
+                    onChanged: (value) {
+                      (context as Element).markNeedsBuild();
+                      setState(() {
+                        selectedValue = value as String;
+                      });
+                    }),
+                (selectedValue == "Near Me")?
+                    Column(children: [
+                      NumberPicker(
+                        itemHeight: 18,
+                        value: _currentIntValue,
+                        minValue: 0,
+                        maxValue: 100,
+                        step: 10,
+                        haptics: true,
+                        onChanged: (value) => setState(() => _currentIntValue = value),
+                      ),
+                    ])
+                    :
+                Container(),
               ]),
               Expanded(
                 child: ListView.builder(
@@ -90,8 +158,10 @@ class _VerifierCampaignControllerState extends State<VerifierCampaignController>
                           isSubscribed;
                       if (current != null && _isToShow(current)) {
                         name = current[0];
-                        lat = current[1].toString();
-                        lng = current[2].toString();
+                        lat = (int.parse(current[1].toString()) / 10000000)
+                            .toString();
+                        lng = (int.parse(current[2].toString()) / 10000000)
+                            .toString();
                         range = current[3].toString();
                         type = current[4];
                         crowdsourcer = current[5].toString();
@@ -128,13 +198,14 @@ class _VerifierCampaignControllerState extends State<VerifierCampaignController>
                                       alignment: Alignment.topRight,
                                       child: ElevatedButton(
                                         style: ButtonStyle(
-                                            backgroundColor: (isSubscribed ==
-                                                'true')
-                                                ? MaterialStateProperty.all(
-                                                CustomColors.red600(context))
-                                                : MaterialStateProperty.all(
-                                                CustomColors.green600(
-                                                    context))),
+                                            backgroundColor:
+                                                (isSubscribed == 'true')
+                                                    ? MaterialStateProperty.all(
+                                                        CustomColors.red600(
+                                                            context))
+                                                    : MaterialStateProperty.all(
+                                                        CustomColors.green600(
+                                                            context))),
                                         child: (isSubscribed == 'true')
                                             ? const Text('unsubscribe')
                                             : const Text('subscribe'),
@@ -144,15 +215,12 @@ class _VerifierCampaignControllerState extends State<VerifierCampaignController>
                                                 contractAddress!);
                                             //await removeTask(contractAddress);
                                           } else {
-                                            await db.insertCampaign(
-                                                Campaign(
-                                                  title: name!,
-                                                  lat: lat!,
-                                                  lng: lng!,
-                                                  radius: range!,
-                                                  address: contractAddress!
-                                                )
-                                            );
+                                            await db.insertCampaign(Campaign(
+                                                title: name!,
+                                                lat: lat!,
+                                                lng: lng!,
+                                                radius: range!,
+                                                address: contractAddress!));
                                             //await addPeriodicTask(name!,contractAddress);
                                           }
                                           setState(() {});
@@ -164,24 +232,21 @@ class _VerifierCampaignControllerState extends State<VerifierCampaignController>
                                         Row(children: <Widget>[
                                           Expanded(
                                               child: Text(
-                                                "Name: $name",
-                                                style: CustomTextStyle
-                                                    .spaceMono(
-                                                    context),
-                                              )),
+                                            "Name: $name",
+                                            style: CustomTextStyle.spaceMono(
+                                                context),
+                                          )),
                                         ]),
                                         Row(children: <Widget>[
                                           Text(
-                                            "Latitude: ${(int.parse(lat) /
-                                                10000000).round()}",
+                                            "Latitude: $lat",
                                             style: CustomTextStyle.spaceMono(
                                                 context),
                                           ),
                                         ]),
                                         Row(children: <Widget>[
                                           Text(
-                                            "Longitude: ${(int.parse(lng) /
-                                                10000000).round()}",
+                                            "Longitude: $lng",
                                             style: CustomTextStyle.spaceMono(
                                                 context),
                                           ),
@@ -215,9 +280,9 @@ class _VerifierCampaignControllerState extends State<VerifierCampaignController>
                                             children: [
                                               Text(
                                                 "crowdsourcer:",
-                                                style: CustomTextStyle
-                                                    .spaceMono(
-                                                    context),
+                                                style:
+                                                    CustomTextStyle.spaceMono(
+                                                        context),
                                               ),
                                               FittedBox(
                                                   fit: BoxFit.fitWidth,
@@ -225,9 +290,8 @@ class _VerifierCampaignControllerState extends State<VerifierCampaignController>
                                                     (crowdsourcer != null)
                                                         ? crowdsourcer
                                                         : "null",
-                                                    style:
-                                                    CustomTextStyle.spaceMono(
-                                                        context),
+                                                    style: CustomTextStyle
+                                                        .spaceMono(context),
                                                   )),
                                             ],
                                           ),
@@ -258,10 +322,10 @@ class _VerifierCampaignControllerState extends State<VerifierCampaignController>
           ));
   }
 
-  bool _isToShow(dynamic data){
-    switch(selectedValue) {
+  bool _isToShow(dynamic data) {
+    switch (selectedValue) {
       case "Subscribed":
-        return (data[9]=="true")? true : false;
+        return (data[9] == "true") ? true : false;
       case "Near Me":
         return data[9];
       default:

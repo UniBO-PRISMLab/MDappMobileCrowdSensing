@@ -2,6 +2,8 @@ import 'dart:async';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
+import '../services/closed_campaign_service.dart';
+
 class DbCampaignModel {
 
   static final DbCampaignModel _instance = DbCampaignModel._internal();
@@ -41,6 +43,11 @@ class DbCampaignModel {
       cmp.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
+
+    if(ClosedCampaignService().checkIfInitialized()) {
+      print('\x1B[31m[INITIALIZE AFTER INSERT IN DB]\x1B[0m');
+      await ClosedCampaignService().initializeClosedCampaignService();
+    }
     print("DEBUG:::::: dentro al db ci sono: \n${(await campaigns()).length} campagne");
 
   }

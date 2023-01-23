@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
-import '../utils/geofence_status.dart';
+import '../services/geofence_status.dart';
 
 class GeofenceModel {
 

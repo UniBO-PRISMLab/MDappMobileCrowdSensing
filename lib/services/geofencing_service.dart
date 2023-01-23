@@ -7,9 +7,8 @@ import '../models/db_capaign_model.dart';
 import 'dart:async';
 import 'dart:ui';
 import 'package:flutter_background_service/flutter_background_service.dart';
-import 'package:flutter_background_service_android/flutter_background_service_android.dart';
 import '../models/geofence_model.dart';
-import '../utils/geofence_status.dart';
+import 'geofence_status.dart';
 
 //@pragma('vm:entry-point')
 void onStart(ServiceInstance service) async {
@@ -19,27 +18,12 @@ void onStart(ServiceInstance service) async {
     // Only available for flutter 3.0.0 and later
     DartPluginRegistrant.ensureInitialized();
 
-    if (service is AndroidServiceInstance) {
-      service.on('setAsForeground').listen((event) {
-        print('\x1B[31m [GEOFENCE SERVICE]Set in foreground\x1B[0m');
-        service.setAsForegroundService();
-      });
-
-      service.on('setAsBackground').listen((event) {
-        print('\x1B[31m [GEOFENCE SERVICE]Set in background\x1B[0m');
-        service.setAsBackgroundService();
-      });
-    }
-
-    service.on('stopService').listen((event) {
-      print('\x1B[31m [GEOFENCE SERVICE]stop service\x1B[0m');
-      service.stopSelf();
-    });
-
     final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
         FlutterLocalNotificationsPlugin();
-
+    int i =0;
     for (GeofenceModel g in GeofenceController.geofenceList) {
+      i++;
+      print('\x1B[31m [GEOFENCE SERVICE] Read the stream for the : $i time\x1B[0m');
       g.getGeofenceStream()!.listen((event) {
         switch(event) {
           case GeofenceStatus.enter:
@@ -98,7 +82,31 @@ Future<void> initializeGeofencingService() async {
   DbCampaignModel db = DbCampaignModel();
   List<Campaign> res = await db.campaigns();
   if (res.isNotEmpty) {
-    await Geolocator.requestPermission();
+
+    // check the permission for geolocation
+
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      await Geolocator.openLocationSettings();
+      return Future.error('Location services are disabled.');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
+
     print('\x1B[31m [GEOFENCE SERVICE]Inizializzazione del servizio: [GEOFENCE]\x1B[0m');
 
     GeofenceController.geofenceInitByDb();

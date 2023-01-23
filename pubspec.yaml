@@ -65,6 +65,7 @@ dependencies:
   shared_preferences: ^2.0.16
   workmanager: ^0.5.1
   flutter_foreground_task: ^3.10.0
+  numberpicker: ^2.1.1
 
 dev_dependencies:
   flutter_test:
