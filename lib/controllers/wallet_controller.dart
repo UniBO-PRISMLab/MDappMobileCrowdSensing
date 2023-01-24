@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile_crowd_sensing/models/session_model.dart';
 import '../models/wallet_model.dart';
 import '../utils/styles.dart';
+import 'package:flip_card/flip_card.dart';
 
 class WalletController extends StatefulWidget {
   const WalletController({Key? key}) : super(key: key);
@@ -18,6 +19,8 @@ class _WalletControllerState extends State<WalletController> {
   dynamic jsonInfo = {};
   late Timer timer;
   String balance = "LOADING...", symbol = "LOADING...";
+  late double _height;
+  late double _width;
 
   Future<void> _getBalance() async {
     String data = await WalletModel.getData();
@@ -44,6 +47,7 @@ class _WalletControllerState extends State<WalletController> {
 
   @override
   Widget build(BuildContext context) {
+
     return WillPopScope(
         child: Center(
             child:
@@ -79,7 +83,6 @@ Widget _formatBalance(String balance) {
   if (double.tryParse(balance) != null && balance != "0") {
     print("DEBUG: $balance");
     return Text(
-
       '${balance.substring(0, 2)},${balance.substring(3)}',
       style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
     );
@@ -92,6 +95,7 @@ Widget _formatBalance(String balance) {
 }
 
 Widget buildCoinWidget(String balance, String symbol) {
+
   return Center(
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -100,12 +104,34 @@ Widget buildCoinWidget(String balance, String symbol) {
           symbol,
           style: const TextStyle(fontSize: 25),
         ),
-        const SizedBox(
-          height: 20,
-        ),
-        Image.asset('assets/images/coin.png', width: 150, height: 150),
-        const SizedBox(
-          height: 20,
+        SizedBox(
+          width: 300,
+          height: 300,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Column(
+                children: [
+                  FlipCard(
+                      direction: FlipDirection.VERTICAL, // default
+                      front: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Image.asset('assets/images/coin_back.png', width: 150, height: 150),
+                        ],
+                      ),
+                      back: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                         Image.asset('assets/images/coin.png', width: 150, height: 150),
+                        ],
+                      ),
+                    ),
+                ],
+              ),
+            ],
+          ),
         ),
         _formatBalance(balance)
       ],

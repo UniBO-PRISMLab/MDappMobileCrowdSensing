@@ -29,14 +29,19 @@ class _SourcerCampaignControllerState extends State<SourcerCampaignController> {
       readebleLocation ='';
 
   _formatData(String contractAddress) async {
-    if(mounted){
-      String counters = await SourcerCampaignModel.getCountersData(contractAddress);
-      jsonCounters = jsonDecode(counters);
-      fileCount = jsonCounters['fileCount'].toString();
-      fileChecked = jsonCounters['fileChecked'].toString();
-      workersCount = jsonCounters['workersCount'].toString();
-      setState((){});
-    }
+    await SourcerCampaignModel.getCountersData(contractAddress).then((val) {
+      if (!mounted) {
+        return;
+      } else {
+        setState(() {
+          jsonCounters = jsonDecode(val);
+          fileCount = jsonCounters['fileCount'].toString();
+          fileChecked = jsonCounters['fileChecked'].toString();
+          workersCount = jsonCounters['workersCount'].toString();
+        });
+      }
+    });
+
   }
 
   @override
@@ -55,7 +60,8 @@ class _SourcerCampaignControllerState extends State<SourcerCampaignController> {
       contractAddress = jsonParameters["contractAddress"];
       readebleLocation = jsonParameters["redebleLocation"];
       _formatData(contractAddress);
-    return  _buildPage(context);
+      return  _buildPage(context);
+
   }
 
 
