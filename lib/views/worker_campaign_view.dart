@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import '../controllers/worker_campaign_controller.dart';
-
+import '../controllers/campaign_list_controller.dart';
 
 class WorkerCampaignView extends StatefulWidget {
   final List<dynamic>? contractsAddresses;
@@ -26,7 +25,7 @@ class _WorkerCampaignViewState extends State<WorkerCampaignView> {
           title: const Text('List Of All Campaigns'),
           centerTitle: true,
         ),
-        body: WorkerCampaignController(widget.contractsAddresses)
+        body: CampaignListController(contractsAddresses: widget.contractsAddresses!, goTo: '/join_campaign',)
     );
   }
 }

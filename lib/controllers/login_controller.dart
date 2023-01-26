@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:slider_button/slider_button.dart';
+import '../utils/internet_connection.dart';
 import 'login_metamask_controller.dart';
 import '../utils/styles.dart';
 import '../models/session_model.dart';
@@ -14,16 +15,18 @@ class LoginController extends StatefulWidget {
 
 class _LoginControllerState extends State<LoginController> {
   bool isRunning = false;
-  SessionModel sessionData = SessionModel();
+  late SessionModel sessionData;
+
 
   @override
   void initState() {
-    // TODO: implement initState
+    InternetConnection.checkInternetConnectivity();
     super.initState();
-    sessionData.checkConnection();
   }
   @override
   Widget build(BuildContext context) {
+    sessionData = SessionModel();
+    sessionData.checkConnection();
     return SingleChildScrollView(
         child: Column(
       mainAxisAlignment: MainAxisAlignment.center,

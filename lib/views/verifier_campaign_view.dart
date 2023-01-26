@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../controllers/verifier_campaign_controller.dart';
+import '../controllers/campaign_list_controller.dart';
 
 
 class VerifierCampaignView extends StatefulWidget {
@@ -26,7 +26,7 @@ class _VerifierCampaignViewState extends State<VerifierCampaignView> {
           title: const Text('List Of All Campaigns to Verify'),
           centerTitle: true,
         ),
-        body: VerifierCampaignController(widget.contractsAddresses)
+        body: CampaignListController(contractsAddresses: widget.contractsAddresses!, goTo: '/verifier_campaign_data',)
     );
   }
 }

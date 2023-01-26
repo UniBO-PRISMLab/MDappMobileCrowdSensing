@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:mobile_crowd_sensing/utils/verifier_campaign_data_factory.dart';
-import '../controllers/verifier_campaign_data_light_controller.dart';
+import '../controllers/verifier_campaign_data_controller.dart';
 
 class VerifierCampaignDataLightView extends VerifierDataCampaignFactory {
   const VerifierCampaignDataLightView({Key? key}) : super(key: key);
@@ -30,7 +30,7 @@ class _VerifierCampaignDataLightViewState extends State<VerifierCampaignDataLigh
           title: Text(jsonParameters["name"]),
           centerTitle: true,
         ),
-        body: const VerifierCampaignDataLightController()
+        body: const VerifierCampaignDataController(goTo: '/validate_light_view')
     );
   }
 }

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_crowd_sensing/models/verifier_campaign_model.dart';
 import 'package:numberpicker/numberpicker.dart';
@@ -7,19 +8,20 @@ import '../models/search_places_model.dart';
 import 'distance_controller.dart';
 
 // ignore: must_be_immutable
-class VerifierCampaignController extends StatefulWidget {
-  List<dynamic>? contractsAddresses;
-  VerifierCampaignController(this.contractsAddresses, {super.key});
+class CampaignListController extends StatefulWidget {
+  final List<dynamic> contractsAddresses;
+  final String goTo;
+  CampaignListController({super.key,required this.contractsAddresses, required this.goTo});
   SearchPlacesModel places = SearchPlacesModel();
 
   @override
   // ignore: library_private_types_in_public_api
-  _VerifierCampaignControllerState createState() =>
-      _VerifierCampaignControllerState();
+  _CampaignListControllerState createState() =>
+      _CampaignListControllerState();
 }
 
-class _VerifierCampaignControllerState
-    extends State<VerifierCampaignController> {
+class _CampaignListControllerState
+    extends State<CampaignListController> {
   Future<dynamic> futureGetData() {
     return VerifierCampaignModel.getData(widget.contractsAddresses)!;
   }
@@ -99,7 +101,7 @@ class _VerifierCampaignControllerState
                         return GestureDetector(
                           onTap: () {
                             Navigator.pushNamed(
-                                context, '/verifier_campaign_data',
+                                context, widget.goTo,
                                 arguments: {
                                   'contractAddress': contractAddress,
                                   'name': name,
@@ -323,7 +325,9 @@ class _VerifierCampaignControllerState
             (double.parse(data[2].toString()) / 10000000),
             widget.places.lat,
             widget.places.lng);
-        print("BEBUG::::::::::::::::: $distance");
+        if (kDebugMode) {
+          print("BEBUG::::::::::::::::: $distance");
+        }
         return (distance <= (_currentIntValue)) ? true : false;
       default:
         return true;

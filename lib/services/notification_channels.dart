@@ -10,6 +10,15 @@ class NotificationChannel {
     importance: Importance.max, // importance must be at low or higher level
   );
 
+  static AndroidNotificationChannel importantChannel_2 =
+  const AndroidNotificationChannel(
+    'important_channel_2', // id
+    'IMPORTANT NOTIFICATION CHANNEL', // title
+    description:
+    'This channel is used for important notification.', // description
+    importance: Importance.max, // importance must be at low or higher level
+  );
+
   static AndroidNotificationChannel lowImportantChannel =
       const AndroidNotificationChannel(
     'low_important_channel', // id

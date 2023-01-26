@@ -12,6 +12,7 @@ class SearchPlacesModel {
 
 
   Future<void> updateLocalPosition() async {
+    await Future.delayed(Duration(seconds: 1));
     position = await _getGeoLocationPosition();
     lng = position.longitude;
     lat = position.latitude;

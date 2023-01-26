@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:mobile_crowd_sensing/services/geofencing_controller.dart';
+import 'package:mobile_crowd_sensing/services/services_controller.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -44,12 +46,16 @@ class DbCampaignModel {
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
 
-    if(ClosedCampaignService().checkIfInitialized()) {
-      print('\x1B[31m[INITIALIZE AFTER INSERT IN DB]\x1B[0m');
-      await ClosedCampaignService().initializeClosedCampaignService();
+    GeofencingController.registerGeofencing(cmp.address, cmp.lat, cmp.lng, cmp.radius);
+    if(ServicesController.statusGeofencingService) {
+      print('\x1B[31m [GEOFENCING SERVICE] INITIALIZE AFTER INSERT IN DB\x1B[0m');
+      ServicesController.initializeGeofencingService();
     }
-    print("DEBUG:::::: dentro al db ci sono: \n${(await campaigns()).length} campagne");
-
+    if(ServicesController.statusCloseCampaignService) {
+      print('\x1B[31m [CLOSED CAMPAIGN SERVICE] INITIALIZE AFTER INSERT IN DB\x1B[0m');
+      //await ClosedCampaignService().initializeClosedCampaignService();
+      ServicesController.initializeCloseCampaignService();
+    }
   }
 
   Future<List<Campaign>> campaigns() async {
@@ -84,7 +90,9 @@ class DbCampaignModel {
       where: 'address = ?',
       whereArgs: [address],
     );
-    print("DEBUG:::::: dentro al db ci sono: \n${(await campaigns()).length} campagne");
+    //int res = (await campaigns()).length;
+    GeofencingController.removeGeofenceFromId(address);
+    //print("DEBUG:::::: dentro al db ci sono: \n${(await campaigns()).length} campagne");
 
   }
 }

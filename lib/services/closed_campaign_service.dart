@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' as http;
+import 'package:mobile_crowd_sensing/services/geofencing.dart';
 import 'package:mobile_crowd_sensing/services/notification_channels.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:web3dart/contracts.dart';
@@ -14,9 +15,8 @@ import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_background_service_android/flutter_background_service_android.dart';
 
 class ClosedCampaignService {
-
-
-  static final ClosedCampaignService _instance = ClosedCampaignService._internal();
+  static final ClosedCampaignService _instance =
+      ClosedCampaignService._internal();
 
   static late bool isInitialized;
 
@@ -38,27 +38,78 @@ class ClosedCampaignService {
 
   static void onStart(ServiceInstance service) async {
     DartPluginRegistrant.ensureInitialized();
+    DbCampaignModel db = DbCampaignModel();
+    List<Campaign> res = [];
+
+    SharedPreferences shared = await SharedPreferences.getInstance();
+    String? accountAddress = shared.getString('address');
+
+    //List<Geofencing> geofencingList = [];
+
+    final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+        FlutterLocalNotificationsPlugin();
 
     Timer.periodic(const Duration(seconds: 10), (timer) async {
-      DbCampaignModel db = DbCampaignModel();
-      List<Campaign> res = await db.campaigns();
+      res = await db.campaigns();
+      //geofencingList.clear();
+
       SmartContractModelBs smartContract;
       if (kDebugMode) {
         print(
             '\x1B[31m[CLOSED CAMPAIGN SERVICE]check db. IS EMPTY? ${res.isEmpty} \x1B[0m');
       }
       if (res.isNotEmpty) {
-        final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-            FlutterLocalNotificationsPlugin();
         int counter = 0;
         for (Campaign c in res) {
-          if (kDebugMode) {
-            print(
-                '\x1B[31m [CLOSED CAMPAIGN SERVICE]Execution of _process for the $counter time.\x1B[0m');
+          Geofencing g = Geofencing(
+              id: c.address,
+              pointedLatitude: c.lat,
+              pointedLongitude: c.lng,
+              radiusMeter: c.radius);
+
+          switch (g.getStatus()) {
+            case GeofenceStatus.init:
+              print('\x1B[31m [GEOFENCE] status: Init\x1B[0m');
+              break;
+            case GeofenceStatus.enter:
+              print('\x1B[31m [GEOFENCE] status: Enter\x1B[0m');
+              flutterLocalNotificationsPlugin.show(
+                888,
+                'Entered in Campaign Area',
+                '[${c.title}] \nat address: ${c.address}',
+                const NotificationDetails(
+                  android: AndroidNotificationDetails(
+                    'important_channel',
+                    'MY FOREGROUND SERVICE',
+                    icon: 'ic_bg_service_small',
+                    ongoing: true,
+                  ),
+                ),
+              );
+              break;
+            case GeofenceStatus.exit:
+              print('\x1B[31m [GEOFENCE] status: Exit\x1B[0m');
+              flutterLocalNotificationsPlugin.show(
+                  888,
+                  'Exit from Campaign Area',
+                  '[${c.title}] \nat address: ${c.address}',
+                  const NotificationDetails(
+                    android: AndroidNotificationDetails(
+                      'important_channel',
+                      'MY FOREGROUND SERVICE',
+                      icon: 'ic_bg_service_small',
+                      ongoing: true,
+                    ),
+                  ));
+              break;
+            default:
+              print(
+                  '\x1B[31m [GEOFENCE] status DEFAULT Exit: ${g.getStatus()}\x1B[0m');
+              break;
           }
 
-          SharedPreferences shared = await SharedPreferences.getInstance();
-          String? accountAddress = shared.getString('address');
+          g.stopGeofenceService();
+
           if (accountAddress == null) {
             throw NullThrownError();
           }
@@ -119,11 +170,14 @@ class ClosedCampaignService {
               '\x1B[31m [CLOSED CAMPAIGN SERVICE] No campaigns to follow. stop the service.\x1B[0m');
         }
         ClosedCampaignService().setIsInizialized(false);
-        print('\x1B[31m[DEBUG CANCELLAZIONE SERVIZIO]${ ClosedCampaignService().checkIfInitialized() }\x1B[0m');
+        print(
+            '\x1B[31m[DEBUG CANCELLAZIONE SERVIZIO]${ClosedCampaignService().checkIfInitialized()}\x1B[0m');
         timer.cancel();
         service.stopSelf();
       }
     });
+
+    print('\x1B[31m[GEOFENCE SERVICE] try to execute the service\x1B[0m');
   }
 
   Future<void> initializeClosedCampaignService() async {
@@ -147,7 +201,7 @@ class ClosedCampaignService {
       await service.configure(
         androidConfiguration: AndroidConfiguration(
 // this will be executed when app is in foreground or background in separated isolate
-          onStart: onStart,
+          onStart: ClosedCampaignService.onStart,
 
 // auto start service
           autoStart: true,
@@ -171,7 +225,6 @@ class ClosedCampaignService {
     }
   }
 }
-
 
 class SmartContractModelBs {
   SmartContractModelBs(
