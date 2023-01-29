@@ -4,9 +4,9 @@ import 'package:mobile_crowd_sensing/models/db_capaign_model.dart';
 import 'Geofencing.dart';
 
 class GeofencingController {
-  static final List<Geofencing> _activeGeofencing = [];
+  final List<Geofencing> _activeGeofencing = [];
 
-  static registerGeofencing(String id, String pointedLatitude,
+  registerGeofencing(String id, String pointedLatitude,
       String pointedLongitude, String radiusMeter) {
     _activeGeofencing.add(Geofencing(
         id: id,
@@ -18,7 +18,7 @@ class GeofencingController {
     }
   }
 
-  static closeAllGeofencing() {
+   closeAllGeofencing() {
     for (Geofencing g in _activeGeofencing) {
       g.stopGeofenceService();
     }
@@ -29,11 +29,11 @@ class GeofencingController {
     }
   }
 
-  static getNumberOfActiveGeofence() {
+   getNumberOfActiveGeofence() {
     return _activeGeofencing.length;
   }
 
-  static removeGeofenceFromId(String id) {
+   removeGeofenceFromId(String id) {
     Geofencing selected = _activeGeofencing.firstWhere((item) => item.id == id);
     selected.stopGeofenceService();
     _activeGeofencing.remove(selected);
@@ -42,16 +42,16 @@ class GeofencingController {
     }
   }
 
-  static getListOfActiveGeofences(){
+   getListOfActiveGeofences(){
     return _activeGeofencing;
   }
 
-  static Future<void> initializeFromDB() async {
+   Future<void> initializeFromDB() async {
     DbCampaignModel db = DbCampaignModel();
     List res = await db.campaigns();
 
     for(Campaign c in res) {
-      GeofencingController.registerGeofencing(
+      registerGeofencing(
           c.address,
           c.lat,
           c.lng,

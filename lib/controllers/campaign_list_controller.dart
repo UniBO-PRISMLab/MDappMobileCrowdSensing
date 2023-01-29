@@ -100,6 +100,9 @@ class _CampaignListControllerState
                         isSubscribed = current[9];
                         return GestureDetector(
                           onTap: () {
+
+                            if(_checkIfDeviceIsInArea(lat!,lng!,range!)) {
+
                             Navigator.pushNamed(
                                 context, widget.goTo,
                                 arguments: {
@@ -112,6 +115,13 @@ class _CampaignListControllerState
                                   'lat': lat,
                                   'lng': lng,
                                 });
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                  content: Text(
+                                    'Out of position',
+                                    style: CustomTextStyle.spaceMonoWhite(context),
+                                  )));
+                            }
                           },
                           child: _cardWidget(
                               isSubscribed!,
@@ -159,9 +169,6 @@ class _CampaignListControllerState
         padding: const EdgeInsets.all(20),
         child: Stack(
           children: <Widget>[
-            // Align(
-            //     alignment: Alignment.topRight,
-            //     child: ),
             Align(
                 alignment: Alignment.topLeft,
                 child: Column(children: <Widget>[
@@ -332,5 +339,11 @@ class _CampaignListControllerState
       default:
         return true;
     }
+  }
+
+  bool _checkIfDeviceIsInArea(String lat, String lon, String range) {
+    widget.places.updateLocalPosition();
+    dynamic distance = DistanceController.distanceBetween(widget.places.lat, widget.places.lng, double.parse(lat), double.parse(lon));
+    return (distance <= double.parse(range))? true : false;
   }
 }

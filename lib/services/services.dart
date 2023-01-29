@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:mobile_crowd_sensing/services/geofencing.dart';
 import 'package:mobile_crowd_sensing/services/geofencing_controller.dart';
@@ -91,7 +92,32 @@ class Services {
   @pragma('vm:entry-point')
   static void checkGeofence(Map<dynamic, dynamic> args) async {
     DartPluginRegistrant.ensureInitialized();
-    print('\x1B[31m [GEOFENCING SERVICE] DEBUG:gate1 KKKKK} \x1B[0m');
+    //....
+
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      await Geolocator.openLocationSettings();
+      return Future.error('Location services are disabled.');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
+
+
+    //....
 
     final FlutterLocalNotificationsPlugin notification =
         FlutterLocalNotificationsPlugin();
@@ -100,12 +126,16 @@ class Services {
         .resolvePlatformSpecificImplementation<
             AndroidFlutterLocalNotificationsPlugin>()
         ?.createNotificationChannel(NotificationChannel.importantChannel);
-    print('\x1B[31m [GEOFENCING SERVICE] DEBUG: Geofence registrati ${GeofencingController.getListOfActiveGeofences()} \x1B[0m');
 
+    GeofencingController controller = GeofencingController();
     Timer.periodic(const Duration(seconds: 5), (timer) async {
       ServicesController.statusGeofencingService = true;
-      if (GeofencingController.getNumberOfActiveGeofence() > 0) {
-        for (Geofencing g in GeofencingController.getListOfActiveGeofences()) {
+
+      controller.initializeFromDB();
+      print('\x1B[31m [GEOFENCING SERVICE] DEBUG: numero di geofencing attivi ${controller.getNumberOfActiveGeofence()} \x1B[0m');
+
+      if (controller.getNumberOfActiveGeofence() > 0) {
+        for (Geofencing g in controller.getListOfActiveGeofences()) {
           print('\x1B[31m [GEOFENCING SERVICE] DEBUG: ${g.isStatusChanged} \x1B[0m');
           if (g.isStatusChanged) {
             switch (g.getStatus()) {
@@ -139,7 +169,8 @@ class Services {
                       'MY FOREGROUND SERVICE',
                       icon: 'ic_bg_service_small',
                       ongoing: false,
-                    )));
+                    ))
+                );
                 break;
             }
           }

@@ -4,45 +4,61 @@ pragma solidity ^0.8.17;
 import "./Campaign.sol";
 import "./MCScoin.sol";
 import "./FactoryManager.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/utils/structs/EnumerableMap.sol";
 import "hardhat/console.sol";
 
-abstract contract FactoryManager {
-    mapping( address => Campaign) public activeCampaigns; // address sourcer -> campagna
-    mapping( address => Campaign[]) public closedCampaigns; // address sourcer -> lista di campagne
-    address[] internal addressKeyLUT;
-    address[] internal addressClosedKeyLUT;
+contract FactoryManager {
 
-    function searchSourcerAddress(address _address) public view returns (bool) {
-        require(msg.sender != address(0), "invalid address provided");
-        for (uint256 i = 0; i < addressKeyLUT.length; i++) {
-            if (addressKeyLUT[i] == _address) {
-                return true;
-            }
-        }
-        return false;
+    mapping( address => Campaign) public activeCampaigns;
+    mapping( address => Campaign[]) public closedCampaigns;
+
+    address[] public addressCrowdSourcerActiveCampaigns;
+    address[] public addressCrowdSourcerClosedCampaigns;
+
+    function _createCampaign(string memory _name,int256 _lat,int256 _lng, int256 _range, string memory _type,address sourcer, address factoryAddress) public returns (address){
+        Campaign newCampaign = new Campaign(_name, _lat, _lng,_range,_type,sourcer,factoryAddress);
+        activeCampaigns[sourcer] = newCampaign;
+        addressCrowdSourcerActiveCampaigns.push(sourcer);
+        return (address(newCampaign));
     }
 
-    function _burnLUT(uint index) internal {
-        require(index < addressKeyLUT.length);
-        addressKeyLUT[index] = addressKeyLUT[addressKeyLUT.length-1];
-        addressKeyLUT.pop();
-    }
-
-    function getAllCampaigns() public view returns (Campaign[] memory) {
-        Campaign[] memory outPut = new Campaign[](addressKeyLUT.length);
-        for (uint256 i = 0; i < addressKeyLUT.length; i++) {
-            outPut[i] = activeCampaigns[addressKeyLUT[i]];
+    function _getAllCampaigns() external view returns (Campaign[] memory) {
+        Campaign[] memory outPut = new Campaign[](addressCrowdSourcerActiveCampaigns.length);
+        for (uint256 i = 0; i < addressCrowdSourcerActiveCampaigns.length; i++) {
+            outPut[i] = activeCampaigns[addressCrowdSourcerActiveCampaigns[i]];
         }
         return outPut;
     }
 
-    function getClosedCampaigns() public view returns (Campaign[] memory) {
-        require(msg.sender != address(0), "invalid address provided");
-        return(closedCampaigns[msg.sender]);
+    function _getClosedCampaigns(address sourcer) external view returns (Campaign[] memory) {
+        require(sourcer != address(0), "invalid address provided");
+        return(closedCampaigns[sourcer]);
     }
 
-    function closeCampaign() external virtual returns (bool);
-    function createCampaign(string memory _name,int256 _lat,int256 _lng, int256 _range, string memory _type,uint256 _value) public payable virtual returns (address);
+    function _closeCampaign() external returns (bool){
+        if(address(activeCampaigns[tx.origin])!=address(0)) {
+            require(tx.origin == activeCampaigns[tx.origin].addressCrowdSourcer(),'you are not the campaign owner');
+            closedCampaigns[tx.origin].push(activeCampaigns[tx.origin]);
+            delete activeCampaigns[tx.origin];
+            for (uint i = 0; i < addressCrowdSourcerActiveCampaigns.length; i++){
+                if(addressCrowdSourcerActiveCampaigns[i] == tx.origin) {
+                    addressCrowdSourcerClosedCampaigns.push(tx.origin);
+                    addressCrowdSourcerActiveCampaigns[i] = addressCrowdSourcerActiveCampaigns[addressCrowdSourcerActiveCampaigns.length-1];
+                    addressCrowdSourcerActiveCampaigns.pop();
+                    break;
+                }
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    function _checkIfSourcerHasActiveCampaign(address sourcer) external view returns(bool) {
+        return (address(activeCampaigns[sourcer]) == address(0))? false : true;
+    }
+
+    function _getActiveCampaign(address sourcer) external view returns(Campaign) {
+        return activeCampaigns[sourcer];
+    }
+
 }

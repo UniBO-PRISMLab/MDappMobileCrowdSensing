@@ -34,7 +34,7 @@ class LoginMetamaskModel {
           print('\x1B[31m [GEOFENCE SERVICE] INITIALIZE AFTER LOGIN\x1B[0m');
           //await ClosedCampaignService().initializeClosedCampaignService();
           // DEBUG
-          DbCampaignModel().insertCampaign(
+          await DbCampaignModel().insertCampaign(
               const Campaign(
                   title: "testing campaign",
                   lat: "44.3883014",
@@ -42,7 +42,6 @@ class LoginMetamaskModel {
                   radius: "17",
                   address: "0x000000000000")
           );
-          await GeofencingController.initializeFromDB();
           ServicesController.initializeGeofencingService();
         }
 

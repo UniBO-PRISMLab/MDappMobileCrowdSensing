@@ -18,10 +18,7 @@ contract Campaign is Ownable, Initializable {
     uint256 public numberOfActiveWorkers = 0;
     uint256 public numberOfActiveVerifiers = 0;
     bool public isClosed;
-
     CampaignFactory internal factoryContractAddress;
-    address public coinAddress;
-    MCSCoin internal coin;
 
     mapping(string => File) public files; // ipfs hash -> file info
 
@@ -59,9 +56,7 @@ contract Campaign is Ownable, Initializable {
         return(name,lat,lng,range,campaignType,addressCrowdSourcer,fileCount);
     }
 
-    constructor(string memory _name,int256 _lat,int256 _lng,int256 _range,string memory _type,address  _addressCrowdSourcer,address  _factoryAddress,address _coinContractAddress) onlyOwner payable initializer {
-        coinAddress =_coinContractAddress;
-        coin = MCSCoin(coinAddress);
+    constructor(string memory _name,int256 _lat,int256 _lng,int256 _range,string memory _type,address  _addressCrowdSourcer,address  _factoryAddress) onlyOwner payable initializer {
         name = _name;
         lat = _lat;
         lng = _lng;
@@ -101,19 +96,18 @@ contract Campaign is Ownable, Initializable {
     }
 
     function getCampaignBalance() public view returns(uint256 balance) {
-        return coin.balanceOf(address(this));
+        return factoryContractAddress.balanceOf(address(this));
     }
 
     // tenuta per debug
-    function closeCampaign() public {
+    function closeCampaign() external {
         require(msg.sender == addressCrowdSourcer,'you are not the owner');
         require(msg.sender != address(0), "invalid address provided");
         isClosed = factoryContractAddress.closeCampaign();
     }
 
-    function closeCampaignAndPay() public payable {
+    function closeCampaignAndPay() external payable {
         require(msg.sender == addressCrowdSourcer,'you are not the owner');
-        require(msg.sender != address(0), "invalid address provided");
         isClosed = factoryContractAddress.closeCampaign();
 
         for(uint i; i<allfilesPath.length; i++) {
@@ -124,10 +118,10 @@ contract Campaign is Ownable, Initializable {
                 uint256 verifierReward = verifiesTotalReward / numberOfActiveVerifiers;
                 uint256 workerReward =  (balance - verifiesTotalReward) / numberOfActiveWorkers;
                 if (currentFile.validity == true) { // se il file caricato è valido allora paga l'uploader
-                    coin.transfer(currentFile.verifier,verifierReward);
-                    coin.transfer(currentFile.uploader,workerReward);
+                    factoryContractAddress.transfer(currentFile.verifier,verifierReward);
+                    factoryContractAddress.transfer(currentFile.uploader,workerReward);
                 } else { // se il file caricato NON è valido allora paga solo il verifier
-                    coin.transfer(currentFile.verifier,verifierReward);
+                    factoryContractAddress.transfer(currentFile.verifier,verifierReward);
                 }
             }
         }

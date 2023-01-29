@@ -4,15 +4,11 @@ pragma solidity ^0.8.17;
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "./MCSfactory.sol";
 
-contract MCSCoin is ERC20, ERC20Burnable, Ownable {
+abstract contract MCScoin is ERC20, ERC20Burnable, Ownable  {
 
     uint256 blockReward;
-
-    constructor (uint256 reward) ERC20("Mobile Crowd Sensing Coin", "MCSCoin") {
-        _mint(msg.sender, 100 * (10 ** uint256(decimals())));
-        blockReward = reward * (10 ** uint(decimals()));
-    }
 
     function setBlockReward(uint256 reward) public onlyOwner() {
         blockReward = reward * (10 ** decimals());
@@ -32,5 +28,8 @@ contract MCSCoin is ERC20, ERC20Burnable, Ownable {
     function destroy() public onlyOwner() {
         selfdestruct(payable(owner()));
     }
+
+
+
 }
 

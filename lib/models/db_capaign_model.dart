@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:mobile_crowd_sensing/services/geofencing_controller.dart';
 import 'package:mobile_crowd_sensing/services/services_controller.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
@@ -46,7 +45,6 @@ class DbCampaignModel {
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
 
-    GeofencingController.registerGeofencing(cmp.address, cmp.lat, cmp.lng, cmp.radius);
     if(ServicesController.statusGeofencingService) {
       print('\x1B[31m [GEOFENCING SERVICE] INITIALIZE AFTER INSERT IN DB\x1B[0m');
       ServicesController.initializeGeofencingService();
@@ -90,10 +88,6 @@ class DbCampaignModel {
       where: 'address = ?',
       whereArgs: [address],
     );
-    //int res = (await campaigns()).length;
-    GeofencingController.removeGeofenceFromId(address);
-    //print("DEBUG:::::: dentro al db ci sono: \n${(await campaigns()).length} campagne");
-
   }
 }
 

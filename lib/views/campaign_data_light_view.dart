@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile_crowd_sensing/models/session_model.dart';
 import '../models/file_manager_model.dart';
 import '../models/ipfs_client_model.dart';
@@ -38,7 +37,6 @@ class LightJoinCampaignViewState extends State<CampaignDataLightView> {
   }
 
   _downloadFiles(hashToDownload) async {
-    //print("DEBUG ::::::::::::::::::::::::::::::::::::::: [getFileIPFSHash]: $hashToDownload");
     String? res =
         await IpfsClientModel.downloadItemIPFS(hashToDownload, 'lights');
     if (res != null) {
@@ -58,9 +56,7 @@ class LightJoinCampaignViewState extends State<CampaignDataLightView> {
     List<dynamic>? allfilesPathRes =
         await smartContract.queryCall('getValidFiles', []);
     if (allfilesPathRes != null) {
-      //print("CHECK this: ${allfilesPathRes[0]}");
       for (dynamic element in allfilesPathRes[0]) {
-        //print('element: '+ element);
         _downloadFiles(element);
       }
     }
@@ -115,7 +111,7 @@ class LightJoinCampaignViewState extends State<CampaignDataLightView> {
                 Center(
                   child: Text(
                     'No files for this Campaign',
-                    style: GoogleFonts.inconsolata(fontSize: 16),
+                    style: CustomTextStyle.inconsolata(context),
                   ),
                 ),
               ]));

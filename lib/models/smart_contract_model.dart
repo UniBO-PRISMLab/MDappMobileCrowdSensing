@@ -6,6 +6,8 @@ import 'package:walletconnect_dart/walletconnect_dart.dart';
 import 'package:web3dart/src/crypto/secp256k1.dart';
 import 'package:web3dart/web3dart.dart';
 
+import '../utils/nonce_manager.dart';
+
 class SmartContractModel extends CustomTransactionSender{
   SmartContractModel({required this.contractAddress, required this.abiName, required this.abiFileRoot, required this.provider});
   final EthereumWalletConnectProvider provider;
@@ -30,6 +32,7 @@ class SmartContractModel extends CustomTransactionSender{
           contract: contract,
           function: ethFunction,
           parameters: args,
+          nonce: NonceManager.getNonce(),
           value: (value != null) ? EtherAmount.inWei(value) : null
       );
       launchUrlString(sessionData.uri, mode: LaunchMode.externalApplication);

@@ -35,11 +35,6 @@
         "internalType": "address",
         "name": "_factoryAddress",
         "type": "address"
-      },
-      {
-        "internalType": "address",
-        "name": "_coinContractAddress",
-        "type": "address"
       }
     ],
     "stateMutability": "payable",
@@ -123,30 +118,6 @@
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "int256",
-        "name": "latFile",
-        "type": "int256"
-      },
-      {
-        "internalType": "int256",
-        "name": "lonFile",
-        "type": "int256"
-      }
-    ],
-    "name": "calculateDistance",
-    "outputs": [
-      {
-        "internalType": "int256",
-        "name": "dist",
-        "type": "int256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [],
     "name": "checkedFiles",
     "outputs": [
@@ -171,19 +142,6 @@
     "name": "closeCampaignAndPay",
     "outputs": [],
     "stateMutability": "payable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "coinAddress",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -233,6 +191,16 @@
         "internalType": "string",
         "name": "hash",
         "type": "string"
+      },
+      {
+        "internalType": "int256",
+        "name": "lat",
+        "type": "int256"
+      },
+      {
+        "internalType": "int256",
+        "name": "lng",
+        "type": "int256"
       }
     ],
     "stateMutability": "view",
@@ -268,6 +236,16 @@
             "internalType": "string",
             "name": "hash",
             "type": "string"
+          },
+          {
+            "internalType": "int256",
+            "name": "lat",
+            "type": "int256"
+          },
+          {
+            "internalType": "int256",
+            "name": "lng",
+            "type": "int256"
           }
         ],
         "internalType": "struct Campaign.File[]",
@@ -354,30 +332,6 @@
       {
         "internalType": "bool",
         "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "int256",
-        "name": "latFile",
-        "type": "int256"
-      },
-      {
-        "internalType": "int256",
-        "name": "lonFile",
-        "type": "int256"
-      }
-    ],
-    "name": "isInRange",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "answer",
         "type": "bool"
       }
     ],

@@ -18,9 +18,7 @@ class _WalletControllerState extends State<WalletController> {
   Object? parameters;
   dynamic jsonInfo = {};
   late Timer timer;
-  String balance = "LOADING...", symbol = "LOADING...";
-  late double _height;
-  late double _width;
+  String balance = "LOADING...", symbol = "MCScoin";
 
   Future<void> _getBalance() async {
     String data = await WalletModel.getData();
@@ -80,12 +78,10 @@ class _WalletControllerState extends State<WalletController> {
 }
 
 Widget _formatBalance(String balance) {
-  if (double.tryParse(balance) != null && balance != "0") {
-    print("DEBUG: $balance");
-    return Text(
-      '${balance.substring(0, 2)},${balance.substring(3)}',
-      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-    );
+  double? parsed = double.tryParse(balance);
+  if (parsed != null && balance != "0") {
+    parsed = parsed/1000000000000000000;
+    return Text(parsed.toString(),style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),);
   } else {
     return Text(
       balance,
