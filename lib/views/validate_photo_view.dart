@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:mobile_crowd_sensing/utils/styles.dart';
 import 'package:mobile_crowd_sensing/utils/verifier_campaign_data_factory.dart';
 import '../controllers/validate_photo_controller.dart';
 
@@ -26,7 +27,7 @@ class _VerifierCampaignDataLightViewState extends State<ValidatePhotoView> {
 
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.red[900],
+          backgroundColor: CustomColors.blue900(context),
           title: Text(jsonParameters["name"]),
           centerTitle: true,
         ),

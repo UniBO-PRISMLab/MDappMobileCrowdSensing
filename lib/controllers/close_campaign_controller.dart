@@ -15,7 +15,8 @@ class CloseCampaignController extends StatelessWidget {
 
   static routing(BuildContext context,List? result) {
     if (result != null) {
-      Navigator.pushReplacementNamed(context, '/sourcer');
+      Navigator.of(context).pushNamedAndRemoveUntil(
+          '/home', (Route<dynamic> route) => false);
     } else {
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const DialogView(message: "An error occurred. Campaign still open")));
     }

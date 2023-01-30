@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_config/flutter_config.dart';
 import 'package:mobile_crowd_sensing/controllers/close_campaign_controller.dart';
 import 'smart_contract_model.dart';
 import 'session_model.dart';
@@ -10,7 +11,12 @@ class CloseCampaignModel {
   static Future<void> closeMyCampaign(BuildContext context,String address) async {
     try {
       SessionModel sessionData = SessionModel();
-      SmartContractModel smartContractViewModel = SmartContractModel(contractAddress: address,abiName: 'Campaing',abiFileRoot: 'assets/abi_campaign.json', provider: sessionData.getProvider());
+      SmartContractModel smartContractViewModel = SmartContractModel(
+          contractAddress: FlutterConfig.get('MCSfactory_CONTRACT_ADDRESS'),
+          abiName: 'MCSfactory',
+          abiFileRoot: 'assets/abi.json',
+          provider: sessionData.getProvider()
+      );
       await smartContractViewModel.queryTransaction('closeCampaign',[],null).then((value) => {
           CloseCampaignController.routing(context,value)
       });

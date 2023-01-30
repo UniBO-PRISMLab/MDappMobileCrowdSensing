@@ -54,7 +54,7 @@ class SessionModel {
     });
     connector.on('session_update', (payload) async => {
       print('\x1B[31m[checkConnection]\x1B[0m:session_update'),
-      updateConnection(connector)
+      print("\n DEBUG DEL PAYLOAD:  ${payload.toString()}"),
     });
     connector.on('disconnect', (payload) => {
       print('\x1B[31m[checkConnection]\x1B[0m:disconnect'),
@@ -63,11 +63,11 @@ class SessionModel {
   }
 
   Future<void> updateConnection(WalletConnect c) async {
-    WalletConnectSession? st = await c.sessionStorage!.getSession();
-    SessionStatus current = SessionStatus(chainId: st!.chainId, accounts: st.accounts);
-    connector.updateSession(current);
+    // WalletConnectSession? st = await c.sessionStorage!.getSession();
+    // SessionStatus current = SessionStatus(chainId: st!.chainId, accounts: st.accounts);
+    // connector.updateSession(current);
   }
-
+  
   void reconnect(){
     print('\x1B[31m[Connection reconnected]\x1B[0m:connect');
     connector.reconnect();

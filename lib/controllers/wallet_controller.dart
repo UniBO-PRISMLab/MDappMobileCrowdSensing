@@ -78,9 +78,12 @@ class _WalletControllerState extends State<WalletController> {
 }
 
 Widget _formatBalance(String balance) {
+  print("DEBUG:::: wallet balance: $balance");
   double? parsed = double.tryParse(balance);
+  SessionModel session = SessionModel();
   if (parsed != null && balance != "0") {
     parsed = parsed/1000000000000000000;
+    print("DEBUG:::: wallet balance: ${parsed.toStringAsFixed(20)}");
     return Text(parsed.toString(),style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),);
   } else {
     return Text(

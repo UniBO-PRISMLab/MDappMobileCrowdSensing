@@ -32,7 +32,6 @@ class SmartContractModel extends CustomTransactionSender{
           contract: contract,
           function: ethFunction,
           parameters: args,
-          nonce: NonceManager.getNonce(),
           value: (value != null) ? EtherAmount.inWei(value) : null
       );
       launchUrlString(sessionData.uri, mode: LaunchMode.externalApplication);
