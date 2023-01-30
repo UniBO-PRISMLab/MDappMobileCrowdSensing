@@ -64,7 +64,8 @@ class _VerifierCampaignDataPhotoController
     return Container(
       padding: const EdgeInsets.fromLTRB(10, 30, 10, 0),
       width: double.maxFinite,
-      child: Column(children: [
+      child:
+      Column(children: [
         Column(children: <Widget>[
           Text("contractAddress:",
               style: CustomTextStyle.spaceMonoBold(context)),

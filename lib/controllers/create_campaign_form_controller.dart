@@ -175,7 +175,7 @@ class _CreateCampaignFormControllerState
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             content: Text(
                           'Processing Data',
-                          style: CustomTextStyle.spaceMono(context),
+                          style: CustomTextStyle.spaceMonoWhite(context),
                         )));
                         String res = await CreateCampaignModel.createCampaign(
                             context,

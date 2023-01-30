@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_config/flutter_config.dart';
-import 'package:mobile_crowd_sensing/models/session_model.dart';
 import 'package:mobile_crowd_sensing/utils/internet_connection.dart';
 import 'package:mobile_crowd_sensing/utils/styles.dart';
 import 'package:mobile_crowd_sensing/utils/verifier_campaign_data_factory.dart';
@@ -23,7 +22,6 @@ import 'package:mobile_crowd_sensing/views/search_places_view.dart';
 import 'package:mobile_crowd_sensing/views/validate_light_view.dart';
 import 'package:mobile_crowd_sensing/views/validate_photo_view.dart';
 import 'package:mobile_crowd_sensing/views/wallet_view.dart';
-import 'package:walletconnect_dart/walletconnect_dart.dart';
 import 'dart:async';
 import 'package:connectivity/connectivity.dart';
 

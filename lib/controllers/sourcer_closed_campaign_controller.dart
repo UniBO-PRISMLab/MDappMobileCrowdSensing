@@ -96,12 +96,12 @@ class _SourcerClosedCampaignControllerState extends State<SourcerClosedCampaignC
                                   (latitude.length != widget.contractAddress!.length)
                                       ? GlobalText.loadingText(context)
                                       : Text(
-                                    "Latitude: ${(int.parse(latitude[index].toString())/10000000).round()}",
+                                    "Latitude: ${(int.parse(latitude[index].toString())/10000000)}",
                                     style: CustomTextStyle.spaceMono(context),
                                   ),
                                 ]),
                                 Row(children: <Widget>[
-                                  (longitude.length != widget.contractAddress!.length) ? GlobalText.loadingText(context) : Text("Longitude: ${(int.parse(longitude[index].toString())/10000000).round()}",
+                                  (longitude.length != widget.contractAddress!.length) ? GlobalText.loadingText(context) : Text("Longitude: ${(int.parse(longitude[index].toString())/10000000)}",
                                     style: CustomTextStyle.spaceMono(context),
                                   ),
                                 ]),

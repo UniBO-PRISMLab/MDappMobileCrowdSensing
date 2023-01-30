@@ -7,26 +7,20 @@ import 'session_model.dart';
 import '../views/dialog_view.dart';
 
 class SourcerPastCampaignsModel {
-
-  static Future<List<String>?> getMyClosedCampaign(BuildContext context) async {
+  static Future<List?> getMyClosedCampaign(BuildContext context) async {
     try {
       SessionModel sessionData = SessionModel();
-      SmartContractModel smartContractViewModel = SmartContractModel(contractAddress:FlutterConfig.get('MCSfactory_CONTRACT_ADDRESS'),abiName: 'MCSfactory',abiFileRoot: 'assets/abi.json', provider: sessionData.getProvider());
-      EthereumAddress address = EthereumAddress.fromHex(sessionData.getAccountAddress());
-      List<String>? result = [];
-      int index = 0;
-      List<dynamic>? query = [];
-
-      do {
-        query = await smartContractViewModel.queryCall('closedCampaigns', [address, BigInt.from(index)]);
-
-        if (query.toString() != "null") {
-          result.add(query![0].toString());
-        }
-        index++;
-      } while (query.toString() != "null");
-
-      return result;
+      SmartContractModel smartContractViewModel = SmartContractModel(
+          contractAddress: FlutterConfig.get('MCSfactory_CONTRACT_ADDRESS'),
+          abiName: 'MCSfactory',
+          abiFileRoot: 'assets/abi.json',
+          provider: sessionData.getProvider());
+      List<dynamic>? query =
+          await smartContractViewModel.queryCall('getClosedCampaigns', []);
+      if (query.toString() != "null") {
+        return query![0];
+      }
+      return null;
     } catch (error) {
       if (kDebugMode) {
         print('\x1B[31m$error\x1B[0m');
@@ -39,5 +33,4 @@ class SourcerPastCampaignsModel {
     }
     return null;
   }
-
 }

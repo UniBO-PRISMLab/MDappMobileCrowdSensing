@@ -52,8 +52,9 @@ class SessionModel {
       print('\x1B[31m[checkConnection]\x1B[0m:connect'),
       reconnect()
     });
-    connector.on('session_update', (payload) async => {
+    connector.on('session_update', (WCSessionUpdateResponse payload) async => {
       print('\x1B[31m[checkConnection]\x1B[0m:session_update'),
+      connector.updateSession(SessionStatus(chainId: payload.chainId, accounts: payload.accounts)),
       print("\n DEBUG DEL PAYLOAD:  ${payload.toString()}"),
     });
     connector.on('disconnect', (payload) => {

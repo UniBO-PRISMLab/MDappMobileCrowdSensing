@@ -11,7 +11,7 @@ contract CampaignFactory is MCScoin {
     FactoryManager factoryManager;
 
     constructor (uint256 reward,address factoryManagerAddress) ERC20("Mobile Crowd Sensing Coin", "MCSCoin") {
-        _mint(msg.sender, 10000000 * (10 ** uint256(decimals())));
+        _mint(msg.sender, 100 * (10 ** uint256(decimals())));
         blockReward = reward * (10 ** uint(decimals()));
         factoryManager = FactoryManager(factoryManagerAddress);
     }

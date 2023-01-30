@@ -98,7 +98,7 @@ class _SourcerCampaignControllerState extends State<SourcerCampaignController> {
                           (lat.isEmpty)
                               ? GlobalText.loadingText(context)
                               : Text(
-                            "Latitude: ${(int.parse(lat) / 10000000).round()}",
+                            "Latitude: ${(int.parse(lat) / 10000000)}",
                             style: CustomTextStyle.spaceMono(context),
                           ),
                         ]),
@@ -106,7 +106,7 @@ class _SourcerCampaignControllerState extends State<SourcerCampaignController> {
                           (lng.isEmpty)
                               ? GlobalText.loadingText(context)
                               : Text(
-                              "Longitude: ${(int.parse(lng) / 10000000).round()}",
+                              "Longitude: ${(int.parse(lng) / 10000000)}",
                               style:
                               CustomTextStyle.spaceMono(context)),
                         ]),
@@ -145,6 +145,7 @@ class _SourcerCampaignControllerState extends State<SourcerCampaignController> {
                 "Sourcing Status:\nuploaded $fileCount files\nchecked $fileChecked of $fileCount\nwhit the contribution of $workersCount workers",
                 style: CustomTextStyle.spaceMono(context),
               )),
+          const SizedBox(height: 20,),
           FloatingActionButton(
               backgroundColor: CustomColors.red600(context),
               child: Icon(Icons.close,color: CustomColors.customWhite(context),),
