@@ -99,14 +99,7 @@ contract Campaign is Ownable, Initializable {
         return factoryContractAddress.balanceOf(address(this));
     }
 
-    // tenuta per debug
-    function closeCampaign() external {
-        require(msg.sender == addressCrowdSourcer,'you are not the owner');
-        require(msg.sender != address(0), "invalid address provided");
-        isClosed = factoryContractAddress.closeCampaign();
-    }
-
-    function closeCampaignAndPay() external payable {
+    function closeCampaignAndPay() public payable {
         require(msg.sender == addressCrowdSourcer,'you are not the owner');
         isClosed = factoryContractAddress.closeCampaign();
 

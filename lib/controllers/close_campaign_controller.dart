@@ -4,7 +4,8 @@ import '../views/dialog_view.dart';
 import '../models/close_campaign_model.dart';
 
 class CloseCampaignController extends StatefulWidget {
-  const CloseCampaignController({super.key});
+  final String address;
+  const CloseCampaignController({super.key,required this.address});
 
   @override
   State<CloseCampaignController> createState() =>
@@ -19,7 +20,7 @@ class _CloseCampaignControllerState extends State<CloseCampaignController> {
   }
 
   Future<void> _getData(BuildContext context) async {
-    String result = await CloseCampaignModel.closeMyCampaign(context);
+    String result = await CloseCampaignModel.closeMyCampaign(widget.address);
 
     if (result.contains("Campaign Closed")) {
       if (!mounted) return;

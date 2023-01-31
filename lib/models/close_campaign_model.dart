@@ -7,16 +7,15 @@ import 'session_model.dart';
 import '../views/dialog_view.dart';
 
 class CloseCampaignModel {
-  static Future<String> closeMyCampaign(
-      BuildContext context) async {
+  static Future<String> closeMyCampaign(String address) async {
     SessionModel sessionData = SessionModel();
     SmartContractModel smartContractViewModel = SmartContractModel(
-        contractAddress: FlutterConfig.get('MCSfactory_CONTRACT_ADDRESS'),
-        abiName: 'MCSfactory',
-        abiFileRoot: 'assets/abi.json',
+        contractAddress: address,
+        abiName: 'Campaign',
+        abiFileRoot: 'assets/abi_campaign.json',
         provider: sessionData.getProvider());
     dynamic res = await smartContractViewModel.queryTransaction(
-        'closeCampaign', [], null);
+        'closeCampaignAndPay', [], null);
 
     if (res.toString() != "null" &&
         res.toString() != "0x0000000000000000000000000000000000000000" &&

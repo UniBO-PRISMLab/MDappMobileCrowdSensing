@@ -63,8 +63,8 @@ class _CampaignListControllerState
   String selectedValue = 'All Campaigns';
   DbCampaignModel db = DbCampaignModel();
 
-  _buildPage(BuildContext context, AsyncSnapshot snapshot) {
-    return (snapshot.data.length > 0)
+  Widget _buildPage(BuildContext context, AsyncSnapshot snapshot) {
+    return (snapshot.data[0].length > 0)
         ? Container(
             padding: const EdgeInsets.fromLTRB(10, 30, 10, 10),
             width: double.maxFinite,
@@ -141,11 +141,16 @@ class _CampaignListControllerState
                     }),
               )
             ]))
-        : Center(
+        : Container(
+      padding: const EdgeInsets.fromLTRB(10, 30, 10, 10),
+      width: double.maxFinite,
+      child: Column(children: [
+      Expanded(
+      child:Center(
             child: Text(
             "No Campaign active at the moment.",
             style: CustomTextStyle.spaceMono(context),
-          ));
+          )))]));
   }
 
   Widget _cardWidget(

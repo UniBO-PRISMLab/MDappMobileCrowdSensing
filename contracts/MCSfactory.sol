@@ -25,7 +25,7 @@ contract CampaignFactory is MCScoin {
         return to;
     }
 
-    function closeCampaign() external returns (bool){
+    function closeCampaign() public returns (bool){
         return factoryManager._closeCampaign();
     }
 

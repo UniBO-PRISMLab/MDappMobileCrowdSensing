@@ -11,10 +11,14 @@ class CloseCampaignView extends StatefulWidget {
 }
 
 class _CloseCampaignViewState extends State<CloseCampaignView> {
+  Object? parameters;
+  dynamic jsonParameters = {};
 
   @override
   Widget build(BuildContext context) {
-    return const CloseCampaignController();
+    parameters = ModalRoute.of(context)!.settings.arguments;
+    jsonParameters = jsonDecode(jsonEncode(parameters));
+    return CloseCampaignController(address: jsonParameters['address'],);
   }
 
 

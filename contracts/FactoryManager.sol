@@ -35,22 +35,18 @@ contract FactoryManager {
     }
 
     function _closeCampaign() external returns (bool){
-        if(address(activeCampaigns[tx.origin])!=address(0)) {
-            require(tx.origin == activeCampaigns[tx.origin].addressCrowdSourcer(),'you are not the campaign owner');
-            closedCampaigns[tx.origin].push(activeCampaigns[tx.origin]);
-            delete activeCampaigns[tx.origin];
-            for (uint i = 0; i < addressCrowdSourcerActiveCampaigns.length; i++){
-                if(addressCrowdSourcerActiveCampaigns[i] == tx.origin) {
-                    addressCrowdSourcerClosedCampaigns.push(tx.origin);
-                    addressCrowdSourcerActiveCampaigns[i] = addressCrowdSourcerActiveCampaigns[addressCrowdSourcerActiveCampaigns.length-1];
-                    addressCrowdSourcerActiveCampaigns.pop();
-                    break;
-                }
+        require(tx.origin == activeCampaigns[tx.origin].addressCrowdSourcer(),'you are not the campaign owner');
+        closedCampaigns[tx.origin].push(activeCampaigns[tx.origin]);
+        delete activeCampaigns[tx.origin];
+        for (uint i = 0; i < addressCrowdSourcerActiveCampaigns.length; i++){
+            if(addressCrowdSourcerActiveCampaigns[i] == tx.origin) {
+                addressCrowdSourcerClosedCampaigns.push(tx.origin);
+                addressCrowdSourcerActiveCampaigns[i] = addressCrowdSourcerActiveCampaigns[addressCrowdSourcerActiveCampaigns.length-1];
+                addressCrowdSourcerActiveCampaigns.pop();
+                return true;
             }
-            return true;
-        } else {
-            return false;
         }
+        return false;
     }
 
     function _checkIfSourcerHasActiveCampaign(address sourcer) external view returns(bool) {
