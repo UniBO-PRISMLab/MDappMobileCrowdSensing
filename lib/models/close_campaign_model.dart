@@ -1,10 +1,5 @@
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_config/flutter_config.dart';
-import 'package:mobile_crowd_sensing/controllers/close_campaign_controller.dart';
 import 'smart_contract_model.dart';
 import 'session_model.dart';
-import '../views/dialog_view.dart';
 
 class CloseCampaignModel {
   static Future<String> closeMyCampaign(String address) async {

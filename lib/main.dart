@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_config/flutter_config.dart';
@@ -7,7 +6,6 @@ import 'package:mobile_crowd_sensing/utils/internet_connection.dart';
 import 'package:mobile_crowd_sensing/utils/styles.dart';
 import 'package:mobile_crowd_sensing/utils/verifier_campaign_data_factory.dart';
 import 'package:mobile_crowd_sensing/views/all_campaign_view.dart';
-import 'package:mobile_crowd_sensing/views/close_campaign_view.dart';
 import 'package:mobile_crowd_sensing/views/create_campaign_form_view.dart';
 import 'package:mobile_crowd_sensing/controllers/sourcer_past_campaigns_controller.dart';
 import 'package:mobile_crowd_sensing/utils/worker_campaign_data_factory.dart';
@@ -34,8 +32,6 @@ Future<void> main(List<String> args) async {
   } else {
     runApp(const MyApp());
   }
-  // WalletConnectSession? s =
-  //     await SessionModel().connector.sessionStorage?.getSession();
 }
 
 class NoConnection extends StatelessWidget {
@@ -145,8 +141,6 @@ class _MyAppState extends State<MyApp> {
         '/sourcer_campaigns_provider': (context) => const MyCampaignView(),
         '/sourcer_close_campaign_provider': (context) =>
             const SourcerPastCampaignsController(),
-        '/sourcer_close_campaign_service_provider': (context) =>
-            const CloseCampaignView(),
         '/wallet': (context) => const WalletView(),
         '/join_campaign': (context) =>
             JoinCampaignFactory.fromTypeName(context),
