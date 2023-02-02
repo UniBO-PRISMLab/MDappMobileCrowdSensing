@@ -43,7 +43,8 @@ class ValidateLightControllerState extends State<ValidateLightController> {
     if (hash != null && !downloadGate) {
       _prepareData();
     }
-    return ListView(
+    return
+        ListView(
         shrinkWrap: false,
         children: [
                 Column(
@@ -128,7 +129,7 @@ class ValidateLightControllerState extends State<ValidateLightController> {
                                             context))
                                   ]),
                                   Row(children: [
-                                    Text('Average Relevation: ',
+                                    Text('Average Data Collected: ',
                                         style: CustomTextStyle.merriweatherBold(
                                             context)),
                                     Text('$relevation ',
@@ -148,6 +149,7 @@ class ValidateLightControllerState extends State<ValidateLightController> {
                                       onPressed: () async {
                                         bool res = await ValidateModel.approveOrNot(campaignSelectedData['contractAddress'], hash, true);
                                         if(res) {
+                                          if(!mounted) {return;}
                                           ScaffoldMessenger.of(context)
                                               .showSnackBar(SnackBar(
                                               content: Text(
@@ -157,6 +159,7 @@ class ValidateLightControllerState extends State<ValidateLightController> {
                                           Navigator.of(context)
                                               .pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false);
                                         } else {
+                                          if(!mounted) {return;}
                                           ScaffoldMessenger.of(context)
                                               .showSnackBar(SnackBar(
                                               content: Text(
@@ -173,6 +176,7 @@ class ValidateLightControllerState extends State<ValidateLightController> {
                                       onPressed: () async {
                                         bool res = await ValidateModel.approveOrNot(campaignSelectedData['contractAddress'], hash, false);
                                         if(res) {
+                                          if(!mounted) {return;}
                                           ScaffoldMessenger.of(context)
                                               .showSnackBar(SnackBar(
                                               content: Text(
@@ -182,6 +186,7 @@ class ValidateLightControllerState extends State<ValidateLightController> {
                                           Navigator.of(context)
                                               .pushNamedAndRemoveUntil('/home', (Route<dynamic> route) => false);
                                         } else {
+                                          if(!mounted) {return;}
                                           ScaffoldMessenger.of(context)
                                               .showSnackBar(SnackBar(
                                               content: Text(
@@ -196,8 +201,8 @@ class ValidateLightControllerState extends State<ValidateLightController> {
                                 ]));
                       }
                     })
-                : const Text(
-                    "check data for get a relevation and compare the result")
+                : const Center( child:Text(
+                    "check data for get a relevation and compare the result"))
           ]);
   }
 }

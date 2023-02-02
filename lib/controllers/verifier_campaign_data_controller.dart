@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:mobile_crowd_sensing/models/session_model.dart';
 import 'package:mobile_crowd_sensing/utils/styles.dart';
 import '../models/verifier_campaign_data_model.dart';
 
@@ -148,13 +149,22 @@ class _VerifierCampaignDataPhotoController
                 if (status == 'false') {
                   return GestureDetector(
                     onTap: () {
-                      Navigator.pushNamed(context, widget.goTo,
-                          arguments: {
-                            "name": name,
-                            "ipfsHash": ipfsHash,
-                            "uploader": uploader,
-                            "contractAddress": contractAddress
-                          });
+                      if(SessionModel().getAccountAddress().toLowerCase() != uploader.toLowerCase()) {
+                        Navigator.pushNamed(context, widget.goTo,
+                            arguments: {
+                              "name": name,
+                              "ipfsHash": ipfsHash,
+                              "uploader": uploader,
+                              "contractAddress": contractAddress
+                            });
+                      } else {
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(SnackBar(
+                            content: Text(
+                              "You can't verify your own Uploads",
+                              style: CustomTextStyle.spaceMonoWhite(context),
+                            )));
+                      }
                     },
                     child: Card(
                       shadowColor: CustomColors.blue600(context),

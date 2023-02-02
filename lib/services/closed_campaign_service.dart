@@ -111,7 +111,7 @@ class ClosedCampaignService {
           g.stopGeofenceService();
 
           if (accountAddress == null) {
-            throw NullThrownError();
+            throw Error();
           }
           String address = c.address;
           String title = c.title;

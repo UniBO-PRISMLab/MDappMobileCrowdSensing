@@ -15,7 +15,6 @@ class SmartContractModel extends CustomTransactionSender{
   final String contractAddress;
   final String abiName;
   final String abiFileRoot;
-  SessionModel sessionData = SessionModel();
 
   Future<DeployedContract> loadContract(String contractAddress) async {
     String abi = await rootBundle.loadString(abiFileRoot);
@@ -26,15 +25,20 @@ class SmartContractModel extends CustomTransactionSender{
 
   Future<dynamic> queryTransaction(String functionName, List<dynamic> args, BigInt? value) async {
     try {
+      //SessionModel().checkConnection();
+      int nonce = await SessionModel().ethClient.getTransactionCount(EthereumAddress.fromHex(SessionModel().getAccountAddress()));
       final contract = await loadContract(contractAddress);
       final ethFunction = contract.function(functionName);
-      final transaction = Transaction.callContract(
+      Transaction transaction = Transaction.callContract(
           contract: contract,
           function: ethFunction,
           parameters: args,
+          nonce: nonce,
           value: (value != null) ? EtherAmount.inWei(value) : null
       );
-      launchUrlString(sessionData.uri, mode: LaunchMode.externalApplication);
+      print('\x1B[31m nonce: $nonce gasPrice: ${transaction.gasPrice} maxGas: ${transaction.maxGas} \x1B[0m');
+
+      launchUrlString(SessionModel().uri, mode: LaunchMode.externalApplication);
       final txBytes = await sendTransaction(transaction);
       return txBytes;
     } catch (e) {
@@ -49,7 +53,7 @@ class SmartContractModel extends CustomTransactionSender{
   Future<String> sendTransaction(Transaction transaction) async {
     try {
       final hash = await provider.sendTransaction(
-        from: sessionData.getAccountAddress(),
+        from: SessionModel().getAccountAddress(),
         to: transaction.to?.hex,
         data: transaction.data,
         gas: transaction.maxGas,
@@ -70,8 +74,8 @@ class SmartContractModel extends CustomTransactionSender{
     try {
       final contract = await loadContract(contractAddress);
       final ethFunction = contract.function(functionName);
-      final result = await sessionData.ethClient.call(
-          sender: EthereumAddress.fromHex(sessionData.getAccountAddress()),
+      final result = await SessionModel().ethClient.call(
+          sender: EthereumAddress.fromHex(SessionModel().getAccountAddress()),
           contract: contract,
           function: ethFunction,
           params: args);

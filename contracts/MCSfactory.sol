@@ -8,6 +8,36 @@ import "hardhat/console.sol";
 
 contract CampaignFactory is MCScoin {
 
+    mapping(address => CampaignToClaim[]) public campaignsToClaim; // address worker/verifier -> campaigns
+
+    struct CampaignToClaim {
+        address campaignAddress;
+        string role;
+        uint256 toClaim;
+    }
+
+    function getCampaignsToClaim() public view returns (CampaignToClaim[] memory) {
+        CampaignToClaim[] memory outPut = new CampaignToClaim[](campaignsToClaim[msg.sender].length);
+        for (uint256 i = 0; i < campaignsToClaim[msg.sender].length; i++) {
+            outPut[i] = campaignsToClaim[msg.sender][i];
+        }
+        return outPut;
+    }
+
+
+    function putCampaignToClaim(address sender, address campaignAddress, string memory role, uint256 toClaim) external {
+        campaignsToClaim[sender].push(CampaignToClaim(campaignAddress,role,toClaim));
+    }
+
+    function removeCampaignToClaim(address sender, address campaignAddress) external {
+        for (uint i = 0; i<campaignsToClaim[sender].length; i++) {
+            if (campaignsToClaim[sender][i].campaignAddress == campaignAddress) {
+                campaignsToClaim[sender][i] = campaignsToClaim[sender][campaignsToClaim[sender].length - 1];
+                campaignsToClaim[sender].pop();
+            }
+        }
+    }
+
     FactoryManager factoryManager;
 
     constructor (uint256 reward,address factoryManagerAddress) ERC20("Mobile Crowd Sensing Coin", "MCSCoin") {

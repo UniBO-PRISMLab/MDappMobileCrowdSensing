@@ -43,7 +43,7 @@ class Geofencing {
 
      try {
       if(value!.isEmpty) {
-        throw NullThrownError();
+        throw Error();
       }
       doubledValue = double.parse(value.isEmpty ? "0" : value);
 

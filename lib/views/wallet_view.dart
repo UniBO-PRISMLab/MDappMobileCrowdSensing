@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_crowd_sensing/utils/styles.dart';
 
+import '../controllers/claim_campaign_controller.dart';
 import '../controllers/wallet_controller.dart';
 
 class WalletView extends StatelessWidget {
@@ -14,11 +15,10 @@ class WalletView extends StatelessWidget {
           centerTitle: true,
           backgroundColor: CustomColors.blue900(context),
         ),
-      body: Column(
-        children: const [
-          WalletController()
-        ]
-      )
+      body: Column( children: const [
+        WalletController(),
+        ClaimCampaignController()
+      ])
     );
   }
 }

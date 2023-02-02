@@ -102,19 +102,18 @@ class _CampaignListControllerState
                           onTap: () {
 
                             if(_checkIfDeviceIsInArea(lat!,lng!,range!)) {
-
-                            Navigator.pushNamed(
-                                context, widget.goTo,
-                                arguments: {
-                                  'contractAddress': contractAddress,
-                                  'name': name,
-                                  'readebleLocation': readebleLocation,
-                                  'type': type,
-                                  'crowdsourcer': crowdsourcer,
-                                  'range': range,
-                                  'lat': lat,
-                                  'lng': lng,
-                                });
+                              Navigator.pushNamed(
+                                  context, widget.goTo,
+                                  arguments: {
+                                    'contractAddress': contractAddress,
+                                    'name': name,
+                                    'readebleLocation': readebleLocation,
+                                    'type': type,
+                                    'crowdsourcer': crowdsourcer,
+                                    'range': range,
+                                    'lat': lat,
+                                    'lng': lng,
+                                  });
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                   content: Text(

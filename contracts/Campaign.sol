@@ -34,6 +34,21 @@ contract Campaign is Ownable, Initializable {
         int256 lng;
     }
 
+    mapping(address => uint) credits;
+
+    function allowForPull(address receiver, uint amount) private {
+        credits[receiver] += amount;
+    }
+
+    function withdrawCredits() public {
+        uint amount = credits[msg.sender];
+        require(amount != 0);
+        require(factoryContractAddress.balanceOf(address(this)) >= amount);
+        credits[msg.sender] = 0;
+        factoryContractAddress.transfer(msg.sender,amount);
+        factoryContractAddress.removeCampaignToClaim(msg.sender,address(this));
+    }
+
     function getAllFilesInfo() public view returns(File[] memory){
         File[] memory out = new File[](allfilesPath.length);
         for(uint i = 0; i<allfilesPath.length; i++) {
@@ -81,6 +96,7 @@ contract Campaign is Ownable, Initializable {
     }
 
     function validateFile(string memory hash) public {
+        require(msg.sender != files[hash].uploader,"you can't self verify the data.");
         files[hash].validity = true;
         files[hash].status = true;
         files[hash].verifier = msg.sender;
@@ -89,6 +105,7 @@ contract Campaign is Ownable, Initializable {
     }
 
     function notValidateFile(string memory hash) public {
+        require(msg.sender != files[hash].uploader,"you can't self verify the data.");
         files[hash].status = true;
         files[hash].verifier = msg.sender;
         checkedFiles++;
@@ -97,6 +114,13 @@ contract Campaign is Ownable, Initializable {
 
     function getCampaignBalance() public view returns(uint256 balance) {
         return factoryContractAddress.balanceOf(address(this));
+    }
+
+
+    struct CampaignToClaim {
+        address campaignAddress;
+        string role;
+        uint256 toClaim;
     }
 
     function closeCampaignAndPay() public payable {
@@ -111,10 +135,15 @@ contract Campaign is Ownable, Initializable {
                 uint256 verifierReward = verifiesTotalReward / numberOfActiveVerifiers;
                 uint256 workerReward =  (balance - verifiesTotalReward) / numberOfActiveWorkers;
                 if (currentFile.validity == true) { // se il file caricato è valido allora paga l'uploader
-                    factoryContractAddress.transfer(currentFile.verifier,verifierReward);
-                    factoryContractAddress.transfer(currentFile.uploader,workerReward);
+
+                    factoryContractAddress.putCampaignToClaim(currentFile.verifier,address(this), "verifier", verifierReward);
+                    factoryContractAddress.putCampaignToClaim(currentFile.uploader,address(this), "worker", workerReward);
+
+                    allowForPull(currentFile.verifier, verifierReward);
+                    allowForPull(currentFile.uploader, workerReward);
                 } else { // se il file caricato NON è valido allora paga solo il verifier
-                    factoryContractAddress.transfer(currentFile.verifier,verifierReward);
+                    factoryContractAddress.putCampaignToClaim(currentFile.verifier,address(this), "verifier", verifierReward);
+                    allowForPull(currentFile.verifier, verifierReward);
                 }
             }
         }

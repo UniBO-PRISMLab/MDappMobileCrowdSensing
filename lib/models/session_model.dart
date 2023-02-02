@@ -63,12 +63,6 @@ class SessionModel {
     });
   }
 
-  Future<void> updateConnection(WalletConnect c) async {
-    // WalletConnectSession? st = await c.sessionStorage!.getSession();
-    // SessionStatus current = SessionStatus(chainId: st!.chainId, accounts: st.accounts);
-    // connector.updateSession(current);
-  }
-  
   void reconnect(){
     print('\x1B[31m[Connection reconnected]\x1B[0m:connect');
     connector.reconnect();
