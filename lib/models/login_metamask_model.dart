@@ -32,16 +32,16 @@ class LoginMetamaskModel {
 
         if(!ServicesController.statusGeofencingService) {
           print('\x1B[31m [GEOFENCE SERVICE] INITIALIZE AFTER LOGIN\x1B[0m');
-          //await ClosedCampaignService().initializeClosedCampaignService();
-          // DEBUG
-          // await DbCampaignModel().insertCampaign(
-          //     const Campaign(
-          //         title: "testing campaign",
-          //         lat: "44.3883014",
-          //         lng: "11.3467744",
-          //         radius: "17",
-          //         address: "0x000000000000")
-          // );
+          // await ClosedCampaignService().initializeClosedCampaignService();
+          //DEBUG
+          await DbCampaignModel().insertCampaign(
+              const Campaign(
+                  title: "testing campaign",
+                  lat: "44.3883014",
+                  lng: "11.3467744",
+                  radius: "17",
+                  address: "0x000000000000")
+          );
           ServicesController.initializeGeofencingService();
         }
 

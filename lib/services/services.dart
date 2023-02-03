@@ -128,59 +128,64 @@ class Services {
         ?.createNotificationChannel(NotificationChannel.importantChannel);
 
     GeofencingController controller = GeofencingController();
-    Timer.periodic(const Duration(seconds: 5), (timer) async {
+    //Timer.periodic(const Duration(seconds: 5), (timer) async {
       ServicesController.statusGeofencingService = true;
 
-      controller.initializeFromDB();
+      await controller.initializeFromDB();
       print('\x1B[31m [GEOFENCING SERVICE] DEBUG: numero di geofencing attivi ${controller.getNumberOfActiveGeofence()} \x1B[0m');
-
+      
+      List<Stream<GeofenceStatus>> streamList = controller.getStreamList();
       if (controller.getNumberOfActiveGeofence() > 0) {
-        for (Geofencing g in controller.getListOfActiveGeofences()) {
-          print('\x1B[31m [GEOFENCING SERVICE] DEBUG: ${g.isStatusChanged} \x1B[0m');
-          if (g.isStatusChanged) {
-            switch (g.getStatus()) {
-              case GeofenceStatus.init:
-                print(
-                    '\x1B[31m [GEOFENCING SERVICE] enter in Init state. \x1B[0m');
-                break;
-              case GeofenceStatus.enter:
-                notification.show(
-                  888,
-                  'Enter in a Campaign Area',
-                  'inside the area',
-                  const NotificationDetails(
-                    android: AndroidNotificationDetails(
-                      'important_channel',
-                      'MY FOREGROUND SERVICE',
-                      icon: 'ic_bg_service_small',
-                      ongoing: false,
-                    ),
-                  ),
-                );
-                break;
-              case GeofenceStatus.exit:
-                notification.show(
-                    888,
-                    'Exit from Campaign Area',
-                    'inside the area',
-                    const NotificationDetails(
-                        android: AndroidNotificationDetails(
-                      'important_channel',
-                      'MY FOREGROUND SERVICE',
-                      icon: 'ic_bg_service_small',
-                      ongoing: false,
-                    ))
-                );
-                break;
-            }
-          }
+        for (Stream<GeofenceStatus> s in streamList) {
+          s.listen((GeofenceStatus status) {
+            print(status.toString());
+            //   if (g.isStatusChanged) {
+            //     switch (g.getStatus()) {
+            //       case GeofenceStatus.init:
+            //         print(
+            //             '\x1B[31m [GEOFENCING SERVICE] enter in Init state. \x1B[0m');
+            //         break;
+            //       case GeofenceStatus.enter:
+            //         notification.show(
+            //           888,
+            //           'Enter in a Campaign Area',
+            //           'inside the area',
+            //           const NotificationDetails(
+            //             android: AndroidNotificationDetails(
+            //               'important_channel',
+            //               'MY FOREGROUND SERVICE',
+            //               icon: 'ic_bg_service_small',
+            //               ongoing: false,
+            //             ),
+            //           ),
+            //         );
+            //         break;
+            //       case GeofenceStatus.exit:
+            //         notification.show(
+            //             888,
+            //             'Exit from Campaign Area',
+            //             'inside the area',
+            //             const NotificationDetails(
+            //                 android: AndroidNotificationDetails(
+            //               'important_channel',
+            //               'MY FOREGROUND SERVICE',
+            //               icon: 'ic_bg_service_small',
+            //               ongoing: false,
+            //             ))
+            //         );
+            //         break;
+            //     }
+            //   }
+            // }
+          });
         }
       } else {
         ServicesController.statusGeofencingService = false;
-        timer.cancel();
+        //timer.cancel();
         print('\x1B[31m [GEOFENCING SERVICE] No campaigns to follow. stop the service.\x1B[0m');
       }
-    });
+      //controller.closeAllGeofencing();
+    //});
   }
 }
 

@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:mobile_crowd_sensing/models/db_capaign_model.dart';
-
-import 'Geofencing.dart';
+import 'package:mobile_crowd_sensing/services/geofencing.dart';
 
 class GeofencingController {
   final List<Geofencing> _activeGeofencing = [];
@@ -44,6 +43,16 @@ class GeofencingController {
 
    getListOfActiveGeofences(){
     return _activeGeofencing;
+  }
+
+  List<Stream<GeofenceStatus>> getStreamList() {
+    List<Stream<GeofenceStatus>> out = [];
+    for(Geofencing g in _activeGeofencing) {
+      if(g.getGeofenceStream() != null) {
+        out.add(g.getGeofenceStream()!);
+      }
+    }
+    return out;
   }
 
    Future<void> initializeFromDB() async {

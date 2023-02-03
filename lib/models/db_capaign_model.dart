@@ -3,8 +3,6 @@ import 'package:mobile_crowd_sensing/services/services_controller.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-import '../services/closed_campaign_service.dart';
-
 class DbCampaignModel {
 
   static final DbCampaignModel _instance = DbCampaignModel._internal();

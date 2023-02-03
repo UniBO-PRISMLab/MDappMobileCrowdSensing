@@ -76,9 +76,9 @@ class Geofencing {
       _previusStatus = _status;
     }
 
-    if (kDebugMode) {
-      print("STATUS GEOFENCE: $_status  IS CHANGED: $isStatusChanged");
-    }
+    // if (kDebugMode) {
+    //   print("STATUS GEOFENCE: $_status  IS CHANGED: $isStatusChanged");
+    // }
   }
 
   GeofenceStatus getStatus() {

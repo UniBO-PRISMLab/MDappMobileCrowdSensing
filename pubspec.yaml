@@ -69,7 +69,6 @@ dependencies:
   flip_card: ^0.7.0
   connectivity: ^3.0.6
   flutter_isolate: ^2.0.4
-  easy_geofencing: ^0.2.0
 
 dev_dependencies:
   flutter_test:
