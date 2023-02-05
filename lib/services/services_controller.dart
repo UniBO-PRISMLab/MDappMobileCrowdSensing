@@ -1,7 +1,7 @@
 import 'package:flutter_isolate/flutter_isolate.dart';
-import 'package:mobile_crowd_sensing/services/geofencing_controller.dart';
 import 'package:mobile_crowd_sensing/services/services.dart';
 
+import '../models/db_capaign_model.dart';
 import '../models/session_model.dart';
 
 class ServicesController{
@@ -16,8 +16,30 @@ class ServicesController{
     statusCloseCampaignService = true;
   }
 
-  static void initializeGeofencingService() async {
-    FlutterIsolate.spawn(Services.checkGeofence, {});
+  static Future initializeGeofencingService() async {
+
+    DbCampaignModel db = DbCampaignModel();
+    List<Campaign> res = await db.campaigns();
+    if(res.isNotEmpty) {
+      statusGeofencingService = true;
+      for(Campaign c in res) {
+        FlutterIsolate.spawn(Services.checkGeofence, {
+          'address' : c.address,
+          'title' : c.title,
+          'lat' : c.lat,
+          'lng' : c.lng,
+          'radius' : c.radius
+        });
+      }
+    }
+
+  }
+
+  static void resetServicies() async {
+    FlutterIsolate.killAll();
+    statusCloseCampaignService = true;
     statusGeofencingService = true;
+    initializeCloseCampaignService();
+    initializeGeofencingService();
   }
 }

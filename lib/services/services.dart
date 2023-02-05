@@ -1,18 +1,16 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
-import 'package:mobile_crowd_sensing/services/geofencing.dart';
-import 'package:mobile_crowd_sensing/services/geofencing_controller.dart';
 import 'package:mobile_crowd_sensing/services/notification_channels.dart';
 import 'package:mobile_crowd_sensing/services/services_controller.dart';
-import 'package:web3dart/contracts.dart';
-import 'package:web3dart/credentials.dart';
 import 'package:web3dart/web3dart.dart';
 import '../models/db_capaign_model.dart';
 import 'dart:async';
 import 'dart:ui';
+
+
+import 'package:geofence_flutter/geofence_flutter.dart';
 
 class Services {
   @pragma('vm:entry-point')
@@ -72,52 +70,32 @@ class Services {
 
               await db.deleteCampaign(address);
             } else {
-              print(
-                  '\x1B[31m [CLOSED CAMPAIGN SERVICE] The campaign still open: nothing to notify. \x1B[0m');
+              if (kDebugMode) {
+                print('\x1B[31m [CLOSED CAMPAIGN SERVICE] The campaign still open: nothing to notify. \x1B[0m');
+              }
             }
           } else {
-            print(
+            if (kDebugMode) {
+              print(
                 '\x1B[31m [CLOSED CAMPAIGN SERVICE]an error occurred. \x1B[0m');
+            }
           }
         }
       } else {
         ServicesController.statusCloseCampaignService = false;
         timer.cancel();
-        print(
+        if (kDebugMode) {
+          print(
             '\x1B[31m [CLOSED CAMPAIGN SERVICE] No campaigns to follow. stop the service.\x1B[0m');
+        }
       }
     });
   }
 
   @pragma('vm:entry-point')
-  static void checkGeofence(Map<dynamic, dynamic> args) async {
+  static void checkGeofence(Map<String, String> args) async {
     DartPluginRegistrant.ensureInitialized();
-    //....
-
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      await Geolocator.openLocationSettings();
-      return Future.error('Location services are disabled.');
-    }
-
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return Future.error('Location permissions are denied');
-      }
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
-    }
-
-
-    //....
+    String debugString = "[GEOFENCE ${args["title"]!}";
 
     final FlutterLocalNotificationsPlugin notification =
         FlutterLocalNotificationsPlugin();
@@ -127,65 +105,94 @@ class Services {
             AndroidFlutterLocalNotificationsPlugin>()
         ?.createNotificationChannel(NotificationChannel.importantChannel);
 
-    GeofencingController controller = GeofencingController();
-    //Timer.periodic(const Duration(seconds: 5), (timer) async {
-      ServicesController.statusGeofencingService = true;
+    if (kDebugMode) {
+      print('\x1B[31m [GEOFENCE SERVICE] geofence open for:'
+        '\n ${args['title']!}'
+        '\n ${args['address']!}'
+        '\n ${args['lat']!} '
+        '\n ${args['lng']!} \x1B[0m');
+    }
 
-      await controller.initializeFromDB();
-      print('\x1B[31m [GEOFENCING SERVICE] DEBUG: numero di geofencing attivi ${controller.getNumberOfActiveGeofence()} \x1B[0m');
-      
-      List<Stream<GeofenceStatus>> streamList = controller.getStreamList();
-      if (controller.getNumberOfActiveGeofence() > 0) {
-        for (Stream<GeofenceStatus> s in streamList) {
-          s.listen((GeofenceStatus status) {
-            print(status.toString());
-            //   if (g.isStatusChanged) {
-            //     switch (g.getStatus()) {
-            //       case GeofenceStatus.init:
-            //         print(
-            //             '\x1B[31m [GEOFENCING SERVICE] enter in Init state. \x1B[0m');
-            //         break;
-            //       case GeofenceStatus.enter:
-            //         notification.show(
-            //           888,
-            //           'Enter in a Campaign Area',
-            //           'inside the area',
-            //           const NotificationDetails(
-            //             android: AndroidNotificationDetails(
-            //               'important_channel',
-            //               'MY FOREGROUND SERVICE',
-            //               icon: 'ic_bg_service_small',
-            //               ongoing: false,
-            //             ),
-            //           ),
-            //         );
-            //         break;
-            //       case GeofenceStatus.exit:
-            //         notification.show(
-            //             888,
-            //             'Exit from Campaign Area',
-            //             'inside the area',
-            //             const NotificationDetails(
-            //                 android: AndroidNotificationDetails(
-            //               'important_channel',
-            //               'MY FOREGROUND SERVICE',
-            //               icon: 'ic_bg_service_small',
-            //               ongoing: false,
-            //             ))
-            //         );
-            //         break;
-            //     }
-            //   }
-            // }
-          });
-        }
-      } else {
-        ServicesController.statusGeofencingService = false;
-        //timer.cancel();
-        print('\x1B[31m [GEOFENCING SERVICE] No campaigns to follow. stop the service.\x1B[0m');
-      }
-      //controller.closeAllGeofencing();
-    //});
+    await Geofence.startGeofenceService(
+        pointedLatitude: args['lat']!,
+        pointedLongitude: args['lng']!,
+        radiusMeter: args['radius']!,
+        eventPeriodInSeconds: 10
+    );
+
+    GeofenceEvent? previous;
+
+    Geofence.getGeofenceStream()?.listen(
+            (GeofenceEvent event) {
+          if (kDebugMode) {
+            print(event.toString());
+          }
+
+          if(previous == null || previous == GeofenceEvent.init) {
+            switch (event) {
+              case GeofenceEvent.enter:
+                previous = event;
+                break;
+              case GeofenceEvent.exit:
+                previous = event;
+                break;
+                default:
+                  previous = event;
+                  break;
+            }
+          }
+
+          switch (event) {
+            case GeofenceEvent.init:
+              if (kDebugMode) {
+                print('\x1B[31m $debugString status: Init\x1B[0m');
+              }
+              previous = event;
+              break;
+            case GeofenceEvent.enter:
+              if (kDebugMode) {
+                print('\x1B[31m $debugString status: Enter\x1B[0m');
+              }
+              (previous != event)?
+                notification.show(
+                  888,
+                  'Entered in Campaign Area',
+                  '[${args['title']!}] \nat address: ${args['address']!}',
+                  const NotificationDetails(
+                    android: AndroidNotificationDetails(
+                      'important_channel',
+                      'MY FOREGROUND SERVICE',
+                      icon: 'ic_bg_service_small',
+                      ongoing: true,
+                    ),
+                  ),
+                )
+              : print('\x1B[31m $debugString status not changed \x1B[0m');
+              previous = event;
+              break;
+            case GeofenceEvent.exit:
+              if (kDebugMode) {
+                print('\x1B[31m $debugString status: Exit\x1B[0m');
+              }
+              (previous != event)?
+                notification.show(
+                    888,
+                    'Exit from Campaign Area',
+                    '[${args['title']!}] \nat address: ${args['address']!}',
+                    const NotificationDetails(
+                      android: AndroidNotificationDetails(
+                        'important_channel',
+                        'MY FOREGROUND SERVICE',
+                        icon: 'ic_bg_service_small',
+                        ongoing: true,
+                      ),
+                    ))
+              : print('\x1B[31m $debugString status not changed \x1B[0m');
+              previous = event;
+
+              break;
+          }
+        });
   }
 }
 

@@ -43,15 +43,7 @@ class DbCampaignModel {
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
 
-    if(ServicesController.statusGeofencingService) {
-      print('\x1B[31m [GEOFENCING SERVICE] INITIALIZE AFTER INSERT IN DB\x1B[0m');
-      ServicesController.initializeGeofencingService();
-    }
-    if(ServicesController.statusCloseCampaignService) {
-      print('\x1B[31m [CLOSED CAMPAIGN SERVICE] INITIALIZE AFTER INSERT IN DB\x1B[0m');
-      //await ClosedCampaignService().initializeClosedCampaignService();
-      ServicesController.initializeCloseCampaignService();
-    }
+    ServicesController.resetServicies();
   }
 
   Future<List<Campaign>> campaigns() async {
@@ -86,6 +78,7 @@ class DbCampaignModel {
       where: 'address = ?',
       whereArgs: [address],
     );
+    ServicesController.resetServicies();
   }
 }
 

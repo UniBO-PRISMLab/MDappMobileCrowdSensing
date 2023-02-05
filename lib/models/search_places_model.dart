@@ -9,7 +9,8 @@ class SearchPlacesModel {
   String address = "";
   late Position position;
   var client = http.Client();
-
+  bool serviceEnabled = false;
+  late LocationPermission permission;
 
   Future<void> updateLocalPosition() async {
     await Future.delayed(Duration(seconds: 1));
@@ -22,10 +23,7 @@ class SearchPlacesModel {
     }
   }
 
-  Future<Position> _getGeoLocationPosition() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
+  Future<bool?> getPermissions() async {
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       await Geolocator.openLocationSettings();
@@ -44,7 +42,11 @@ class SearchPlacesModel {
       return Future.error(
           'Location permissions are permanently denied, we cannot request permissions.');
     }
+    return true;
+  }
 
+  Future<Position> _getGeoLocationPosition() async {
+    getPermissions();
     return await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
   }
 
