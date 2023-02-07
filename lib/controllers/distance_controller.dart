@@ -18,8 +18,9 @@ class DistanceController {
             cos(_toRadians(startLatitude)) *
             cos(_toRadians(endLatitude));
     var c = 2 * asin(sqrt(a));
-
-    return (earthRadius * c)/1000;
+    double distance = (earthRadius * c);
+    print("DISTANCE CALCULATED: $distance");
+    return distance;
   }
 
   static _toRadians(double degree) {

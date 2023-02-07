@@ -345,7 +345,7 @@ class _CampaignListControllerState
             (double.parse(data[1].toString()) / 10000000),
             (double.parse(data[2].toString()) / 10000000),
             widget.places.lat,
-            widget.places.lng);
+            widget.places.lng)/1000;
         if (kDebugMode) {
           print("DEBUG::::::::::::::::: [${double.parse(data[1].toString()) / 10000000},${double.parse(data[2].toString()) / 10000000}] e [${widget.places.lat},${widget.places.lng}] => $distance");
         }
@@ -357,7 +357,7 @@ class _CampaignListControllerState
 
   bool _checkIfDeviceIsInArea(String lat, String lon, String range) {
     widget.places.updateLocalPosition();
-    dynamic distanceInMeters = DistanceController.distanceBetween(widget.places.lat, widget.places.lng, double.parse(lat), double.parse(lon))*1000;
+    dynamic distanceInMeters = DistanceController.distanceBetween(widget.places.lat, widget.places.lng, double.parse(lat), double.parse(lon));
     return (distanceInMeters <= double.parse(range))? true : false;
   }
 }

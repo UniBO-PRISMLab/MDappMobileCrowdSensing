@@ -1,9 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
-import 'package:mobile_crowd_sensing/models/db_capaign_model.dart';
-import 'package:mobile_crowd_sensing/models/search_places_model.dart';
 import 'package:mobile_crowd_sensing/models/session_model.dart';
-import 'package:mobile_crowd_sensing/services/services_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -31,12 +28,12 @@ class LoginMetamaskModel {
               '+++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n');
         }
 
-        if(!ServicesControllerV2.statusGeofencingService) {
+/*        if(!ServicesControllerV2.statusGeofencingService) {
           print('\x1B[31m [GEOFENCE SERVICE] INITIALIZE AFTER LOGIN\x1B[0m');
           SearchPlacesModel search = SearchPlacesModel();
           await search.getPermissions();
           ServicesControllerV2.initializeGeofencingService();
-        }
+        }*/
 
         if(!ServicesControllerV2.statusCloseCampaignService) {
           print('\x1B[31m [CLOSED CAMPAIGN SERVICE] INITIALIZE AFTER LOGIN\x1B[0m');

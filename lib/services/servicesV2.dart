@@ -11,30 +11,17 @@ import 'package:web3dart/web3dart.dart';
 import '../models/db_capaign_model.dart';
 import 'dart:async';
 import 'dart:ui';
-import 'package:geofence_flutter/geofence_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service_android/flutter_background_service_android.dart';
 
+import '../models/geofence_model.dart';
 
 class ServicesV2 {
-
-  static Future<bool> onIosBackground(ServiceInstance service) async {
-    WidgetsFlutterBinding.ensureInitialized();
+  static void onStart(ServiceInstance service) async {
     DartPluginRegistrant.ensureInitialized();
 
     SharedPreferences preferences = await SharedPreferences.getInstance();
     await preferences.reload();
-    final log = preferences.getStringList('log') ?? <String>[];
-    log.add(DateTime.now().toIso8601String());
-    await preferences.setStringList('log', log);
-
-    return true;
-  }
-
-  static void checkCloseCampaign(ServiceInstance service) async {
-    DartPluginRegistrant.ensureInitialized();
-
-    SharedPreferences preferences = await SharedPreferences.getInstance();
 
     if (service is AndroidServiceInstance) {
       service.on('setAsForeground').listen((event) {
@@ -54,15 +41,12 @@ class ServicesV2 {
     List<Campaign> res = [];
     String accountAddress = preferences.getString('address')!;
 
+    List<Geofence> geoList = [];
+
     final FlutterLocalNotificationsPlugin notification =
-    FlutterLocalNotificationsPlugin();
+        FlutterLocalNotificationsPlugin();
 
-    await notification
-        .resolvePlatformSpecificImplementation<
-        AndroidFlutterLocalNotificationsPlugin>()
-        ?.createNotificationChannel(NotificationChannel.importantChannel_2);
-
-    Timer.periodic(const Duration(seconds: 60), (timer) async {
+    Timer.periodic(const Duration(minutes: 1), (timer) async {
       ServicesControllerV2.statusCloseCampaignService = true;
       res = await db.campaigns();
       if (res.isNotEmpty) {
@@ -77,7 +61,7 @@ class ServicesV2 {
               accountAddress: accountAddress);
 
           List<dynamic>? isClosedRaw =
-          await smartContract.queryCall('isClosed', []);
+              await smartContract.queryCall('isClosed', []);
 
           if (isClosedRaw != null) {
             String answer = isClosedRaw[0].toString();
@@ -92,10 +76,10 @@ class ServicesV2 {
                 999,
                 'Campaign Closed',
                 'The campaign [$title] \nat address $address \n was closed by crowdsourcer',
-                 NotificationDetails(
+                NotificationDetails(
                   android: AndroidNotificationDetails(
-                    NotificationChannel.importantChannel_2.id,
-                    NotificationChannel.importantChannel_2.name,
+                    'geofence_channel',
+                    NotificationChannel.backgroundServiceChannel.name,
                     icon: 'ic_bg_service_small',
                     ongoing: false,
                   ),
@@ -116,10 +100,22 @@ class ServicesV2 {
             }
           }
         }
+
+        //.....
+        geoList.forEach((element) {element.stopGeofenceService();});
+        geoList.clear();
+        for (Campaign c in res) {
+          Geofence g = Geofence(c.title, c.address, c.lat, c.lng, "20");//c.radius);
+            geoList.add(g);
+            g.initialize();
+        }
+        print('\x1B[31m [GEOFENCE SERVICE] active geofences: ${geoList.length}. \x1B[0m');
       } else {
         ServicesControllerV2.statusCloseCampaignService = false;
         timer.cancel();
-        service.invoke('stopService');
+        geoList.forEach((element) {element.stopGeofenceService();});
+        geoList.clear();
+        service.stopSelf();
         if (kDebugMode) {
           print(
               '\x1B[31m [CLOSED CAMPAIGN SERVICE] No campaigns to follow. stop the service.\x1B[0m');
@@ -128,132 +124,17 @@ class ServicesV2 {
     });
   }
 
-  static void checkGeofence(ServiceInstance service) async {
-
+  static Future<bool> onIosBackground(ServiceInstance service) async {
+    WidgetsFlutterBinding.ensureInitialized();
     DartPluginRegistrant.ensureInitialized();
 
     SharedPreferences preferences = await SharedPreferences.getInstance();
+    await preferences.reload();
+    final log = preferences.getStringList('log') ?? <String>[];
+    log.add(DateTime.now().toIso8601String());
+    await preferences.setStringList('log', log);
 
-    if (service is AndroidServiceInstance) {
-      service.on('setAsForeground').listen((event) {
-        service.setAsForegroundService();
-      });
-
-      service.on('setAsBackground').listen((event) {
-        service.setAsBackgroundService();
-      });
-    }
-
-    service.on('stopService').listen((event) {
-      service.stopSelf();
-    });
-
-    String debugString = "[GEOFENCE ${preferences.getString("title")!}";
-
-    final FlutterLocalNotificationsPlugin notification =
-        FlutterLocalNotificationsPlugin();
-
-    await notification
-        .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
-        ?.createNotificationChannel(NotificationChannel.importantChannel);
-
-    if (kDebugMode) {
-      print('\x1B[31m [GEOFENCE SERVICE] geofence open for:'
-          '\n ${preferences.getString('title')!}'
-          '\n ${preferences.getString('address')!}'
-          '\n ${preferences.getString('lat')!} '
-          '\n ${preferences.getString('lng')!} \x1B[0m');
-    }
-
-    await Geofence.startGeofenceService(
-        pointedLatitude: preferences.getString('lat')!,
-        pointedLongitude: preferences.getString('lng')!,
-        radiusMeter: preferences.getString('radius')!,
-        eventPeriodInSeconds: 10);
-
-    GeofenceEvent? previous;
-
-    Geofence.getGeofenceStream()?.listen((GeofenceEvent event) {
-      if (kDebugMode) {
-        print(event.toString());
-      }
-
-      if (previous == null || previous == GeofenceEvent.init) {
-        switch (event) {
-          case GeofenceEvent.enter:
-            previous = event;
-            break;
-          case GeofenceEvent.exit:
-            previous = event;
-            break;
-          default:
-            previous = event;
-            break;
-        }
-      }
-
-      switch (event) {
-        case GeofenceEvent.init:
-          if (kDebugMode) {
-            print('\x1B[31m $debugString status: Init\x1B[0m');
-          }
-          previous = event;
-          break;
-        case GeofenceEvent.enter:
-          if (kDebugMode) {
-            print('\x1B[31m $debugString status: Enter\x1B[0m');
-          }
-          (previous != event)
-              ? notification.show(
-                  888,
-                  'Entered in Campaign Area',
-                  '[${preferences.getString('title')!}] \nat address: ${preferences.getString('address')!}',
-                  const NotificationDetails(
-                    android: AndroidNotificationDetails(
-                      'important_channel',
-                      'MY FOREGROUND SERVICE',
-                      icon: 'ic_bg_service_small',
-                      styleInformation: BigTextStyleInformation(
-                          "<h1>String bigText</h1><p>sisisisisisisisisi</p>",
-                          htmlFormatBigText: true,
-                          contentTitle: "<h1> this is title </h1>",
-                          htmlFormatContentTitle: true,
-                          summaryText: "<p>this is the summary text</p>",
-                          htmlFormatSummaryText: true,
-                          htmlFormatContent : true,
-                          htmlFormatTitle : true
-                      ),
-                      ongoing: true,
-                    ),
-                  ),
-                )
-              : print('\x1B[31m $debugString status not changed \x1B[0m');
-          previous = event;
-          break;
-        case GeofenceEvent.exit:
-          if (kDebugMode) {
-            print('\x1B[31m $debugString status: Exit\x1B[0m');
-          }
-          (previous != event)
-              ? notification.show(
-                  888,
-                  'Exit from Campaign Area',
-                  '[${preferences.getString('title')!}] \nat address: ${preferences.getString('address')!}',
-                  NotificationDetails(
-                    android: AndroidNotificationDetails(
-                      NotificationChannel.importantChannel.id,
-                      NotificationChannel.importantChannel.name,
-                      icon: 'ic_bg_service_small',
-                      ongoing: true,
-                    ),
-                  ))
-              : print('\x1B[31m $debugString status not changed \x1B[0m');
-          previous = event;
-
-          break;
-      }
-    });
+    return true;
   }
 }
 
