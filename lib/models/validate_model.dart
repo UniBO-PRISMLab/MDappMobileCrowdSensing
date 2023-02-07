@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:mobile_crowd_sensing/models/search_places_model.dart';
 import 'package:mobile_crowd_sensing/models/session_model.dart';
 import 'package:mobile_crowd_sensing/models/smart_contract_model.dart';
 import 'ipfs_client_model.dart';
@@ -18,12 +19,36 @@ class ValidateModel {
 
   static Future<Stream<FileSystemEntity>?> downloadPhotosFiles(
       hashToDownload) async {
-    Stream<FileSystemEntity>? res =
-        await IpfsClientModel.downloadDirectoryIPFS(hashToDownload, 'photos');
+    Stream<FileSystemEntity>? res = await IpfsClientModel.downloadDirectoryIPFS(hashToDownload, 'photos');
+    return res;
+  }
+
+  static Future<List<dynamic>> getFileData(
+      String ipfsHash, String contractAddress) async {
+    SessionModel sessionData = SessionModel();
+    SearchPlacesModel searchPlacesViewModel = SearchPlacesModel();
+
+    List<dynamic> out = [];
+
+    SmartContractModel smartContractViewModel = SmartContractModel(
+        contractAddress: contractAddress,
+        abiName: 'Campaign',
+        abiFileRoot: 'assets/abi_campaign.json',
+        provider: sessionData.getProvider());
+    List<dynamic>? res =
+        await smartContractViewModel.queryCall('files', [ipfsHash]);
+
     if (res != null) {
-      return res;
+      out = res;
+      print("DEB: ${res.toString()}");
+      out.add(
+          (await searchPlacesViewModel.getReadebleLocationFromLatLng(
+              (double.parse(res[5].toString())) / 10000000,
+              (double.parse(res[6].toString())) / 10000000))
+              .toString()
+              .replaceAll(RegExp(r'[^\w\s]+'), ''));
     }
-    return null;
+    return out;
   }
 
   static Future<bool> approveOrNot(contractAddress, hash, bool status) async {

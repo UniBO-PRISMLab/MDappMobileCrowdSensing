@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:mobile_crowd_sensing/models/verifier_campaign_model.dart';
+import 'package:mobile_crowd_sensing/models/campaign_list_model.dart';
 import 'package:numberpicker/numberpicker.dart';
 import '../models/db_capaign_model.dart';
 import '../utils/styles.dart';
@@ -23,7 +23,7 @@ class CampaignListController extends StatefulWidget {
 class _CampaignListControllerState
     extends State<CampaignListController> {
   Future<dynamic> futureGetData() {
-    return VerifierCampaignModel.getData(widget.contractsAddresses)!;
+    return CampaignListModel.getData(widget.contractsAddresses);
   }
 
   Future<dynamic> futureGetPosition() async {
@@ -84,7 +84,8 @@ class _CampaignListControllerState
                           fileCount,
                           contractAddress,
                           readebleLocation,
-                          isSubscribed;
+                          isSubscribed,
+                          balance;
                       if (current != null && _isToShow(current)) {
                         name = current[0];
                         lat = (int.parse(current[1].toString()) / 10000000)
@@ -98,6 +99,7 @@ class _CampaignListControllerState
                         contractAddress = current[7].toString();
                         readebleLocation = current[8];
                         isSubscribed = current[9];
+                        balance = "${current[10].toString()} wei";
                         return GestureDetector(
                           onTap: () {
 
@@ -132,6 +134,7 @@ class _CampaignListControllerState
                               type!,
                               fileCount,
                               crowdsourcer,
+                              balance,
                               readebleLocation!),
                         );
                       } else {
@@ -162,6 +165,7 @@ class _CampaignListControllerState
       String type,
       String fileCount,
       String crowdsourcer,
+      String balance,
       String readebleLocation) {
     return Card(
       shadowColor: Colors.blue[600],
@@ -233,7 +237,7 @@ class _CampaignListControllerState
                   ]),
                   Row(children: <Widget>[
                     Text(
-                      "Range: $range",
+                      "Range: $range m",
                       style: CustomTextStyle.spaceMono(context),
                     ),
                   ]),
@@ -260,6 +264,12 @@ class _CampaignListControllerState
                       ],
                     ),
                   ),
+                  Row(children: <Widget>[
+                    Text(
+                      "Balance: $balance",
+                      style: CustomTextStyle.spaceMono(context),
+                    ),
+                  ]),
                   Row(children: <Widget>[
                     Text(
                       "fileCount: $fileCount",
@@ -337,7 +347,7 @@ class _CampaignListControllerState
             widget.places.lat,
             widget.places.lng);
         if (kDebugMode) {
-          print("BEBUG::::::::::::::::: $distance");
+          print("DEBUG::::::::::::::::: [${double.parse(data[1].toString()) / 10000000},${double.parse(data[2].toString()) / 10000000}] e [${widget.places.lat},${widget.places.lng}] => $distance");
         }
         return (distance <= (_currentIntValue)) ? true : false;
       default:
@@ -347,7 +357,7 @@ class _CampaignListControllerState
 
   bool _checkIfDeviceIsInArea(String lat, String lon, String range) {
     widget.places.updateLocalPosition();
-    dynamic distance = DistanceController.distanceBetween(widget.places.lat, widget.places.lng, double.parse(lat), double.parse(lon));
-    return (distance <= double.parse(range))? true : false;
+    dynamic distanceInMeters = DistanceController.distanceBetween(widget.places.lat, widget.places.lng, double.parse(lat), double.parse(lon))*1000;
+    return (distanceInMeters <= double.parse(range))? true : false;
   }
 }

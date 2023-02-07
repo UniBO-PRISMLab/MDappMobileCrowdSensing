@@ -28,8 +28,9 @@ class _CampaignDataPhotoControllerState
       for (dynamic i in res) {
         Stream<FileSystemEntity>? res = await ValidateModel.downloadPhotosFiles(i[4].toString());
         if (res != null) {
-          res.forEach((element) {
-            pictures.add(File(element.path));
+          res.forEach((element) async {
+            File f = File(element.path);
+            pictures.add(await f.create());
           });
         }
       }

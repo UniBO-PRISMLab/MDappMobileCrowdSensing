@@ -7,6 +7,8 @@ import 'package:mobile_crowd_sensing/services/services_controller.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
+import '../services/services_controllerV2.dart';
+
 class LoginMetamaskModel {
 
   static Future<void> loginUsingMetamask(BuildContext context) async {
@@ -29,16 +31,16 @@ class LoginMetamaskModel {
               '+++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n');
         }
 
-        if(!ServicesController.statusGeofencingService) {
+        if(!ServicesControllerV2.statusGeofencingService) {
           print('\x1B[31m [GEOFENCE SERVICE] INITIALIZE AFTER LOGIN\x1B[0m');
           SearchPlacesModel search = SearchPlacesModel();
           await search.getPermissions();
-          ServicesController.initializeGeofencingService();
+          ServicesControllerV2.initializeGeofencingService();
         }
 
-        if(!ServicesController.statusCloseCampaignService) {
+        if(!ServicesControllerV2.statusCloseCampaignService) {
           print('\x1B[31m [CLOSED CAMPAIGN SERVICE] INITIALIZE AFTER LOGIN\x1B[0m');
-          ServicesController.initializeCloseCampaignService();
+          ServicesControllerV2.initializeCloseCampaignService();
         }
 
       } catch (exp) {

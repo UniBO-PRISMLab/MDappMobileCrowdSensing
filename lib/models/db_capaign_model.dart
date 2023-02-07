@@ -3,6 +3,8 @@ import 'package:mobile_crowd_sensing/services/services_controller.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
+import '../services/services_controllerV2.dart';
+
 class DbCampaignModel {
 
   static final DbCampaignModel _instance = DbCampaignModel._internal();
@@ -42,8 +44,7 @@ class DbCampaignModel {
       cmp.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
-
-    ServicesController.resetServicies();
+    ServicesControllerV2.resetServicies();
   }
 
   Future<List<Campaign>> campaigns() async {
@@ -78,7 +79,7 @@ class DbCampaignModel {
       where: 'address = ?',
       whereArgs: [address],
     );
-    ServicesController.resetServicies();
+    ServicesControllerV2.resetServicies();
   }
 }
 

@@ -19,7 +19,7 @@ class SearchPlacesModel {
     lat = position.latitude;
     address = await getReadebleLocationFromLatLng(lat,lng);
     if (kDebugMode) {
-      print("__________________________________________________________________________POSITION: \n[lat]$lat\n[lng]$lng");
+      print("\n[DEVICE POSITION]: \n[lat]$lat\n[lng]$lng\n");
     }
   }
 

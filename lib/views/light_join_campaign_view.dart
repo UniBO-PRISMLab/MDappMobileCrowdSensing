@@ -94,7 +94,7 @@ class LightJoinCampaignViewState extends State<LightJoinCampaignView> {
                           style: CustomTextStyle.merriweatherBold(context),
                         ),
                         Text(
-                          '${campaignSelectedData['range']}',
+                          '${campaignSelectedData['range']} m',
                           style: CustomTextStyle.inconsolata(context),
                         ),
                       ],

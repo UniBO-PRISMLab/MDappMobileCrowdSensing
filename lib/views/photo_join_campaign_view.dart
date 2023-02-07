@@ -97,7 +97,7 @@ class PhotoJoinCampaignViewState extends State<PhotoJoinCampaignView> {
                             style: CustomTextStyle.spaceMonoBold(context),
                           ),
                           Text(
-                            '${campaignSelectedData['range']}',
+                            '${campaignSelectedData['range']} m',
                             style: CustomTextStyle.inconsolata(context),
                           ),
                         ],

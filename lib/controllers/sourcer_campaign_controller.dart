@@ -117,7 +117,7 @@ class _SourcerCampaignControllerState extends State<SourcerCampaignController> {
                             (range.isEmpty)
                                 ? GlobalText.loadingText(context)
                                 : Text(
-                                    "Range: $range",
+                                    "Range: $range m",
                                     style: CustomTextStyle.spaceMono(context),
                                   ),
                           ]),

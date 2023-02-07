@@ -21,20 +21,18 @@ class ValidatePhotoState extends State<ValidatePhotoController> {
 
   bool downloadGate = true;
   late List<File> pictures = [];
-
+  late List<dynamic> fileData = [];
   Future<dynamic>? _prepareData() async {
     if (mounted) {
       pictures.clear();
       Stream<FileSystemEntity>? res = await ValidateModel.downloadPhotosFiles(
           campaignSelectedData['ipfsHash']);
       if (res != null) {
-        res.forEach((element) {
-          pictures.add(File(element.path));
+        res.forEach((FileSystemEntity element) async {
+          File f = File(element.path);
+          pictures.add(await f.create());
         });
-        downloadGate = !downloadGate;
-        if (kDebugMode) {
-          print("PREPARING DATA: ${pictures.length}");
-        }
+        fileData = await ValidateModel.getFileData(campaignSelectedData['ipfsHash'],campaignSelectedData['contractAddress']);
       }
     }
   }
@@ -90,7 +88,39 @@ class ValidatePhotoState extends State<ValidatePhotoController> {
                       '${campaignSelectedData['ipfsHash']}',
                       style: CustomTextStyle.inconsolata(context),
                     ),
-                  )
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  Column(
+                    children:[
+                      Text(
+                          'This data was taken in',
+                          style: CustomTextStyle.spaceMonoBold(context)),
+                      Row(children: [
+                        Text(
+                            'Latitude: ',
+                            style: CustomTextStyle.spaceMonoBold(context)),
+                        Text(
+                          '${(int.parse(fileData[5].toString()) / 10000000)}',
+                          style: CustomTextStyle.inconsolata(context),)
+                      ],),
+                      Row(children: [
+                        Text(
+                            'Longitude: ',
+                            style: CustomTextStyle.spaceMonoBold(context)),
+                        Text(
+                          '${(int.parse(fileData[6].toString()) / 10000000)}',
+                          style: CustomTextStyle.inconsolata(context),)
+                      ],),
+                      Text(
+                          'Address: ',
+                          style: CustomTextStyle.spaceMonoBold(context)),
+                      Text(
+                      '${fileData[7]}',
+                      style: CustomTextStyle.inconsolata(context),
+                    ),
+                  ])
                 ],
               ),
               Padding(

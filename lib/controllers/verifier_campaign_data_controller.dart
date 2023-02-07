@@ -92,7 +92,7 @@ class _VerifierCampaignDataPhotoController
             style: CustomTextStyle.spaceMonoBold(context),
           ),
           Text(
-            range,
+            "$range m",
             style: CustomTextStyle.spaceMono(context),
           ),
           Text(

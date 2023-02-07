@@ -108,7 +108,7 @@ class _SourcerClosedCampaignControllerState extends State<SourcerClosedCampaignC
                                 Row(children: <Widget>[
                                   (range.length != widget.contractAddress!.length) ? GlobalText.loadingText(context)
                                       : Text(
-                                    "Range: ${range[index]}",
+                                    "Range: ${range[index]} m",
                                     style: CustomTextStyle.spaceMono(context),
                                   ),
                                 ]),
