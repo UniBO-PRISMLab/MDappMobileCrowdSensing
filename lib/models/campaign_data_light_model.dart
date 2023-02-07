@@ -7,11 +7,12 @@ class CampaignDataLightModel {
 
   static Future<List<LightData>> preparePage(String campaignAddress) async {
     List<LightData> contents = [];
+    SessionModel session = SessionModel();
     late SmartContractModel smartContract = SmartContractModel(
         contractAddress: campaignAddress,
         abiName: 'Campaign',
         abiFileRoot: 'assets/abi_campaign.json',
-        provider:  SessionModel().getProvider());
+        provider:  session.getProvider());
 
     List<dynamic>? allfilesPathRes =
     await smartContract.queryCall('getValidFiles', []);

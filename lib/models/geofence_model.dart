@@ -93,7 +93,7 @@ class Geofence {
                     htmlFormatSummaryText: true,
                     htmlFormatContent: true,
                     htmlFormatTitle: true),
-                ongoing: false,
+                ongoing: true,
               ),
             ),
           )
@@ -123,7 +123,7 @@ class Geofence {
                       htmlFormatSummaryText: true,
                       htmlFormatContent: true,
                       htmlFormatTitle: true),
-                  ongoing: false,
+                  ongoing: true,
                 ),
               ))
               : print('\x1B[31m $debugString status not changed \x1B[0m');

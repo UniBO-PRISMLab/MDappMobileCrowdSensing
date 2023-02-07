@@ -133,8 +133,8 @@ class _CreateCampaignFormControllerState
                           style: CustomTextStyle.spaceMono(context),
                         ),
                         Slider(
-                          min: 1000,
-                          max: 10000000,
+                          min: 0,
+                          max: 1000000000,
                           divisions: 100,
                           label: "${_howMuch.toInt()} wei",
                           activeColor: CustomColors.blue900(context),

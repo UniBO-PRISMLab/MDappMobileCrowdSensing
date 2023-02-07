@@ -12,6 +12,8 @@ class ClaimCampaignController extends StatefulWidget {
 }
 
 class _ClaimCampaignControllerState extends State<ClaimCampaignController> {
+  SessionModel session = SessionModel();
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -40,16 +42,15 @@ class _ClaimCampaignControllerState extends State<ClaimCampaignController> {
   }
 
   Future<List<dynamic>> _getClaimData() async {
+
     SmartContractModel smartContractViewModel = SmartContractModel(
         contractAddress: FlutterConfig.get('MCSfactory_CONTRACT_ADDRESS'),
         abiName: 'MCSfactory',
         abiFileRoot: 'assets/abi.json',
-        provider: SessionModel().getProvider());
+        provider: session.getProvider());
     List<dynamic>? res =
     await smartContractViewModel.queryCall('getCampaignsToClaim', []);
-    print("DEBUG::::::: res : ${res.toString()}");
     if (res != null) {
-      print("DEBUGG---- " + res[0].toString());
       return res[0];
     }
     return [];
@@ -88,7 +89,7 @@ class _ClaimCampaignControllerState extends State<ClaimCampaignController> {
                                     contractAddress: address,
                                     abiName: 'Campaign',
                                     abiFileRoot: 'assets/abi_campaign.json',
-                                    provider: SessionModel().getProvider());
+                                    provider: session.getProvider());
                                 dynamic res = await smartContractViewModel.queryTransaction("withdrawCredits", [], null);
                                 print("DEBUG::::::: res : ${res.toString()}");
                                 if (res.toString() != "null" &&

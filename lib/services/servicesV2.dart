@@ -78,10 +78,19 @@ class ServicesV2 {
                 'The campaign [$title] \nat address $address \n was closed by crowdsourcer',
                 NotificationDetails(
                   android: AndroidNotificationDetails(
-                    'geofence_channel',
+                    NotificationChannel.backgroundServiceChannel.id,
                     NotificationChannel.backgroundServiceChannel.name,
                     icon: 'ic_bg_service_small',
-                    ongoing: false,
+                    styleInformation: BigTextStyleInformation(
+                        "<p>The campaign \"$title\" \n campaign at address: \n$address \n was closed by the crowdsoucer</p>",
+                        htmlFormatBigText: true,
+                        contentTitle: "<h1>CLOSED \"$title\"</h1>",
+                        htmlFormatContentTitle: true,
+                        summaryText: "<p>this campaign is now closed</p>",
+                        htmlFormatSummaryText: true,
+                        htmlFormatContent: true,
+                        htmlFormatTitle: true),
+                    ongoing: true,
                   ),
                 ),
               );
@@ -105,7 +114,7 @@ class ServicesV2 {
         geoList.forEach((element) {element.stopGeofenceService();});
         geoList.clear();
         for (Campaign c in res) {
-          Geofence g = Geofence(c.title, c.address, c.lat, c.lng, "20");//c.radius);
+          Geofence g = Geofence(c.title, c.address, c.lat, c.lng, c.radius);
             geoList.add(g);
             g.initialize();
         }
