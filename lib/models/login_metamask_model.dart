@@ -3,21 +3,29 @@ import 'package:flutter/foundation.dart';
 import 'package:mobile_crowd_sensing/models/session_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+import 'package:walletconnect_dart/walletconnect_dart.dart';
 
 import '../services/services_controllerV2.dart';
+import 'db_session_model.dart';
 
 class LoginMetamaskModel {
 
   static Future<void> loginUsingMetamask(BuildContext context) async {
     SessionModel sessionData = SessionModel();
-    sessionData.checkConnection();
+
     if (!sessionData.connector.connected) {
       try {
-        await sessionData.connector.createSession(
+        SessionStatus newSession = await sessionData.connector.createSession(
             onDisplayUri: (uri) async {
               sessionData.uri = uri;
               await launchUrlString(uri, mode: LaunchMode.externalApplication);
+
             });
+
+        DbSessionModel sessionDb = DbSessionModel();
+        await sessionDb.deleteAll();
+        await sessionDb.insertSession(Session(account: newSession.accounts[0], chainId: newSession.chainId));
+        
         SharedPreferences shared = await SharedPreferences.getInstance();
         shared.setString('address', sessionData.getAccountAddress());
         if (kDebugMode) {

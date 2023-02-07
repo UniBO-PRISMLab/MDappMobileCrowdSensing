@@ -27,7 +27,7 @@ class SmartContractModel extends CustomTransactionSender{
     SessionModel session = SessionModel();
     try {
       //SessionModel().checkConnection();
-      int nonce = await SessionModel().ethClient.getTransactionCount(EthereumAddress.fromHex(session.getAccountAddress()));
+      int nonce = await session.ethClient.getTransactionCount(EthereumAddress.fromHex(session.getAccountAddress()));
       final contract = await loadContract(contractAddress);
       final ethFunction = contract.function(functionName);
       Transaction transaction = Transaction.callContract(

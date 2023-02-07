@@ -3,6 +3,8 @@ import 'package:web3dart/web3dart.dart';
 import 'package:flutter_config/flutter_config.dart';
 import 'package:http/http.dart' as http;
 
+import 'db_session_model.dart';
+
 class SessionModel {
 
   static final SessionModel _instance = SessionModel._internal();
@@ -12,6 +14,7 @@ class SessionModel {
   late http.Client httpClient;
   late Web3Client ethClient;
   late EthereumWalletConnectProvider provider;
+  final DbSessionModel dbSession = DbSessionModel();
 
   factory SessionModel() {
     return _instance;
@@ -32,6 +35,39 @@ class SessionModel {
         )
     );
     provider = EthereumWalletConnectProvider(connector);
+
+    connector.on('connect', (session) => {
+      print('\x1B[31m[checkConnection ON]\x1B[0m:connect'),
+      reconnect()
+    });
+    connector.on('session_update', (WCSessionUpdateResponse payload) async => {
+      print('\x1B[31m[checkConnection ON]\x1B[0m:session_update'),
+      connector.updateSession(SessionStatus(chainId: payload.chainId, accounts: payload.accounts)),
+      await dbSession.updateSession(Session(account: payload.accounts[0], chainId: payload.chainId))
+    });
+    connector.on('disconnect', (payload) => {
+      print('\x1B[31m[checkConnection ON]\x1B[0m:disconnect'),
+      closeConnection()
+    });
+
+    
+    connector.registerListeners(
+        onConnect: (SessionStatus payload) {
+          print('\x1B[31m[checkConnection]\x1B[0m:connect');
+          connector.session.accounts = payload.accounts;
+          connector.session.chainId = payload.chainId;
+        },
+        onSessionUpdate: (WCSessionUpdateResponse res) async {
+          print('\x1B[31m[checkConnection]\x1B[0m:session_update');
+          connector.session.chainId = res.chainId;
+          connector.session.accounts = res.accounts;
+          await dbSession.updateSession(Session(account: res.accounts[0], chainId: res.chainId));
+        },
+        onDisconnect: () async {
+          print('\x1B[31m[checkConnection]\x1B[0m:disconnect');
+          await dbSession.deleteAll();
+        }
+    );
     return provider;
   }
 
@@ -47,7 +83,7 @@ class SessionModel {
     return connector.session.accounts[0];
   }
 
-  Future<void> checkConnection() async {
+ /* Future<void> checkConnection() async {
     connector.on('connect', (session) => {
       print('\x1B[31m[checkConnection]\x1B[0m:connect'),
       reconnect()
@@ -55,13 +91,13 @@ class SessionModel {
     connector.on('session_update', (WCSessionUpdateResponse payload) async => {
       print('\x1B[31m[checkConnection]\x1B[0m:session_update'),
       connector.updateSession(SessionStatus(chainId: payload.chainId, accounts: payload.accounts)),
-      print("\n DEBUG DEL PAYLOAD:  ${payload.toString()}"),
+      await dbSession.updateSession(Session(account: payload.accounts[0], chainId: payload.chainId))
     });
     connector.on('disconnect', (payload) => {
       print('\x1B[31m[checkConnection]\x1B[0m:disconnect'),
       closeConnection()
     });
-  }
+  }*/
 
   void reconnect(){
     print('\x1B[31m[Connection reconnected]\x1B[0m:connect');

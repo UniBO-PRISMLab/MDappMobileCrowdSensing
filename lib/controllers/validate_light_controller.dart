@@ -22,7 +22,7 @@ class ValidateLightControllerState extends State<ValidateLightController> {
   bool activeSensor = false, sensorGate = false, downloadGate = false;
 
   double sum = 0, averageRelevation = 0;
-  late String? hash, time, relevation;
+  late String? hash = "Loading...", time = "Loading...", relevation = "Loading...";
   late List? data;
   List<double> lights = [];
 

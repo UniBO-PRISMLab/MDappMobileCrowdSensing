@@ -3,6 +3,7 @@ import 'package:flutter_config/flutter_config.dart';
 import 'package:mobile_crowd_sensing/models/session_model.dart';
 import '../models/smart_contract_model.dart';
 import '../utils/styles.dart';
+import '../views/login_view.dart';
 
 class ClaimCampaignController extends StatefulWidget {
   const ClaimCampaignController({Key? key}) : super(key: key);
@@ -16,6 +17,7 @@ class _ClaimCampaignControllerState extends State<ClaimCampaignController> {
 
   @override
   Widget build(BuildContext context) {
+
     return FutureBuilder(
         future: _getClaimData(),
         builder: (BuildContext context,

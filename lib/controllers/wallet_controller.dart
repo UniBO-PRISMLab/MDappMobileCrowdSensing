@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_config/flutter_config.dart';
 import 'package:mobile_crowd_sensing/models/session_model.dart';
+import 'package:mobile_crowd_sensing/views/login_view.dart';
 import '../models/smart_contract_model.dart';
 import '../models/wallet_model.dart';
 import '../utils/styles.dart';

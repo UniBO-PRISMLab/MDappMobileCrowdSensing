@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:mobile_crowd_sensing/views/sourcer_view.dart';
 import 'package:mobile_crowd_sensing/views/wallet_view.dart';
+import '../models/search_places_model.dart';
 import '../utils/styles.dart';
 import 'all_campaign_view.dart';
 
@@ -21,12 +23,16 @@ class _HomeViewState extends State<HomeView> {
   }
 
   Widget _renderThis() {
+    SearchPlacesModel p = SearchPlacesModel();
+
     switch (_selectedIndex){
       case 1:
         return const SourcerView();
       case 2:
+        p.getPermissions();
         return const AllCampaignView(cameFrom: 'worker');
       case 3:
+        p.getPermissions();
         return const AllCampaignView(cameFrom: 'verifier');
       default:
         return const WalletView();
