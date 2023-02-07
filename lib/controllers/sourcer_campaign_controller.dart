@@ -137,7 +137,7 @@ class _SourcerCampaignControllerState extends State<SourcerCampaignController> {
             Flexible(
                 flex: 5,
                 child: Text(
-                  "Sourcing Status:\nuploaded $fileCount files\nchecked $fileChecked of $fileCount\nwhit the contribution of $workersCount workers",
+                  "Sourcing Status:\nuploaded $fileCount files\nchecked $fileChecked of $fileCount\nwith the contribution of $workersCount workers",
                   style: CustomTextStyle.spaceMono(context),
                 )),
             const SizedBox(
