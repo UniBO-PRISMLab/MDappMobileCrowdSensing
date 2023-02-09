@@ -15,6 +15,7 @@ class SearchPlacesController extends StatefulWidget {
 class _SearchPlacesControllerState extends State<SearchPlacesController> {
   final searchPlacesViewScaffoldKey = GlobalKey<ScaffoldState>();
   SearchPlacesModel searchPlacesData = SearchPlacesModel();
+
   Widget _buildPage() {
     return Stack(children: [
       OpenStreetMapSearchAndPick(
@@ -23,9 +24,9 @@ class _SearchPlacesControllerState extends State<SearchPlacesController> {
           buttonText: 'Set Current Location',
           onPicked: (pickedData) {
             if (kDebugMode) {
-              print(pickedData.latLong.latitude);
-              print(pickedData.latLong.longitude);
-              print(pickedData.address);
+              searchPlacesData.lat = pickedData.latLong.latitude;
+              searchPlacesData.lng = pickedData.latLong.longitude;
+              searchPlacesData.address = pickedData.address;
             }
           })
     ]);
@@ -38,7 +39,7 @@ class _SearchPlacesControllerState extends State<SearchPlacesController> {
         Navigator.pop(context, searchPlacesData);
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text(
-              'Data position taken',
+              'Data position taken:\n ${searchPlacesData.address}',
               style: CustomTextStyle.spaceMonoWhite(context),
             )));
         return false;

@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_config/flutter_config.dart';
 import 'package:mobile_crowd_sensing/models/search_places_model.dart';
 import 'package:mobile_crowd_sensing/models/smart_contract_model.dart';
-import 'package:web3dart/credentials.dart';
 import 'session_model.dart';
 
 class MyCampaignModel {
@@ -10,10 +9,9 @@ class MyCampaignModel {
   static Future<List?> getMyCampaign() async {
     try {
       SessionModel sessionData = SessionModel();
-      String sourcerAddress = sessionData.getAccountAddress();
       SmartContractModel smartContractViewModel = SmartContractModel(contractAddress:FlutterConfig.get('MCSfactory_CONTRACT_ADDRESS'),abiName: 'MCSfactory',abiFileRoot: 'assets/abi.json', provider: sessionData.getProvider());
-      EthereumAddress address = EthereumAddress.fromHex(sourcerAddress);
-      return await smartContractViewModel.queryCall('activeCampaigns',[address]);
+      List<dynamic>? res = await smartContractViewModel.queryCall('getActiveCampaign',[]);
+      return res;
     } catch (error) {
       if (kDebugMode) {
         print('\x1B[31m$error\x1B[0m');

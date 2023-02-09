@@ -43,6 +43,7 @@ class PhotoJoinCampaignViewState extends State<PhotoJoinCampaignView> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            const SizedBox(height: 20),
             Image.asset('assets/images/Circle-icons-camera.svg.png',
                 height: 150, fit: BoxFit.fill),
             Container(
@@ -69,17 +70,19 @@ class PhotoJoinCampaignViewState extends State<PhotoJoinCampaignView> {
                           ),
                         ],
                       ),
+                      Row(children: [
+                        Text(
+                          'Latitude: ',
+                          style: CustomTextStyle.spaceMonoBold(context),
+                        ),
+                        Text(
+                          '${campaignSelectedData['lat']}',
+                          style: CustomTextStyle.inconsolata(context),
+                        ),
+                      ]),
                       Row(
                         children: [
-                          Text(
-                            'Latitude: ',
-                            style: CustomTextStyle.spaceMonoBold(context),
-                          ),
-                          Text(
-                            '${campaignSelectedData['lat']}',
-                            style: CustomTextStyle.inconsolata(context),
-                          ),
-                          Text(' Longitude: ',
+                          Text('Longitude: ',
                               style: CustomTextStyle.spaceMonoBold(context)),
                           Text(
                             '${campaignSelectedData['lng']}',
@@ -94,7 +97,7 @@ class PhotoJoinCampaignViewState extends State<PhotoJoinCampaignView> {
                             style: CustomTextStyle.spaceMonoBold(context),
                           ),
                           Text(
-                            '${campaignSelectedData['range']}',
+                            '${campaignSelectedData['range']} m',
                             style: CustomTextStyle.inconsolata(context),
                           ),
                         ],
@@ -227,8 +230,8 @@ class PhotoJoinCampaignViewState extends State<PhotoJoinCampaignView> {
                                                 style: CustomTextStyle
                                                     .spaceMonoWhite(context),
                                               )));
-                                              Navigator.pushReplacementNamed(
-                                                  context, '/worker');
+                                              Navigator.of(context).pushNamedAndRemoveUntil(
+                                                  '/home', (Route<dynamic> route) => false);
                                             });
                                           } else {
                                             setState(() {

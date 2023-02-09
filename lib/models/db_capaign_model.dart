@@ -2,6 +2,8 @@ import 'dart:async';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
+import '../services/services_controllerV2.dart';
+
 class DbCampaignModel {
 
   static final DbCampaignModel _instance = DbCampaignModel._internal();
@@ -24,7 +26,8 @@ class DbCampaignModel {
                 'address TEXT PRIMARY KEY,'
                 ' title TEXT,'
                 ' lat TEXT,'
-                ' lng TEXT)',
+                ' lng TEXT,'
+                ' radius TEXT)',
           );
         },
         version: 1,
@@ -34,12 +37,12 @@ class DbCampaignModel {
 
   Future<void> insertCampaign(Campaign cmp) async {
     final db = await _initDb();
-    // `conflictAlgorithm` to use in case the same campaign is inserted twice.
     await db.insert(
       'campaign',
       cmp.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
+    ServicesControllerV2.resetServicies();
   }
 
   Future<List<Campaign>> campaigns() async {
@@ -48,10 +51,11 @@ class DbCampaignModel {
 
     return List.generate(maps.length, (i) {
       return Campaign(
-        address: maps[i]['address'],
         title: maps[i]['title'],
         lat: maps[i]['lat'],
         lng: maps[i]['lng'],
+        radius: maps[i]['radius'],
+        address: maps[i]['address'],
       );
     });
   }
@@ -73,31 +77,36 @@ class DbCampaignModel {
       where: 'address = ?',
       whereArgs: [address],
     );
+    ServicesControllerV2.resetServicies();
   }
 }
 
 class Campaign {
-  final String address, title, lat, lng;
+  final String address, title, lat, lng, radius;
 
-  const Campaign({
-    required this.address,
-    required this.title,
-    required this.lat,
-    required this.lng,
-  });
+  const Campaign(
+      {
+        required this.title,
+        required this.lat,
+        required this.lng,
+        required this.radius,
+        required this.address,
+      }
+  );
 
   Map<String, dynamic> toMap() {
     return {
       'address': address,
       'title': title,
       'lat': lat,
-      'lng': lng
+      'lng': lng,
+      'radius': radius,
     };
   }
 
   @override
   String toString() {
-    return 'Campaign{address: $address, name: $title, lat: $lat, lng: $lng}';
+    return 'Campaign{address: $address, name: $title, lat: $lat, lng: $lng, radius: $radius}';
   }
 
 }

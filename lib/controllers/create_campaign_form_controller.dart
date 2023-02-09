@@ -17,7 +17,7 @@ class _CreateCampaignFormControllerState
     extends State<CreateCampaignFormController> {
   final _formKey = GlobalKey<FormState>();
   String selectedValue = 'photo';
-  double _howMuch = 5;
+  double _howMuch = 1000;
   int _howFar = 100;
   final titleController = TextEditingController();
   String? address;
@@ -133,12 +133,12 @@ class _CreateCampaignFormControllerState
                           style: CustomTextStyle.spaceMono(context),
                         ),
                         Slider(
-                          min: 1.0,
-                          max: 10.0,
-                          divisions: 18,
+                          min: 0,
+                          max: 1000000000,
+                          divisions: 100,
+                          label: "${_howMuch.toInt()} wei",
                           activeColor: CustomColors.blue900(context),
                           value: _howMuch,
-                          label: _howMuch.toStringAsFixed(1),
                           onChanged: (newValue) {
                             setState(() {
                               _howMuch = newValue;
@@ -175,7 +175,7 @@ class _CreateCampaignFormControllerState
                         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             content: Text(
                           'Processing Data',
-                          style: CustomTextStyle.spaceMono(context),
+                          style: CustomTextStyle.spaceMonoWhite(context),
                         )));
                         String res = await CreateCampaignModel.createCampaign(
                             context,

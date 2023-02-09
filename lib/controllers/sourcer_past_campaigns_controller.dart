@@ -5,15 +5,15 @@ import '../views/dialog_view.dart';
 import '../views/sourcer_closed_campaign_view.dart';
 
 class SourcerPastCampaignsController extends StatefulWidget {
-
   const SourcerPastCampaignsController({super.key});
   @override
   // ignore: library_private_types_in_public_api
-  _SourcerPastCampaignsControllerState createState() => _SourcerPastCampaignsControllerState();
+  _SourcerPastCampaignsControllerState createState() =>
+      _SourcerPastCampaignsControllerState();
 }
 
-class _SourcerPastCampaignsControllerState extends State<SourcerPastCampaignsController> {
-
+class _SourcerPastCampaignsControllerState
+    extends State<SourcerPastCampaignsController> {
   @override
   void initState() {
     super.initState();
@@ -26,36 +26,29 @@ class _SourcerPastCampaignsControllerState extends State<SourcerPastCampaignsCon
   }
 
   _getData() async {
-    await SourcerPastCampaignsModel.getMyClosedCampaign(context).then((value) => {
-      _goTo(value)
-    });
-  }
-
-  _goTo(result){
-    if (result.isNotEmpty && result != null) {
-      setState(() {
-        Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) => SourcerClosedCampaignView(contractAddress: result,)));
-      });
-    } else {
-      setState(() {
-        Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (BuildContext context) => const DialogView(message: 'No Campaigns Available')));
-      });
-    }
+    await SourcerPastCampaignsModel.getMyClosedCampaign(context)
+        .then((result) => {
+              if (result != null)
+                {
+                  setState(() {
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => SourcerClosedCampaignView(
+                                  contractAddress: result,
+                                )));
+                  })
+                }
+              else
+                {
+                  setState(() {
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (BuildContext context) => const DialogView(
+                                message: 'No Campaigns Available')));
+                  })
+                }
+            });
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

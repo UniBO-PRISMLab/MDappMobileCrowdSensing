@@ -6,6 +6,8 @@ import 'package:walletconnect_dart/walletconnect_dart.dart';
 import 'package:web3dart/src/crypto/secp256k1.dart';
 import 'package:web3dart/web3dart.dart';
 
+import '../utils/nonce_manager.dart';
+
 class SmartContractModel extends CustomTransactionSender{
   SmartContractModel({required this.contractAddress, required this.abiName, required this.abiFileRoot, required this.provider});
   final EthereumWalletConnectProvider provider;
@@ -13,7 +15,6 @@ class SmartContractModel extends CustomTransactionSender{
   final String contractAddress;
   final String abiName;
   final String abiFileRoot;
-  SessionModel sessionData = SessionModel();
 
   Future<DeployedContract> loadContract(String contractAddress) async {
     String abi = await rootBundle.loadString(abiFileRoot);
@@ -23,17 +24,23 @@ class SmartContractModel extends CustomTransactionSender{
   }
 
   Future<dynamic> queryTransaction(String functionName, List<dynamic> args, BigInt? value) async {
+    SessionModel session = SessionModel();
     try {
+      int nonce = await session.ethClient.getTransactionCount(EthereumAddress.fromHex(session.getAccountAddress()));
       final contract = await loadContract(contractAddress);
       final ethFunction = contract.function(functionName);
-      final transaction = Transaction.callContract(
+      Transaction transaction = Transaction.callContract(
           contract: contract,
           function: ethFunction,
           parameters: args,
+          nonce: nonce,
           value: (value != null) ? EtherAmount.inWei(value) : null
       );
-      launchUrlString(sessionData.uri, mode: LaunchMode.externalApplication);
+      print('\x1B[31m nonce: $nonce gasPrice: ${transaction.gasPrice} maxGas: ${transaction.maxGas} uri: ${session.uri} \x1B[0m');
+
+      launchUrlString(session.uri, mode: LaunchMode.externalApplication);
       final txBytes = await sendTransaction(transaction);
+    print('\x1B[31m [SENDED TRANSACTION] $txBytes \x1B[0m');
       return txBytes;
     } catch (e) {
       if (kDebugMode) {
@@ -45,9 +52,22 @@ class SmartContractModel extends CustomTransactionSender{
 
   @override
   Future<String> sendTransaction(Transaction transaction) async {
+    SessionModel session = SessionModel();
+   /* print(
+        '\x1B[31m BIG providerDEBUG-[sendTransaction] '
+            '\nRPC URL (di solito vuoto): ${provider.connector.session.rpcUrl}'
+            '\naccounts: ${provider.connector.session.accounts.toString()}'
+            '\nKey: ${provider.connector.session.key}'
+            '\n PEER META: ${provider.connector.session.peerMeta?.toJson()}'
+            '\n Bridge: ${provider.connector.session.bridge}'
+            '\n PROTOCOL: ${provider.connector.session.protocol}'
+            '\n TO URI: ${provider.connector.session.toUri()}'
+
+            '\n\n\n TOJSON: ${provider.connector.session.toJson()}'
+            '\x1B[0m');*/
     try {
       final hash = await provider.sendTransaction(
-        from: sessionData.getAccountAddress(),
+        from: session.getAccountAddress(),
         to: transaction.to?.hex,
         data: transaction.data,
         gas: transaction.maxGas,
@@ -65,11 +85,12 @@ class SmartContractModel extends CustomTransactionSender{
   }
 
   Future<List<dynamic>?> queryCall(String functionName, List<dynamic> args) async {
+    SessionModel session = SessionModel();
     try {
       final contract = await loadContract(contractAddress);
       final ethFunction = contract.function(functionName);
-      final result = await sessionData.ethClient.call(
-          sender: EthereumAddress.fromHex(sessionData.getAccountAddress()),
+      final result = await session.ethClient.call(
+          sender: EthereumAddress.fromHex(session.getAccountAddress()),
           contract: contract,
           function: ethFunction,
           params: args);

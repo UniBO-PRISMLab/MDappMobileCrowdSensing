@@ -3,7 +3,7 @@ pragma solidity ^0.8.17;
 import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./MCSfactory.sol";
-
+import "@openzeppelin/contracts/security/PullPayment.sol"
 contract Campaign is Ownable, Initializable {
 
     string internal name;
@@ -15,13 +15,11 @@ contract Campaign is Ownable, Initializable {
     address public addressCrowdSourcer;
     uint256 public fileCount = 0;
     uint256 public checkedFiles = 0;
+    uint256 public validFiles = 0;
     uint256 public numberOfActiveWorkers = 0;
     uint256 public numberOfActiveVerifiers = 0;
     bool public isClosed;
-
     CampaignFactory internal factoryContractAddress;
-    address public coinAddress;
-    MCSCoin internal coin;
 
     mapping(string => File) public files; // ipfs hash -> file info
 
@@ -33,6 +31,23 @@ contract Campaign is Ownable, Initializable {
         address  uploader;
         address verifier;
         string hash;
+        int256 lat;
+        int256 lng;
+    }
+
+    mapping(address => uint) credits;
+
+    function allowForPull(address receiver, uint amount) private {
+        credits[receiver] += amount;
+    }
+
+    function withdrawCredits() public {
+        uint amount = credits[msg.sender];
+        require(amount != 0);
+        require(factoryContractAddress.balanceOf(address(this)) >= amount);
+        credits[msg.sender] = 0;
+        factoryContractAddress.transfer(msg.sender,amount);
+        factoryContractAddress.removeCampaignToClaim(msg.sender,address(this));
     }
 
     function getAllFilesInfo() public view returns(File[] memory){
@@ -57,9 +72,7 @@ contract Campaign is Ownable, Initializable {
         return(name,lat,lng,range,campaignType,addressCrowdSourcer,fileCount);
     }
 
-    constructor(string memory _name,int256 _lat,int256 _lng,int256 _range,string memory _type,address  _addressCrowdSourcer,address  _factoryAddress,address _coinContractAddress) onlyOwner payable initializer {
-        coinAddress =_coinContractAddress;
-        coin = MCSCoin(coinAddress);
+    constructor(string memory _name,int256 _lat,int256 _lng,int256 _range,string memory _type,address  _addressCrowdSourcer,address  _factoryAddress) onlyOwner payable initializer {
         name = _name;
         lat = _lat;
         lng = _lng;
@@ -76,23 +89,25 @@ contract Campaign is Ownable, Initializable {
     function uploadFile(string memory ipfspath,int256 _fileLat,int256 _fileLng) public {
         require(msg.sender != address(0));
         require(isClosed == false,'The campaign is closed by sourcer');
-        require(isInRange(_fileLat,_fileLng),'position out of area');
         fileCount++;
         numberOfActiveWorkers++;
         allfilesPath.push(ipfspath);
-        files[ipfspath] = File(false,false,(msg.sender),address(0),ipfspath);
+        files[ipfspath] = File(false,false,(msg.sender),address(0),ipfspath, _fileLat, _fileLng);
         emit FileUploaded((msg.sender));
     }
 
     function validateFile(string memory hash) public {
+        require(msg.sender != files[hash].uploader,"you can't self verify the data.");
         files[hash].validity = true;
         files[hash].status = true;
         files[hash].verifier = msg.sender;
         checkedFiles++;
+        validFiles++;
         numberOfActiveVerifiers++;
     }
 
     function notValidateFile(string memory hash) public {
+        require(msg.sender != files[hash].uploader,"you can't self verify the data.");
         files[hash].status = true;
         files[hash].verifier = msg.sender;
         checkedFiles++;
@@ -100,57 +115,43 @@ contract Campaign is Ownable, Initializable {
     }
 
     function getCampaignBalance() public view returns(uint256 balance) {
-        return coin.balanceOf(address(this));
+        return factoryContractAddress.balanceOf(address(this));
     }
 
-    // tenuta per debug
-    function closeCampaign() public {
-        require(msg.sender == addressCrowdSourcer,'you are not the owner');
-        require(msg.sender != address(0), "invalid address provided");
-        isClosed = factoryContractAddress.closeCampaign();
+
+    struct CampaignToClaim {
+        address campaignAddress;
+        string role;
+        uint256 toClaim;
     }
 
     function closeCampaignAndPay() public payable {
         require(msg.sender == addressCrowdSourcer,'you are not the owner');
-        require(msg.sender != address(0), "invalid address provided");
         isClosed = factoryContractAddress.closeCampaign();
+        uint256 balance = getCampaignBalance();
+        uint256 verifiesTotalReward = (balance * 50 / 100);
+        uint256 workerReward =  (balance - verifiesTotalReward) / validFiles;
+        uint256 verifierReward = verifiesTotalReward / numberOfActiveVerifiers;
+        uint256 refound = balance - (workerReward + verifierReward);
+        if(refound > 0) {
+            factoryContractAddress.putCampaignToClaim(addressCrowdSourcer,address(this), "refound", refound);
+        }
 
         for(uint i; i<allfilesPath.length; i++) {
             File memory currentFile = files[allfilesPath[i]];
             if (currentFile.status == true) {
-                uint256 balance = getCampaignBalance();
-                uint256 verifiesTotalReward = (balance * 50 / 100);
-                uint256 verifierReward = verifiesTotalReward / numberOfActiveVerifiers;
-                uint256 workerReward =  (balance - verifiesTotalReward) / numberOfActiveWorkers;
                 if (currentFile.validity == true) { // se il file caricato è valido allora paga l'uploader
-                    coin.transfer(currentFile.verifier,verifierReward);
-                    coin.transfer(currentFile.uploader,workerReward);
+                    factoryContractAddress.putCampaignToClaim(currentFile.verifier,address(this), "verifier", verifierReward);
+                    factoryContractAddress.putCampaignToClaim(currentFile.uploader,address(this), "worker", workerReward);
+
+                    allowForPull(currentFile.verifier, verifierReward);
+                    allowForPull(currentFile.uploader, workerReward);
                 } else { // se il file caricato NON è valido allora paga solo il verifier
-                    coin.transfer(currentFile.verifier,verifierReward);
+                    factoryContractAddress.putCampaignToClaim(currentFile.verifier,address(this), "verifier", verifierReward);
+                    allowForPull(currentFile.verifier, verifierReward);
                 }
             }
         }
     }
 
-    function sqrt(int256 x) internal pure returns (int256 y) {
-        int256 z = (x + 1) / 2;
-        y = x;
-        while (z < y) {
-            y = z;
-            z = (x / z + z) / 2;
-        }
-        return y;
-    }
-
-    function calculateDistance(int256 latFile, int256 lonFile) public view returns (int256 dist) {
-        int256 distance = sqrt((latFile - lat)**2 + (lonFile - lng)**2);
-        return int256(distance);
-    }
-
-    function isInRange(int256 latFile, int256 lonFile) public view returns (bool answer){
-        if ((range*1000) >= calculateDistance(latFile,lonFile)) {
-            return true;
-        }
-        return false;
-    }
 }

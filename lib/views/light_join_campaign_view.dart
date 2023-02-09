@@ -22,6 +22,7 @@ class LightJoinCampaignViewState extends State<LightJoinCampaignView> {
 
   EnvironmentSensors environmentSensors = EnvironmentSensors();
   bool activeSensor = false;
+  bool activeUpload = false;
   double sum = 0;
 
   List<double> lights = [];
@@ -94,7 +95,7 @@ class LightJoinCampaignViewState extends State<LightJoinCampaignView> {
                           style: CustomTextStyle.merriweatherBold(context),
                         ),
                         Text(
-                          '${campaignSelectedData['range']}',
+                          '${campaignSelectedData['range']} m',
                           style: CustomTextStyle.inconsolata(context),
                         ),
                       ],
@@ -147,6 +148,7 @@ class LightJoinCampaignViewState extends State<LightJoinCampaignView> {
                                         style: CustomTextStyle.inconsolata(
                                             context))
                                   ]),
+                                  (!activeUpload)?
                                   FloatingActionButton(
                                       onPressed: () async {
                                         String? res =
@@ -197,7 +199,15 @@ class LightJoinCampaignViewState extends State<LightJoinCampaignView> {
                                       },
                                       backgroundColor: CustomColors.blue900(context),
                                       child:
-                                          const Icon(Icons.file_upload_sharp)),
+                                          const Icon(Icons.file_upload_sharp))
+                                  : Expanded(child: Column(
+                                    mainAxisSize: MainAxisSize.max,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: const [
+                                      CircularProgressIndicator()
+                                    ],
+                                  ),),
                                 ]);
                               }
                             })

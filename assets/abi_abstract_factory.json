@@ -3,16 +3,16 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "",
+        "name": "sourcer",
         "type": "address"
       }
     ],
-    "name": "activeCampaigns",
+    "name": "_checkIfSourcerHasActiveCampaign",
     "outputs": [
       {
-        "internalType": "contract Campaign",
+        "internalType": "bool",
         "name": "",
-        "type": "address"
+        "type": "bool"
       }
     ],
     "stateMutability": "view",
@@ -20,7 +20,7 @@
   },
   {
     "inputs": [],
-    "name": "closeCampaign",
+    "name": "_closeCampaign",
     "outputs": [
       {
         "internalType": "bool",
@@ -29,30 +29,6 @@
       }
     ],
     "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "name": "closedCampaigns",
-    "outputs": [
-      {
-        "internalType": "contract Campaign",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -83,12 +59,17 @@
         "type": "string"
       },
       {
-        "internalType": "uint256",
-        "name": "_value",
-        "type": "uint256"
+        "internalType": "address",
+        "name": "sourcer",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "factoryAddress",
+        "type": "address"
       }
     ],
-    "name": "createCampaign",
+    "name": "_createCampaign",
     "outputs": [
       {
         "internalType": "address",
@@ -96,17 +77,23 @@
         "type": "address"
       }
     ],
-    "stateMutability": "payable",
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "getAllCampaigns",
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "sourcer",
+        "type": "address"
+      }
+    ],
+    "name": "_getActiveCampaign",
     "outputs": [
       {
-        "internalType": "contract Campaign[]",
+        "internalType": "contract Campaign",
         "name": "",
-        "type": "address[]"
+        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -114,7 +101,7 @@
   },
   {
     "inputs": [],
-    "name": "getClosedCampaigns",
+    "name": "_getAllCampaigns",
     "outputs": [
       {
         "internalType": "contract Campaign[]",
@@ -129,16 +116,97 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "_address",
+        "name": "sourcer",
         "type": "address"
       }
     ],
-    "name": "searchSourcerAddress",
+    "name": "_getClosedCampaigns",
     "outputs": [
       {
-        "internalType": "bool",
+        "internalType": "contract Campaign[]",
         "name": "",
-        "type": "bool"
+        "type": "address[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "activeCampaigns",
+    "outputs": [
+      {
+        "internalType": "contract Campaign",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "addressCrowdSourcerActiveCampaigns",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "addressCrowdSourcerClosedCampaigns",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "closedCampaigns",
+    "outputs": [
+      {
+        "internalType": "contract Campaign",
+        "name": "",
+        "type": "address"
       }
     ],
     "stateMutability": "view",

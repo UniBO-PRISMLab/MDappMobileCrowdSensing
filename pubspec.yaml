@@ -38,7 +38,7 @@ dependencies:
   walletconnect_dart: ^0.0.11
   google_fonts: ^3.0.1
   slider_button: ^2.0.0
-  web3dart: ^2.4.1
+  web3dart: #latest version
   geolocator: #latest version
   geocoding:  #latest version
   flutter_intl: ^0.0.1
@@ -48,8 +48,6 @@ dependencies:
   path_provider: ^2.0.11
   path: ^1.8.2
   environment_sensors: ^0.2.0
-  ipfs_client_flutter: ^1.0.7
-  walletconnect_qrcode_modal_dart: ^0.0.5
   build_runner: ^2.1.2
   syncfusion_flutter_charts: ^20.3.60
   intl: ^0.17.0
@@ -59,6 +57,16 @@ dependencies:
   archive: ^3.3.5
   open_street_map_search_and_pick: ^0.0.15
   sqflite: ^2.2.3
+  flutter_local_notifications: ^13.0.0
+  flutter_background_service: ^2.4.6
+  device_info_plus: ^8.0.0
+  workmanager: ^0.5.1
+  flutter_foreground_task: ^3.10.0
+  numberpicker: ^2.1.1
+  flip_card: ^0.7.0
+  connectivity: ^3.0.6
+  flutter_isolate: ^2.0.4
+  walletconnect_secure_storage: ^1.0.0
 
 dev_dependencies:
   flutter_test:
