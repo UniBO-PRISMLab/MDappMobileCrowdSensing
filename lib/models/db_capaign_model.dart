@@ -37,7 +37,6 @@ class DbCampaignModel {
 
   Future<void> insertCampaign(Campaign cmp) async {
     final db = await _initDb();
-    // `conflictAlgorithm` to use in case the same campaign is inserted twice.
     await db.insert(
       'campaign',
       cmp.toMap(),

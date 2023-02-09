@@ -346,9 +346,6 @@ class _CampaignListControllerState
             (double.parse(data[2].toString()) / 10000000),
             widget.places.lat,
             widget.places.lng)/1000;
-        if (kDebugMode) {
-          print("DEBUG::::::::::::::::: [${double.parse(data[1].toString()) / 10000000},${double.parse(data[2].toString()) / 10000000}] e [${widget.places.lat},${widget.places.lng}] => $distance");
-        }
         return (distance <= (_currentIntValue)) ? true : false;
       default:
         return true;

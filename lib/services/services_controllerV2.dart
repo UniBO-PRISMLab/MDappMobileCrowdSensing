@@ -33,7 +33,6 @@ class ServicesControllerV2 {
       iosConfiguration: IosConfiguration(
         autoStart: true,
         onForeground: ServicesV2.onStart,
-        onBackground: ServicesV2.onIosBackground,
       ),
     );
     s.startService();

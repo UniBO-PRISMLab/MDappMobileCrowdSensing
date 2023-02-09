@@ -26,7 +26,6 @@ class SmartContractModel extends CustomTransactionSender{
   Future<dynamic> queryTransaction(String functionName, List<dynamic> args, BigInt? value) async {
     SessionModel session = SessionModel();
     try {
-      //SessionModel().checkConnection();
       int nonce = await session.ethClient.getTransactionCount(EthereumAddress.fromHex(session.getAccountAddress()));
       final contract = await loadContract(contractAddress);
       final ethFunction = contract.function(functionName);
@@ -37,10 +36,11 @@ class SmartContractModel extends CustomTransactionSender{
           nonce: nonce,
           value: (value != null) ? EtherAmount.inWei(value) : null
       );
-      print('\x1B[31m nonce: $nonce gasPrice: ${transaction.gasPrice} maxGas: ${transaction.maxGas} \x1B[0m');
+      print('\x1B[31m nonce: $nonce gasPrice: ${transaction.gasPrice} maxGas: ${transaction.maxGas} uri: ${session.uri} \x1B[0m');
 
       launchUrlString(session.uri, mode: LaunchMode.externalApplication);
       final txBytes = await sendTransaction(transaction);
+    print('\x1B[31m [SENDED TRANSACTION] $txBytes \x1B[0m');
       return txBytes;
     } catch (e) {
       if (kDebugMode) {
@@ -53,7 +53,18 @@ class SmartContractModel extends CustomTransactionSender{
   @override
   Future<String> sendTransaction(Transaction transaction) async {
     SessionModel session = SessionModel();
+   /* print(
+        '\x1B[31m BIG providerDEBUG-[sendTransaction] '
+            '\nRPC URL (di solito vuoto): ${provider.connector.session.rpcUrl}'
+            '\naccounts: ${provider.connector.session.accounts.toString()}'
+            '\nKey: ${provider.connector.session.key}'
+            '\n PEER META: ${provider.connector.session.peerMeta?.toJson()}'
+            '\n Bridge: ${provider.connector.session.bridge}'
+            '\n PROTOCOL: ${provider.connector.session.protocol}'
+            '\n TO URI: ${provider.connector.session.toUri()}'
 
+            '\n\n\n TOJSON: ${provider.connector.session.toJson()}'
+            '\x1B[0m');*/
     try {
       final hash = await provider.sendTransaction(
         from: session.getAccountAddress(),

@@ -22,7 +22,8 @@ class DbSessionModel {
         return db.execute(
           'CREATE TABLE session('
               'account TEXT PRIMARY KEY,'
-              ' chainId INTEGER'
+              ' chainId INTEGER,'
+              ' uri TEXT'
               ')',
         );
       },
@@ -49,6 +50,7 @@ class DbSessionModel {
       return Session(
         account: maps[i]['account'],
         chainId: maps[i]['chainId'],
+        uri: maps[i]['uri'],
       );
     });
   }
@@ -81,11 +83,13 @@ class DbSessionModel {
 class Session {
   final String account;
   final  int chainId;
+  final String uri;
 
   const Session(
       {
         required this.account,
         required this.chainId,
+        required this.uri,
       }
       );
 
@@ -93,12 +97,13 @@ class Session {
     return {
       'account': account,
       'chainId': chainId,
+      'uri': uri,
     };
   }
 
   @override
   String toString() {
-    return 'Session{account: $account, chainId: $chainId}';
+    return 'Session{account: $account, chainId: $chainId, uri: $uri}';
   }
 
 }

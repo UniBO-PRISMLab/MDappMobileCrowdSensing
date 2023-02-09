@@ -3,7 +3,7 @@ pragma solidity ^0.8.17;
 import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./MCSfactory.sol";
-
+import "@openzeppelin/contracts/security/PullPayment.sol"
 contract Campaign is Ownable, Initializable {
 
     string internal name;
@@ -15,6 +15,7 @@ contract Campaign is Ownable, Initializable {
     address public addressCrowdSourcer;
     uint256 public fileCount = 0;
     uint256 public checkedFiles = 0;
+    uint256 public validFiles = 0;
     uint256 public numberOfActiveWorkers = 0;
     uint256 public numberOfActiveVerifiers = 0;
     bool public isClosed;
@@ -101,6 +102,7 @@ contract Campaign is Ownable, Initializable {
         files[hash].status = true;
         files[hash].verifier = msg.sender;
         checkedFiles++;
+        validFiles++;
         numberOfActiveVerifiers++;
     }
 
@@ -126,16 +128,19 @@ contract Campaign is Ownable, Initializable {
     function closeCampaignAndPay() public payable {
         require(msg.sender == addressCrowdSourcer,'you are not the owner');
         isClosed = factoryContractAddress.closeCampaign();
+        uint256 balance = getCampaignBalance();
+        uint256 verifiesTotalReward = (balance * 50 / 100);
+        uint256 workerReward =  (balance - verifiesTotalReward) / validFiles;
+        uint256 verifierReward = verifiesTotalReward / numberOfActiveVerifiers;
+        uint256 refound = balance - (workerReward + verifierReward);
+        if(refound > 0) {
+            factoryContractAddress.putCampaignToClaim(addressCrowdSourcer,address(this), "refound", refound);
+        }
 
         for(uint i; i<allfilesPath.length; i++) {
             File memory currentFile = files[allfilesPath[i]];
             if (currentFile.status == true) {
-                uint256 balance = getCampaignBalance();
-                uint256 verifiesTotalReward = (balance * 50 / 100);
-                uint256 verifierReward = verifiesTotalReward / numberOfActiveVerifiers;
-                uint256 workerReward =  (balance - verifiesTotalReward) / numberOfActiveWorkers;
                 if (currentFile.validity == true) { // se il file caricato è valido allora paga l'uploader
-
                     factoryContractAddress.putCampaignToClaim(currentFile.verifier,address(this), "verifier", verifierReward);
                     factoryContractAddress.putCampaignToClaim(currentFile.uploader,address(this), "worker", workerReward);
 

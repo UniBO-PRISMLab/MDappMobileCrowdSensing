@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mobile_crowd_sensing/models/session_model.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:walletconnect_dart/walletconnect_dart.dart';
 
@@ -14,34 +13,32 @@ class LoginMetamaskModel {
     SessionModel sessionData = SessionModel();
 
     if (!sessionData.connector.connected) {
+      DbSessionModel sessionDb = DbSessionModel();
       try {
         SessionStatus newSession = await sessionData.connector.createSession(
             onDisplayUri: (uri) async {
+              print('\x1B[31m[LOGIN METAMASK] uri: ${uri}\x1B[0m');
               sessionData.uri = uri;
               await launchUrlString(uri, mode: LaunchMode.externalApplication);
 
             });
 
-        DbSessionModel sessionDb = DbSessionModel();
-        await sessionDb.deleteAll();
-        await sessionDb.insertSession(Session(account: newSession.accounts[0], chainId: newSession.chainId));
-        
-        SharedPreferences shared = await SharedPreferences.getInstance();
-        shared.setString('address', sessionData.getAccountAddress());
         if (kDebugMode) {
-          print('\x1B[31m[Filled shared preferences]\x1B[0m');
-          print('\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++\n'
-              '+ sessionData indirizzo account:  ${sessionData.getAccountAddress()}  +\n'
+          print('\x1B[31m\n[SESSION CREATION]\n'
+              '\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++\n'
+              '\n[SESSION DATA]\n'
+              '+ sessionData indirizzo accounts:  ${sessionData.getAccountAddress()}  +\n'
+              '\n[CONNECTOR]\n'
               '+ Connector è connesso?: ${sessionData.connector.connected}  +\n'
-              '+++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n');
+              '\n[NEW SESSION]\n'
+              'accounts: ${newSession.accounts.toString()}'
+              '\n[SESSION STORAGE]\n'
+              'accounts: ${(await sessionData.sessionStorage.getSession())?.accounts.length}\n'
+              '+++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n\x1B[0m');
         }
 
-/*        if(!ServicesControllerV2.statusGeofencingService) {
-          print('\x1B[31m [GEOFENCE SERVICE] INITIALIZE AFTER LOGIN\x1B[0m');
-          SearchPlacesModel search = SearchPlacesModel();
-          await search.getPermissions();
-          ServicesControllerV2.initializeGeofencingService();
-        }*/
+        await sessionDb.deleteAll();
+        await sessionDb.insertSession(Session(account: newSession.accounts[0], chainId: newSession.chainId, uri: sessionData.uri));
 
         if(!ServicesControllerV2.statusCloseCampaignService) {
           print('\x1B[31m [CLOSED CAMPAIGN SERVICE] INITIALIZE AFTER LOGIN\x1B[0m');

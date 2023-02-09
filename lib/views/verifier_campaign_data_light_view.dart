@@ -30,6 +30,7 @@ class _VerifierCampaignDataLightViewState extends State<VerifierCampaignDataLigh
           title: Text(jsonParameters["name"]),
           centerTitle: true,
         ),
+        resizeToAvoidBottomInset: false,
         body: const VerifierCampaignDataController(goTo: '/validate_light_view')
     );
   }

@@ -2,6 +2,8 @@ import 'dart:io';
 import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_config/flutter_config.dart';
+import 'package:mobile_crowd_sensing/models/db_session_model.dart';
+import 'package:mobile_crowd_sensing/models/session_model.dart';
 import 'package:mobile_crowd_sensing/utils/internet_connection.dart';
 import 'package:mobile_crowd_sensing/utils/styles.dart';
 import 'package:mobile_crowd_sensing/utils/verifier_campaign_data_factory.dart';
@@ -22,16 +24,57 @@ import 'package:mobile_crowd_sensing/views/validate_photo_view.dart';
 import 'package:mobile_crowd_sensing/views/wallet_view.dart';
 import 'dart:async';
 import 'package:connectivity/connectivity.dart';
+import 'package:flutter/widgets.dart';
+
+class LifecycleWatcher extends StatefulWidget {
+  @override
+  _LifecycleWatcherState createState() => _LifecycleWatcherState();
+}
+
+class _LifecycleWatcherState extends State<LifecycleWatcher> with WidgetsBindingObserver {
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+
+      if(state == AppLifecycleState.detached) {
+        print('\x1B[31m[STATUS APP] : ${state.toString()}\x1B[0m');
+        SessionModel sessionModel = SessionModel();
+        sessionModel.connector.killSession();
+      }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+      return const MyApp();
+  }
+}
+
+
 
 Future<void> main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
   await FlutterConfig.loadEnvVariables();
   ConnectivityResult initialStateInternet = await Connectivity().checkConnectivity();
+
   if (initialStateInternet == ConnectivityResult.none) {
     runApp(const NoConnection());
   } else {
-    runApp(const MyApp());
+    return runApp(Center(child: LifecycleWatcher()));
   }
+
 }
 
 class NoConnection extends StatelessWidget {

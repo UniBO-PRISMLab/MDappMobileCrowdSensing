@@ -1,17 +1,15 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' as http;
+import 'package:mobile_crowd_sensing/models/db_session_model.dart';
 import 'package:mobile_crowd_sensing/services/notification_channels.dart';
 import 'package:mobile_crowd_sensing/services/services_controllerV2.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:web3dart/web3dart.dart';
 import '../models/db_capaign_model.dart';
 import 'dart:async';
 import 'dart:ui';
-import 'package:flutter/material.dart';
 import 'package:flutter_background_service_android/flutter_background_service_android.dart';
 
 import '../models/geofence_model.dart';
@@ -20,8 +18,6 @@ class ServicesV2 {
   static void onStart(ServiceInstance service) async {
     DartPluginRegistrant.ensureInitialized();
 
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    await preferences.reload();
 
     if (service is AndroidServiceInstance) {
       service.on('setAsForeground').listen((event) {
@@ -38,9 +34,9 @@ class ServicesV2 {
     });
 
     DbCampaignModel db = DbCampaignModel();
+    DbSessionModel dbSession = DbSessionModel();
     List<Campaign> res = [];
-    String accountAddress = preferences.getString('address')!;
-
+    List<Session> sessionRes = [];
     List<Geofence> geoList = [];
 
     final FlutterLocalNotificationsPlugin notification =
@@ -48,6 +44,8 @@ class ServicesV2 {
 
     Timer.periodic(const Duration(minutes: 1), (timer) async {
       ServicesControllerV2.statusCloseCampaignService = true;
+      sessionRes = await dbSession.sessions();
+      String accountAddress = sessionRes[0].account;
       res = await db.campaigns();
       if (res.isNotEmpty) {
         for (Campaign c in res) {
@@ -133,18 +131,6 @@ class ServicesV2 {
     });
   }
 
-  static Future<bool> onIosBackground(ServiceInstance service) async {
-    WidgetsFlutterBinding.ensureInitialized();
-    DartPluginRegistrant.ensureInitialized();
-
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    await preferences.reload();
-    final log = preferences.getStringList('log') ?? <String>[];
-    log.add(DateTime.now().toIso8601String());
-    await preferences.setStringList('log', log);
-
-    return true;
-  }
 }
 
 class SmartContractModelBs {

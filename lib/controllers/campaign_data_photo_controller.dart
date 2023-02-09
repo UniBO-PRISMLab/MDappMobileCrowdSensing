@@ -27,6 +27,7 @@ class _CampaignDataPhotoControllerState
     if (res != null) {
       for (dynamic i in res) {
         Stream<FileSystemEntity>? res = await ValidateModel.downloadPhotosFiles(i[4].toString());
+        print("DEBUG DI CIRCOSTANZA :::::::::: ${res.toString()}");
         if (res != null) {
           res.forEach((element) async {
             File f = File(element.path);
