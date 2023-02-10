@@ -18,8 +18,6 @@ class _SourcerClosedCampaignViewState extends State<SourcerClosedCampaignView> {
   Widget build(BuildContext context) {
     List? contractAddress = widget.contractAddress;
 
-    print("DEBUG  sourcer_closed_campaign_view:::: ${contractAddress.toString()}");
-
     return Scaffold(
         appBar: AppBar(
           backgroundColor: CustomColors.blue900(context),

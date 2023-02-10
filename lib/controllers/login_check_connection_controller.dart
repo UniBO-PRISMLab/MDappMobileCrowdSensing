@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_crowd_sensing/models/session_model.dart';
 import 'package:slider_button/slider_button.dart';
-
 import '../utils/styles.dart';
 import '../views/home_view.dart';
 import 'login_metamask_controller.dart';

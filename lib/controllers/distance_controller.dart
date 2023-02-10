@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
+
 class DistanceController {
 
   static double distanceBetween(
@@ -19,7 +21,9 @@ class DistanceController {
             cos(_toRadians(endLatitude));
     var c = 2 * asin(sqrt(a));
     double distance = (earthRadius * c);
-    print("DISTANCE CALCULATED: $distance");
+    if (kDebugMode) {
+      print("DISTANCE CALCULATED: $distance");
+    }
     return distance;
   }
 

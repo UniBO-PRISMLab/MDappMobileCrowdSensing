@@ -6,10 +6,12 @@ import 'package:walletconnect_dart/walletconnect_dart.dart';
 import 'package:web3dart/src/crypto/secp256k1.dart';
 import 'package:web3dart/web3dart.dart';
 
-import '../utils/nonce_manager.dart';
-
-class SmartContractModel extends CustomTransactionSender{
-  SmartContractModel({required this.contractAddress, required this.abiName, required this.abiFileRoot, required this.provider});
+class SmartContractModel extends CustomTransactionSender {
+  SmartContractModel(
+      {required this.contractAddress,
+      required this.abiName,
+      required this.abiFileRoot,
+      required this.provider});
   final EthereumWalletConnectProvider provider;
 
   final String contractAddress;
@@ -23,10 +25,12 @@ class SmartContractModel extends CustomTransactionSender{
     return contract;
   }
 
-  Future<dynamic> queryTransaction(String functionName, List<dynamic> args, BigInt? value) async {
+  Future<dynamic> queryTransaction(
+      String functionName, List<dynamic> args, BigInt? value) async {
     SessionModel session = SessionModel();
     try {
-      int nonce = await session.ethClient.getTransactionCount(EthereumAddress.fromHex(session.getAccountAddress()));
+      int nonce = await session.ethClient.getTransactionCount(
+          EthereumAddress.fromHex(session.getAccountAddress()));
       final contract = await loadContract(contractAddress);
       final ethFunction = contract.function(functionName);
       Transaction transaction = Transaction.callContract(
@@ -34,13 +38,17 @@ class SmartContractModel extends CustomTransactionSender{
           function: ethFunction,
           parameters: args,
           nonce: nonce,
-          value: (value != null) ? EtherAmount.inWei(value) : null
-      );
-      print('\x1B[31m nonce: $nonce gasPrice: ${transaction.gasPrice} maxGas: ${transaction.maxGas} uri: ${session.uri} \x1B[0m');
+          value: (value != null) ? EtherAmount.inWei(value) : null);
+      if (kDebugMode) {
+        print(
+            '\x1B[31m nonce: $nonce gasPrice: ${transaction.gasPrice} maxGas: ${transaction.maxGas} uri: ${session.uri} \x1B[0m');
+      }
 
       launchUrlString(session.uri, mode: LaunchMode.externalApplication);
       final txBytes = await sendTransaction(transaction);
-    print('\x1B[31m [SENDED TRANSACTION] $txBytes \x1B[0m');
+      if (kDebugMode) {
+        print('\x1B[31m [SENDED TRANSACTION] $txBytes \x1B[0m');
+      }
       return txBytes;
     } catch (e) {
       if (kDebugMode) {
@@ -53,18 +61,6 @@ class SmartContractModel extends CustomTransactionSender{
   @override
   Future<String> sendTransaction(Transaction transaction) async {
     SessionModel session = SessionModel();
-   /* print(
-        '\x1B[31m BIG providerDEBUG-[sendTransaction] '
-            '\nRPC URL (di solito vuoto): ${provider.connector.session.rpcUrl}'
-            '\naccounts: ${provider.connector.session.accounts.toString()}'
-            '\nKey: ${provider.connector.session.key}'
-            '\n PEER META: ${provider.connector.session.peerMeta?.toJson()}'
-            '\n Bridge: ${provider.connector.session.bridge}'
-            '\n PROTOCOL: ${provider.connector.session.protocol}'
-            '\n TO URI: ${provider.connector.session.toUri()}'
-
-            '\n\n\n TOJSON: ${provider.connector.session.toJson()}'
-            '\x1B[0m');*/
     try {
       final hash = await provider.sendTransaction(
         from: session.getAccountAddress(),
@@ -84,7 +80,8 @@ class SmartContractModel extends CustomTransactionSender{
     }
   }
 
-  Future<List<dynamic>?> queryCall(String functionName, List<dynamic> args) async {
+  Future<List<dynamic>?> queryCall(
+      String functionName, List<dynamic> args) async {
     SessionModel session = SessionModel();
     try {
       final contract = await loadContract(contractAddress);
@@ -115,13 +112,15 @@ class SmartContractModel extends CustomTransactionSender{
   }
 
   @override
-  MsgSignature signToEcSignature(Uint8List payload, {int? chainId, bool isEIP1559 = false}) {
+  MsgSignature signToEcSignature(Uint8List payload,
+      {int? chainId, bool isEIP1559 = false}) {
     // TODO: implement signToEcSignature
     throw UnimplementedError();
   }
 
   @override
-  Future<MsgSignature> signToSignature(Uint8List payload, {int? chainId, bool isEIP1559 = false}) {
+  Future<MsgSignature> signToSignature(Uint8List payload,
+      {int? chainId, bool isEIP1559 = false}) {
     // TODO: implement signToSignature
     throw UnimplementedError();
   }

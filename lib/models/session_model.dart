@@ -1,9 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:walletconnect_dart/walletconnect_dart.dart';
 import 'package:walletconnect_secure_storage/walletconnect_secure_storage.dart';
 import 'package:web3dart/web3dart.dart';
 import 'package:flutter_config/flutter_config.dart';
 import 'package:http/http.dart' as http;
-
 import '../services/services_controllerV2.dart';
 import 'db_session_model.dart';
 
@@ -35,7 +35,9 @@ class SessionModel {
   Future<void> instantiateConnector() async {
     WalletConnectSession? session = await sessionStorage.getSession();
     if(session == null) {
-      print('\x1B[31m[SESSION MODEL] session null:${session.toString()} \x1B[0m');
+      if (kDebugMode) {
+        print('\x1B[31m[SESSION MODEL] session null:${session.toString()} \x1B[0m');
+      }
       connector = WalletConnect(
         bridge: 'https://bridge.walletconnect.org',
         sessionStorage: sessionStorage,
@@ -49,7 +51,9 @@ class SessionModel {
         ),
       );
     } else {
-      print('\x1B[31m[SESSION MODEL] session:${session.toString()} \x1B[0m');
+      if (kDebugMode) {
+        print('\x1B[31m[SESSION MODEL] session:${session.toString()} \x1B[0m');
+      }
       await sessionStorage.store(session);
       connector = WalletConnect(
         bridge: 'https://bridge.walletconnect.org',
@@ -65,18 +69,20 @@ class SessionModel {
         ),
       );
       await connector.connect(
-          onDisplayUri: (Exuri) async {
-            uri = Exuri;
+          onDisplayUri: (newUri) async {
+            uri = newUri;
           });
     }
 
     await dbSession.deleteAll();
     await dbSession.insertSession(Session(account: connector.session.accounts[0], chainId: connector.session.chainId, uri: uri));
     if(!ServicesControllerV2.statusCloseCampaignService) {
-      print('\x1B[31m [CLOSED CAMPAIGN SERVICE] INITIALIZE AFTER LOGIN\x1B[0m');
+      if (kDebugMode) {
+        print('\x1B[31m [CLOSED CAMPAIGN SERVICE] INITIALIZE AFTER LOGIN\x1B[0m');
+      }
       ServicesControllerV2.initializeCloseCampaignService();
     }
-    
+
     provider = EthereumWalletConnectProvider(connector);
 
     connector.on('connect', (SessionStatus session) => {

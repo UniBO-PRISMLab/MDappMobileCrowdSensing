@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_crowd_sensing/controllers/search_places_controller.dart';
 import 'package:mobile_crowd_sensing/utils/spalsh_screens.dart';
 import '../models/all_campaign_model.dart';
-import '../models/search_places_model.dart';
 import '../views/dialog_view.dart';
 import '../views/verifier_campaign_view.dart';
 import '../views/worker_campaign_view.dart';

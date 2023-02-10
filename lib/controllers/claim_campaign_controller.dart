@@ -3,7 +3,6 @@ import 'package:flutter_config/flutter_config.dart';
 import 'package:mobile_crowd_sensing/models/session_model.dart';
 import '../models/smart_contract_model.dart';
 import '../utils/styles.dart';
-import '../views/login_view.dart';
 
 class ClaimCampaignController extends StatefulWidget {
   const ClaimCampaignController({Key? key}) : super(key: key);
@@ -93,10 +92,10 @@ class _ClaimCampaignControllerState extends State<ClaimCampaignController> {
                                     abiFileRoot: 'assets/abi_campaign.json',
                                     provider: session.getProvider());
                                 dynamic res = await smartContractViewModel.queryTransaction("withdrawCredits", [], null);
-                                print("DEBUG::::::: res : ${res.toString()}");
                                 if (res.toString() != "null" &&
                                     res.toString() != "0x0000000000000000000000000000000000000000" &&
                                     !res.startsWith('JSON-RPC error')) {
+                                  if(!mounted) return;
                                   ScaffoldMessenger.of(context)
                                       .showSnackBar(SnackBar(
                                       content: Text(
@@ -105,6 +104,8 @@ class _ClaimCampaignControllerState extends State<ClaimCampaignController> {
                                             .spaceMonoWhite(context),
                                       )));
                                 }else if (res.startsWith('JSON-RPC error -32000:')){
+                                  if(!mounted) return;
+
                                   ScaffoldMessenger.of(context)
                                       .showSnackBar(SnackBar(
                                       content: Text(
@@ -114,6 +115,7 @@ class _ClaimCampaignControllerState extends State<ClaimCampaignController> {
                                       )));
                                 }
                                 else {
+                                  if(!mounted) return;
                                   ScaffoldMessenger.of(context)
                                       .showSnackBar(SnackBar(
                                       content: Text(

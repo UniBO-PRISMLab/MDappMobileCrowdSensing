@@ -9,15 +9,14 @@ import 'dart:ui';
 enum GeofenceEvent { init, enter, exit }
 
 class Geofence {
-  late String title,address,lat,lng,radius;
+  late String title, address, lat, lng, radius;
 
   StreamSubscription<Position>? _positionStream;
   Stream<GeofenceEvent>? _geostream;
-  final StreamController<GeofenceEvent> _controller = StreamController<GeofenceEvent>();
+  final StreamController<GeofenceEvent> _controller =
+      StreamController<GeofenceEvent>();
 
-
-  Geofence(this.title,this.address,this.lat,this.lng,this.radius);
-
+  Geofence(this.title, this.address, this.lat, this.lng, this.radius);
 
   Future<void> initialize() async {
     DartPluginRegistrant.ensureInitialized();
@@ -25,7 +24,7 @@ class Geofence {
     String debugString = "[GEOFENCE $title]";
 
     final FlutterLocalNotificationsPlugin notification =
-    FlutterLocalNotificationsPlugin();
+        FlutterLocalNotificationsPlugin();
 
     if (kDebugMode) {
       print('\x1B[31m [GEOFENCE SERVICE] geofence open for:'
@@ -74,40 +73,10 @@ class Geofence {
           if (kDebugMode) {
             print('\x1B[31m $debugString status: Enter\x1B[0m');
           }
-          (previous != event)
-              ? notification.show(
-            888,
-            'Entered in Campaign Area',
-            '[$title] \nat address: $address',
-            NotificationDetails(
-              android: AndroidNotificationDetails(
-                NotificationChannel.backgroundServiceChannel.id,
-                NotificationChannel.backgroundServiceChannel.name,
-                icon: 'ic_bg_service_small',
-                styleInformation: BigTextStyleInformation(
-                    "<p>You are entered inside the \"$title\" \n campaign at address: \n$address</p>",
-                    htmlFormatBigText: true,
-                    contentTitle: "<h1>ENTER INSIDE \"$title\"</h1>",
-                    htmlFormatContentTitle: true,
-                    summaryText: "<p>you entered in a campaign area</p>",
-                    htmlFormatSummaryText: true,
-                    htmlFormatContent: true,
-                    htmlFormatTitle: true),
-                ongoing: true,
-              ),
-            ),
-          )
-              : print('\x1B[31m $debugString status not changed \x1B[0m');
-          previous = event;
-          break;
-        case GeofenceEvent.exit:
-          if (kDebugMode) {
-            print('\x1B[31m $debugString status: Exit\x1B[0m');
-          }
-          (previous != event)
-              ? notification.show(
+          if (previous != event) {
+            notification.show(
               888,
-              'Exit from Campaign Area',
+              'Entered in Campaign Area',
               '[$title] \nat address: $address',
               NotificationDetails(
                 android: AndroidNotificationDetails(
@@ -115,32 +84,67 @@ class Geofence {
                   NotificationChannel.backgroundServiceChannel.name,
                   icon: 'ic_bg_service_small',
                   styleInformation: BigTextStyleInformation(
-                      "<p>You are out of the \"$title\" \n campaign at address: \n$address</p>",
+                      "<p>You are entered inside the \"$title\" \n campaign at address: \n$address</p>",
                       htmlFormatBigText: true,
-                      contentTitle: "<h1>EXIT FROM \"$title\"</h1>",
+                      contentTitle: "<h1>ENTER INSIDE \"$title\"</h1>",
                       htmlFormatContentTitle: true,
-                      summaryText: "<p>you exit from a campaign area</p>",
+                      summaryText: "<p>you entered in a campaign area</p>",
                       htmlFormatSummaryText: true,
                       htmlFormatContent: true,
                       htmlFormatTitle: true),
                   ongoing: true,
                 ),
-              ))
-              : print('\x1B[31m $debugString status not changed \x1B[0m');
+              ),
+            );
+          } else {
+            if (kDebugMode) {
+              print('\x1B[31m $debugString status not changed \x1B[0m');
+            }
+          }
           previous = event;
-
+          break;
+        case GeofenceEvent.exit:
+          if (kDebugMode) {
+            print('\x1B[31m $debugString status: Exit\x1B[0m');
+          }
+          if (previous != event) {
+            notification.show(
+                888,
+                'Exit from Campaign Area',
+                '[$title] \nat address: $address',
+                NotificationDetails(
+                  android: AndroidNotificationDetails(
+                    NotificationChannel.backgroundServiceChannel.id,
+                    NotificationChannel.backgroundServiceChannel.name,
+                    icon: 'ic_bg_service_small',
+                    styleInformation: BigTextStyleInformation(
+                        "<p>You are out of the \"$title\" \n campaign at address: \n$address</p>",
+                        htmlFormatBigText: true,
+                        contentTitle: "<h1>EXIT FROM \"$title\"</h1>",
+                        htmlFormatContentTitle: true,
+                        summaryText: "<p>you exit from a campaign area</p>",
+                        htmlFormatSummaryText: true,
+                        htmlFormatContent: true,
+                        htmlFormatTitle: true),
+                    ongoing: true,
+                  ),
+                ));
+          } else {
+            if (kDebugMode) {
+              print('\x1B[31m $debugString status not changed \x1B[0m');
+            }
+          }
+          previous = event;
           break;
       }
     });
   }
 
-
-
   _startGeofenceService(
       {required String pointedLatitude,
-        required String pointedLongitude,
-        required String radiusMeter,
-        required int eventPeriodInSeconds}) async {
+      required String pointedLongitude,
+      required String radiusMeter,
+      required int eventPeriodInSeconds}) async {
     double latitude = _parser(pointedLatitude);
     double longitude = _parser(pointedLongitude);
     double radiusInMeter = _parser(radiusMeter);
@@ -153,8 +157,8 @@ class Geofence {
     if (_positionStream == null) {
       _geostream = _controller.stream;
       _positionStream = Geolocator.getPositionStream(
-          locationSettings:
-          LocationSettings(accuracy: LocationAccuracy.best))
+              locationSettings:
+                  const LocationSettings(accuracy: LocationAccuracy.best))
           .listen((Position? position) {
         if (position != null) {
           double distanceInMeters = DistanceController.distanceBetween(

@@ -11,7 +11,6 @@ import '../models/db_capaign_model.dart';
 import 'dart:async';
 import 'dart:ui';
 import 'package:flutter_background_service_android/flutter_background_service_android.dart';
-
 import '../models/geofence_model.dart';
 
 class ServicesV2 {
@@ -109,18 +108,20 @@ class ServicesV2 {
         }
 
         //.....
-        geoList.forEach((element) {element.stopGeofenceService();});
+        for (var element in geoList) {element.stopGeofenceService();}
         geoList.clear();
         for (Campaign c in res) {
           Geofence g = Geofence(c.title, c.address, c.lat, c.lng, c.radius);
             geoList.add(g);
             g.initialize();
         }
-        print('\x1B[31m [GEOFENCE SERVICE] active geofences: ${geoList.length}. \x1B[0m');
+        if (kDebugMode) {
+          print('\x1B[31m [GEOFENCE SERVICE] active geofences: ${geoList.length}. \x1B[0m');
+        }
       } else {
         ServicesControllerV2.statusCloseCampaignService = false;
         timer.cancel();
-        geoList.forEach((element) {element.stopGeofenceService();});
+        for (var element in geoList) {element.stopGeofenceService();}
         geoList.clear();
         service.stopSelf();
         if (kDebugMode) {

@@ -42,7 +42,7 @@ class DbCampaignModel {
       cmp.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
-    ServicesControllerV2.resetServicies();
+    ServicesControllerV2.resetService();
   }
 
   Future<List<Campaign>> campaigns() async {
@@ -77,7 +77,7 @@ class DbCampaignModel {
       where: 'address = ?',
       whereArgs: [address],
     );
-    ServicesControllerV2.resetServicies();
+    ServicesControllerV2.resetService();
   }
 }
 

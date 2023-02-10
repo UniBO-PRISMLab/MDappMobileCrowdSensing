@@ -1,8 +1,6 @@
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:mobile_crowd_sensing/services/servicesV2.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import '../models/db_capaign_model.dart';
 import 'notification_channels.dart';
 
 class ServicesControllerV2 {
@@ -39,7 +37,7 @@ class ServicesControllerV2 {
     statusCloseCampaignService = true;
   }
 
-  static void resetServicies() async {
+  static void resetService() async {
     statusCloseCampaignService = true;
     initializeCloseCampaignService();
   }

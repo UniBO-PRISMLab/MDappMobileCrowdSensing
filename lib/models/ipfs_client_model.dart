@@ -139,7 +139,9 @@ class IpfsClientModel {
     StreamedResponse response = await request.send();
     var result = await http.Response.fromStream(response);
     if (result.statusCode == 200) {
-      print('\x1B[31m${result.statusCode.toString()}\x1B[0m');
+      if (kDebugMode) {
+        print('\x1B[31m${result.statusCode.toString()}\x1B[0m');
+      }
       File compressedFile = await File("$tmpPath/$localFolder/$name").writeAsBytes(result.bodyBytes);
       Directory dir = Directory("$tmpPath/$localFolder/out");
       await extractFileToDisk(compressedFile.path, dir.path);
@@ -148,7 +150,9 @@ class IpfsClientModel {
       Directory out = Directory(entity.path);
       return out.list();
     }
-    print('\x1B[31m${result.toString()}\x1B[0m');
+    if (kDebugMode) {
+      print('\x1B[31m${result.toString()}\x1B[0m');
+    }
     return null;
   }
 

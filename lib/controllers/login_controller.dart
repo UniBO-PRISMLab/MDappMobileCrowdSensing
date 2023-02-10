@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_crowd_sensing/models/db_session_model.dart';
-import 'package:walletconnect_dart/walletconnect_dart.dart';
 import '../utils/internet_connection.dart';
 import '../utils/spalsh_screens.dart';
 import 'login_check_connection_controller.dart';

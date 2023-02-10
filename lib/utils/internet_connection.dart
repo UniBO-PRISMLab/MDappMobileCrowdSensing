@@ -4,7 +4,7 @@ import 'package:connectivity/connectivity.dart';
 import '../main.dart';
 
 class InternetConnection {
-  static var connectionStatus;
+  static late ConnectivityResult connectionStatus;
 
   static Future<void> checkInternetConnectivity() async {
     connectionStatus = await Connectivity().checkConnectivity();
@@ -12,7 +12,7 @@ class InternetConnection {
       PageRouteBuilder(
         pageBuilder: (_, __, ___) =>
             MaterialApp(home: Builder(
-                builder: (_) => MyApp())),
+                builder: (_) => const MyApp())),
         transitionDuration: Duration.zero,);
     }
   }

@@ -3,7 +3,6 @@ import 'package:flutter/foundation.dart';
 import 'package:mobile_crowd_sensing/models/session_model.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:walletconnect_dart/walletconnect_dart.dart';
-
 import '../services/services_controllerV2.dart';
 import 'db_session_model.dart';
 
@@ -17,7 +16,9 @@ class LoginMetamaskModel {
       try {
         SessionStatus newSession = await sessionData.connector.createSession(
             onDisplayUri: (uri) async {
-              print('\x1B[31m[LOGIN METAMASK] uri: ${uri}\x1B[0m');
+              if (kDebugMode) {
+                print('\x1B[31m[LOGIN METAMASK] uri: $uri\x1B[0m');
+              }
               sessionData.uri = uri;
               await launchUrlString(uri, mode: LaunchMode.externalApplication);
 
@@ -41,7 +42,9 @@ class LoginMetamaskModel {
         await sessionDb.insertSession(Session(account: newSession.accounts[0], chainId: newSession.chainId, uri: sessionData.uri));
 
         if(!ServicesControllerV2.statusCloseCampaignService) {
-          print('\x1B[31m [CLOSED CAMPAIGN SERVICE] INITIALIZE AFTER LOGIN\x1B[0m');
+          if (kDebugMode) {
+            print('\x1B[31m [CLOSED CAMPAIGN SERVICE] INITIALIZE AFTER LOGIN\x1B[0m');
+          }
           ServicesControllerV2.initializeCloseCampaignService();
         }
 

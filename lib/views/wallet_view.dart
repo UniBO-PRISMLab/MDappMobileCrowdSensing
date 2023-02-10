@@ -13,8 +13,8 @@ class WalletView extends StatelessWidget {
   Widget build(BuildContext context) {
     SessionModel session = SessionModel();
     if(!session.provider.connector.connected) {
-      WidgetsBinding.instance!.addPostFrameCallback((_) {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => LoginView()));
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const LoginView()));
       });}
 
     return Scaffold(

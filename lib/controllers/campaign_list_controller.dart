@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_crowd_sensing/models/campaign_list_model.dart';
 import 'package:numberpicker/numberpicker.dart';

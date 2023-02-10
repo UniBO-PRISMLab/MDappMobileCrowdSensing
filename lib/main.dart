@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_config/flutter_config.dart';
-import 'package:mobile_crowd_sensing/models/db_session_model.dart';
 import 'package:mobile_crowd_sensing/models/session_model.dart';
 import 'package:mobile_crowd_sensing/utils/internet_connection.dart';
 import 'package:mobile_crowd_sensing/utils/styles.dart';
@@ -24,9 +23,10 @@ import 'package:mobile_crowd_sensing/views/validate_photo_view.dart';
 import 'package:mobile_crowd_sensing/views/wallet_view.dart';
 import 'dart:async';
 import 'package:connectivity/connectivity.dart';
-import 'package:flutter/widgets.dart';
 
 class LifecycleWatcher extends StatefulWidget {
+  const LifecycleWatcher({super.key});
+
   @override
   _LifecycleWatcherState createState() => _LifecycleWatcherState();
 }
@@ -50,7 +50,6 @@ class _LifecycleWatcherState extends State<LifecycleWatcher> with WidgetsBinding
     super.didChangeAppLifecycleState(state);
 
       if(state == AppLifecycleState.detached) {
-        print('\x1B[31m[STATUS APP] : ${state.toString()}\x1B[0m');
         SessionModel sessionModel = SessionModel();
         sessionModel.connector.killSession();
       }
@@ -72,7 +71,7 @@ Future<void> main(List<String> args) async {
   if (initialStateInternet == ConnectivityResult.none) {
     runApp(const NoConnection());
   } else {
-    return runApp(Center(child: LifecycleWatcher()));
+    return runApp(const Center(child: LifecycleWatcher()));
   }
 
 }

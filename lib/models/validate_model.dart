@@ -40,7 +40,9 @@ class ValidateModel {
 
     if (res != null) {
       out = res;
-      print("DEB: ${res.toString()}");
+      if (kDebugMode) {
+        print("DEB: ${res.toString()}");
+      }
       out.add(
           (await searchPlacesViewModel.getReadebleLocationFromLatLng(
               (double.parse(res[5].toString())) / 10000000,

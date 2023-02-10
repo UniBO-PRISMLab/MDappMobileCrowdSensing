@@ -13,7 +13,7 @@ class SearchPlacesModel {
   late LocationPermission permission;
 
   Future<void> updateLocalPosition() async {
-    await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(const Duration(seconds: 1));
     position = await _getGeoLocationPosition();
     lng = position.longitude;
     lat = position.latitude;

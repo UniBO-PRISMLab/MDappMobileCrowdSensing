@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 class NonceManager {
   static int nonce = 1;
 
@@ -5,7 +7,9 @@ class NonceManager {
     try {
       return nonce;
     } finally {
-      print("assigned nonce: $nonce");
+      if (kDebugMode) {
+        print("assigned nonce: $nonce");
+      }
       nonce ++;
     }
   }
