@@ -1,13 +1,12 @@
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:mobile_crowd_sensing/services/servicesV2.dart';
+import 'package:mobile_crowd_sensing/services/services.dart';
 import 'notification_channels.dart';
 
-class ServicesControllerV2 {
-  static bool statusCloseCampaignService = false;
-  static bool statusGeofencingService = false;
+class ServicesController {
+  static bool statusBackgroundService = false;
 
-  static void initializeCloseCampaignService() async {
+  static void initializeBackgroundService() async {
     FlutterBackgroundService s = FlutterBackgroundService();
 
     final FlutterLocalNotificationsPlugin notification =
@@ -19,7 +18,7 @@ class ServicesControllerV2 {
 
     s.configure(
       androidConfiguration: AndroidConfiguration(
-        onStart: ServicesV2.onStart,
+        onStart: Services.onStart,
         autoStart: true,
         isForegroundMode: true,
 
@@ -30,15 +29,15 @@ class ServicesControllerV2 {
       ),
       iosConfiguration: IosConfiguration(
         autoStart: true,
-        onForeground: ServicesV2.onStart,
+        onForeground: Services.onStart,
       ),
     );
     s.startService();
-    statusCloseCampaignService = true;
+    statusBackgroundService = true;
   }
 
   static void resetService() async {
-    statusCloseCampaignService = true;
-    initializeCloseCampaignService();
+    statusBackgroundService = true;
+    initializeBackgroundService();
   }
 }

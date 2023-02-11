@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-import '../services/services_controllerV2.dart';
+import '../services/services_controller.dart';
 
 class DbCampaignModel {
 
@@ -42,7 +42,7 @@ class DbCampaignModel {
       cmp.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
-    ServicesControllerV2.resetService();
+    ServicesController.resetService();
   }
 
   Future<List<Campaign>> campaigns() async {
@@ -77,7 +77,7 @@ class DbCampaignModel {
       where: 'address = ?',
       whereArgs: [address],
     );
-    ServicesControllerV2.resetService();
+    ServicesController.resetService();
   }
 }
 

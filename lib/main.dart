@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flip_card/flip_card.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_config/flutter_config.dart';
 import 'package:mobile_crowd_sensing/models/session_model.dart';
@@ -12,6 +13,7 @@ import 'package:mobile_crowd_sensing/controllers/sourcer_past_campaigns_controll
 import 'package:mobile_crowd_sensing/utils/worker_campaign_data_factory.dart';
 import 'package:mobile_crowd_sensing/utils/join_campaign_factory.dart';
 import 'package:mobile_crowd_sensing/views/camera_view.dart';
+import 'package:mobile_crowd_sensing/views/error_view.dart';
 import 'package:mobile_crowd_sensing/views/home_view.dart';
 import 'package:mobile_crowd_sensing/views/login_view.dart';
 import 'package:mobile_crowd_sensing/views/my_campaign_view.dart';
@@ -23,6 +25,9 @@ import 'package:mobile_crowd_sensing/views/validate_photo_view.dart';
 import 'package:mobile_crowd_sensing/views/wallet_view.dart';
 import 'dart:async';
 import 'package:connectivity/connectivity.dart';
+import 'package:walletconnect_dart/walletconnect_dart.dart';
+
+import 'models/db_session_model.dart';
 
 class LifecycleWatcher extends StatefulWidget {
   const LifecycleWatcher({super.key});
@@ -51,7 +56,7 @@ class _LifecycleWatcherState extends State<LifecycleWatcher> with WidgetsBinding
 
       if(state == AppLifecycleState.detached) {
         SessionModel sessionModel = SessionModel();
-        sessionModel.connector.killSession();
+        sessionModel.connector!.killSession();
       }
   }
 
@@ -171,6 +176,13 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      builder: (context,widget) {
+        ErrorWidget.builder = (FlutterErrorDetails errorDetails) {
+           return Column(children:[CustomError(errorDetails: errorDetails)]);
+        };
+        return widget!;
+      },
+      title: "MOBILE CROWD SENSING",
       initialRoute: '/login',
       routes: {
         '/home': (context) => const HomeView(),

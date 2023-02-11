@@ -19,7 +19,7 @@ class _LoginCheckConnectionControllerState extends State<LoginCheckConnectionCon
 
   @override
   Widget build(BuildContext context) {
-    return (sessionData.connector.connected)
+    return (sessionData.connector!.connected)
         ? Container(
             padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
             child:
@@ -40,12 +40,12 @@ class _LoginCheckConnectionControllerState extends State<LoginCheckConnectionCon
                 ),
                 Text(
                   sessionData
-                      .getNetworkName(sessionData.connector.session.chainId),
+                      .getNetworkName(sessionData.connector!.session.chainId),
                   style: CustomTextStyle.inconsolata(context),
                 ),
               ]),
               const SizedBox(height: 20),
-              (sessionData.connector.session.chainId != 5)
+              (sessionData.connector!.session.chainId != 5)
                   ? Row(children: const [
                       Icon(Icons.warning, color: Colors.redAccent, size: 15),
                       Text('Network not supported. Switch to '),

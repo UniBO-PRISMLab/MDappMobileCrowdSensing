@@ -4,7 +4,8 @@ import 'package:walletconnect_secure_storage/walletconnect_secure_storage.dart';
 import 'package:web3dart/web3dart.dart';
 import 'package:flutter_config/flutter_config.dart';
 import 'package:http/http.dart' as http;
-import '../services/services_controllerV2.dart';
+import '../services/services_controller.dart';
+import 'db_capaign_model.dart';
 import 'db_session_model.dart';
 
 class SessionModel {
@@ -12,7 +13,7 @@ class SessionModel {
   static final SessionModel _instance = SessionModel._internal();
 
   late dynamic uri, signature;
-  late WalletConnect  connector;
+  late WalletConnect?  connector;
   late http.Client httpClient;
   late Web3Client ethClient;
   late EthereumWalletConnectProvider provider;
@@ -29,7 +30,6 @@ class SessionModel {
     ethClient = Web3Client(FlutterConfig.get('ADDRESS_BLOCK_CHAIN'), httpClient);
 
     instantiateConnector();
-    //return provider;
   }
 
   Future<void> instantiateConnector() async {
@@ -68,39 +68,50 @@ class SessionModel {
             ]
         ),
       );
-      await connector.connect(
+      await connector!.connect(
           onDisplayUri: (newUri) async {
             uri = newUri;
           });
     }
 
     await dbSession.deleteAll();
-    await dbSession.insertSession(Session(account: connector.session.accounts[0], chainId: connector.session.chainId, uri: uri));
-    if(!ServicesControllerV2.statusCloseCampaignService) {
+    await dbSession.insertSession(Session(account: connector!.session.accounts[0], chainId: connector!.session.chainId, uri: uri));
+    DbCampaignModel dbCampaign = DbCampaignModel();
+    List<Campaign> listCamapigns = await dbCampaign.campaigns();
+    if(listCamapigns.isNotEmpty) {
       if (kDebugMode) {
         print('\x1B[31m [CLOSED CAMPAIGN SERVICE] INITIALIZE AFTER LOGIN\x1B[0m');
       }
-      ServicesControllerV2.initializeCloseCampaignService();
+      ServicesController.initializeBackgroundService();
     }
 
-    provider = EthereumWalletConnectProvider(connector);
+    provider = EthereumWalletConnectProvider(connector!);
 
-    connector.on('connect', (SessionStatus session) => {
-      print('\x1B[31m[EVENT CONNECT] session:${session.toString()} \x1B[0m'),
-      connector.session.accounts = session.accounts,
-      connector.session.chainId = session.chainId,
-    });
-    connector.on('session_update', (WCSessionUpdateResponse payload) async => {
-      print('\x1B[31m[EVENT UPDATE] payload:${payload.toString()} \x1B[0m'),
-      connector.session.chainId = payload.chainId,
-      connector.session.accounts = payload.accounts,
-      await dbSession.updateSession(Session(account: payload.accounts[0], chainId: payload.chainId, uri: uri))
-    });
-    connector.on('disconnect', (Object? payload) async => {
-      print('\x1B[31m[EVENT DISCONNECT] ${payload.toString()}\x1B[0m'),
-      connector.killSession(),
-      ethClient.dispose(),
-    });
+    connector!.registerListeners(
+        onDisconnect: () {
+          if (kDebugMode) {
+            print('\x1B[31m[EVENT DISCONNECT] \x1B[0m');
+          }
+          connector!.killSession();
+          connector = null;
+          ethClient.dispose();
+        },
+        onConnect: (SessionStatus session){
+          if (kDebugMode) {
+            print('\x1B[31m[EVENT CONNECT] session:${session.toString()} \x1B[0m');
+          }
+          connector!.session.accounts = session.accounts;
+          connector!.session.chainId = session.chainId;
+        },
+        onSessionUpdate: (WCSessionUpdateResponse payload) async {
+          if (kDebugMode) {
+            print('\x1B[31m[EVENT UPDATE] payload:${payload.toString()} \x1B[0m');
+          }
+          connector!.session.chainId = payload.chainId;
+          connector!.session.accounts = payload.accounts;
+          await dbSession.updateSession(Session(account: payload.accounts[0], chainId: payload.chainId, uri: uri));
+        }
+    );
   }
 
 
@@ -114,7 +125,10 @@ class SessionModel {
   }
 
   dynamic getAccountAddress() {
-    return connector.session.accounts[0];
+    if (connector == null) {
+      instantiateConnector();
+    }
+    return connector!.session.accounts[0];
   }
 
   getNetworkName(chainId) {
