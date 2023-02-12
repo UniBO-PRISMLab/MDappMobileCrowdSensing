@@ -3,7 +3,7 @@ pragma solidity ^0.8.17;
 import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./MCSfactory.sol";
-import "@openzeppelin/contracts/security/PullPayment.sol"
+
 contract Campaign is Ownable, Initializable {
 
     string internal name;
@@ -42,11 +42,10 @@ contract Campaign is Ownable, Initializable {
     }
 
     function withdrawCredits() public {
-        uint amount = credits[msg.sender];
-        require(amount != 0);
-        require(factoryContractAddress.balanceOf(address(this)) >= amount);
-        credits[msg.sender] = 0;
-        factoryContractAddress.transfer(msg.sender,amount);
+        require(credits[msg.sender] > 0, "empty balance to withdraw");
+        require(factoryContractAddress.balanceOf(address(this)) >= credits[msg.sender], "can't withdraw more than campaign balance");
+        delete credits[msg.sender];
+        factoryContractAddress.transfer(msg.sender,credits[msg.sender]);
         factoryContractAddress.removeCampaignToClaim(msg.sender,address(this));
     }
 
@@ -130,25 +129,33 @@ contract Campaign is Ownable, Initializable {
         isClosed = factoryContractAddress.closeCampaign();
         uint256 balance = getCampaignBalance();
         uint256 verifiesTotalReward = (balance * 50 / 100);
-        uint256 workerReward =  (balance - verifiesTotalReward) / validFiles;
-        uint256 verifierReward = verifiesTotalReward / numberOfActiveVerifiers;
-        uint256 refound = balance - (workerReward + verifierReward);
-        if(refound > 0) {
+        if(validFiles == 0) { // caso in cui non ci siano dati validi
+            uint256 refound = balance - verifiesTotalReward;
+            uint256 verifierReward = verifiesTotalReward / numberOfActiveVerifiers;
             factoryContractAddress.putCampaignToClaim(addressCrowdSourcer,address(this), "refound", refound);
-        }
-
-        for(uint i; i<allfilesPath.length; i++) {
-            File memory currentFile = files[allfilesPath[i]];
-            if (currentFile.status == true) {
-                if (currentFile.validity == true) { // se il file caricato è valido allora paga l'uploader
-                    factoryContractAddress.putCampaignToClaim(currentFile.verifier,address(this), "verifier", verifierReward);
-                    factoryContractAddress.putCampaignToClaim(currentFile.uploader,address(this), "worker", workerReward);
-
-                    allowForPull(currentFile.verifier, verifierReward);
-                    allowForPull(currentFile.uploader, workerReward);
-                } else { // se il file caricato NON è valido allora paga solo il verifier
+            allowForPull(addressCrowdSourcer, refound);
+            for(uint i; i<allfilesPath.length; i++) {
+                File memory currentFile = files[allfilesPath[i]];
+                if (currentFile.status == true) {
                     factoryContractAddress.putCampaignToClaim(currentFile.verifier,address(this), "verifier", verifierReward);
                     allowForPull(currentFile.verifier, verifierReward);
+                }
+            }
+        } else {
+            uint256 workerReward =  (balance - verifiesTotalReward) / validFiles;
+            uint256 verifierReward = verifiesTotalReward / numberOfActiveVerifiers;
+            for(uint i; i<allfilesPath.length; i++) {
+                File memory currentFile = files[allfilesPath[i]];
+                if (currentFile.status == true) {
+                    if (currentFile.validity == true) { // se il file caricato è valido allora paga l'uploader
+                        factoryContractAddress.putCampaignToClaim(currentFile.verifier,address(this), "verifier", verifierReward);
+                        factoryContractAddress.putCampaignToClaim(currentFile.uploader,address(this), "worker", workerReward);
+                        allowForPull(currentFile.verifier, verifierReward);
+                        allowForPull(currentFile.uploader, workerReward);
+                    } else { // se il file caricato NON è valido allora paga solo il verifier
+                        factoryContractAddress.putCampaignToClaim(currentFile.verifier,address(this), "verifier", verifierReward);
+                        allowForPull(currentFile.verifier, verifierReward);
+                    }
                 }
             }
         }

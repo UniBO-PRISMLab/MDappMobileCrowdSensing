@@ -5,7 +5,7 @@ class SourcerCampaignModel {
 
   static Future<String> getCountersData(String contractAddress) async {
 
-    String? fileChecked,fileCount,workersCount;
+    String? fileChecked,fileCount,workersCount,validFiles;
     SessionModel sessionData = SessionModel();
 
     late SmartContractModel smartContract;
@@ -19,7 +19,8 @@ class SourcerCampaignModel {
       await smartContract.queryCall('checkedFiles', []);
       List<dynamic>? workersCountRaw =
       await smartContract.queryCall('numberOfActiveWorkers', []);
-
+      List<dynamic>? validFilesRaw =
+      await smartContract.queryCall('validFiles', []);
       if (fileCheckedRaw != null) {
         fileChecked = fileCheckedRaw[0].toString();
       }
@@ -30,12 +31,17 @@ class SourcerCampaignModel {
       if (workersCountRaw != null) {
         workersCount = workersCountRaw[0].toString();
       }
+
+      if (validFilesRaw != null) {
+        validFiles = validFilesRaw[0].toString();
+      }
     }
     return
       "{"
           "\"fileChecked\":\"$fileChecked\","
           "\"fileCount\":\"$fileCount\","
-          "\"workersCount\":\"$workersCount\""
+          "\"workersCount\":\"$workersCount\","
+          "\"validFiles\":\"$validFiles\""
           "}";
   }
 

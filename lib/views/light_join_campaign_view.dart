@@ -22,7 +22,7 @@ class LightJoinCampaignViewState extends State<LightJoinCampaignView> {
 
   EnvironmentSensors environmentSensors = EnvironmentSensors();
   bool activeSensor = false;
-  bool activeUpload = false;
+  bool isUpload = true;
   double sum = 0;
 
   List<double> lights = [];
@@ -65,8 +65,8 @@ class LightJoinCampaignViewState extends State<LightJoinCampaignView> {
                     const SizedBox(height: 20),
                     Row(
                       children: [
-                        Text(
-                          'Name: ', style: CustomTextStyle.merriweatherBold(context)),
+                        Text('Name: ',
+                            style: CustomTextStyle.merriweatherBold(context)),
                         Text(
                           '${campaignSelectedData['name']}',
                           style: CustomTextStyle.inconsolata(context),
@@ -77,8 +77,7 @@ class LightJoinCampaignViewState extends State<LightJoinCampaignView> {
                       children: [
                         Text('Latitude: ',
                             style: CustomTextStyle.merriweatherBold(context)),
-                        Text(
-                            '${campaignSelectedData['lat']}',
+                        Text('${campaignSelectedData['lat']}',
                             style: CustomTextStyle.inconsolata(context)),
                         Text('Longitude: ',
                             style: CustomTextStyle.merriweatherBold(context)),
@@ -100,34 +99,41 @@ class LightJoinCampaignViewState extends State<LightJoinCampaignView> {
                         ),
                       ],
                     ),
-                   Center(child: TextButton(
-                     style: ButtonStyle(backgroundColor: MaterialStateProperty.all(CustomColors.blue900(context))),
-                        onPressed: () async {
-                          bool lightAvailable = await environmentSensors
-                              .getSensorAvailable(SensorType.Light);
-                          if (lightAvailable) {
-                            setState(() {
-                              activeSensor = true;
-                            });
-                          } else {
-                            setState(() {
-                              Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          const DialogView(
-                                              message:
-                                                  "This device doesen't integrate the appropriate sensor")));
-                            });
-                          }
-                        },
-                        child: Text('Take data',style: CustomTextStyle.spaceMonoWhite(context),))),
+                    Center(
+                        child: TextButton(
+                            style: ButtonStyle(
+                                backgroundColor: MaterialStateProperty.all(
+                                    CustomColors.blue900(context))),
+                            onPressed: () async {
+                              bool lightAvailable = await environmentSensors
+                                  .getSensorAvailable(SensorType.Light);
+                              if (lightAvailable) {
+                                setState(() {
+                                  activeSensor = true;
+                                });
+                              } else {
+                                setState(() {
+                                  Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (BuildContext context) =>
+                                              const DialogView(
+                                                  message:
+                                                      "This device doesen't integrate the appropriate sensor")));
+                                });
+                              }
+                            },
+                            child: Text(
+                              'Take data',
+                              style: CustomTextStyle.spaceMonoWhite(context),
+                            ))),
                     activeSensor
                         ? StreamBuilder<double>(
                             stream: environmentSensors.light,
                             builder: (context, snapshot) {
                               if (!snapshot.hasData) {
-                                return const Center(child:CircularProgressIndicator());
+                                return const Center(
+                                    child: CircularProgressIndicator());
                               } else {
                                 lights.add(snapshot.data!);
                                 sum += lights.last;
@@ -136,9 +142,11 @@ class LightJoinCampaignViewState extends State<LightJoinCampaignView> {
                                 return Column(children: [
                                   Row(children: [
                                     Text('Average Ambient Light: ',
-                                        style: CustomTextStyle.merriweatherBold(context)),
+                                        style: CustomTextStyle.merriweatherBold(
+                                            context)),
                                     Text('$averageRelevation',
-                                        style: CustomTextStyle.inconsolata(context))
+                                        style: CustomTextStyle.inconsolata(
+                                            context))
                                   ]),
                                   Row(children: [
                                     Text('Number of relevations: ',
@@ -148,23 +156,27 @@ class LightJoinCampaignViewState extends State<LightJoinCampaignView> {
                                         style: CustomTextStyle.inconsolata(
                                             context))
                                   ]),
-                                  (!activeUpload)?
+                                  (isUpload)?
                                   FloatingActionButton(
                                       onPressed: () async {
+                                        setState(() {
+                                          isUpload = false;
+                                        });
                                         String? res =
-                                            await UploadIpfsModel.uploadLight(
-                                                lights,
-                                                averageRelevation,
-                                                campaignSelectedData[
-                                                    'contractAddress']);
-
-                                        if (res != null) {
-                                          if (res == 'Data uploaded') {
-                                            setState(() {
+                                        await UploadIpfsModel.uploadLight(
+                                            lights,
+                                            averageRelevation,
+                                            campaignSelectedData[
+                                            'contractAddress']);
+                                        setState(() {
+                                          activeSensor = false;
+                                          isUpload = true;
+                                          if (res != null) {
+                                            if (res == 'Data uploaded') {
                                               lights.clear();
                                               averageRelevation = 0;
                                               sum = 0;
-                                              activeSensor = false;
+                                              if(!mounted) return;
                                               ScaffoldMessenger.of(context)
                                                   .showSnackBar(SnackBar(
                                                       content: Text(
@@ -172,21 +184,29 @@ class LightJoinCampaignViewState extends State<LightJoinCampaignView> {
                                                 style: CustomTextStyle
                                                     .spaceMonoWhite(context),
                                               )));
-                                              Navigator.of(context).pushNamedAndRemoveUntil(
-                                                  '/home', (Route<dynamic> route) => false);
-                                            });
-                                          }
-                                          setState(() {
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(SnackBar(
-                                                    content: Text(
-                                              res,
-                                              style: CustomTextStyle
-                                                  .spaceMonoWhite(context),
-                                            )));
-                                          });
-                                        } else {
-                                          setState(() {
+                                              Navigator.of(context)
+                                                  .pushNamedAndRemoveUntil(
+                                                      '/home',
+                                                      (Route<dynamic> route) =>
+                                                          false);
+                                            } else {
+                                              lights.clear();
+                                              averageRelevation = 0;
+                                              sum = 0;
+                                              if(!mounted) return;
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(SnackBar(
+                                                      content: Text(
+                                                res,
+                                                style: CustomTextStyle
+                                                    .spaceMonoWhite(context),
+                                              )));
+                                            }
+                                          } else {
+                                            lights.clear();
+                                            averageRelevation = 0;
+                                            sum = 0;
+                                            if(!mounted) return;
                                             ScaffoldMessenger.of(context)
                                                 .showSnackBar(SnackBar(
                                                     content: Text(
@@ -194,20 +214,14 @@ class LightJoinCampaignViewState extends State<LightJoinCampaignView> {
                                               style: CustomTextStyle
                                                   .spaceMonoWhite(context),
                                             )));
-                                          });
-                                        }
+                                          }
+                                        });
                                       },
-                                      backgroundColor: CustomColors.blue900(context),
+                                      backgroundColor:
+                                          CustomColors.blue900(context),
                                       child:
                                           const Icon(Icons.file_upload_sharp))
-                                  : Expanded(child: Column(
-                                    mainAxisSize: MainAxisSize.max,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: const [
-                                      CircularProgressIndicator()
-                                    ],
-                                  ),),
+                                      : const Center(child: CircularProgressIndicator())
                                 ]);
                               }
                             })
