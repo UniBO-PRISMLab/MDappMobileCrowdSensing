@@ -42,11 +42,10 @@ contract Campaign is Ownable, Initializable {
     }
 
     function withdrawCredits() public {
-        require(credits[msg.sender] > 0, "empty balance to withdraw");
         require(factoryContractAddress.balanceOf(address(this)) >= credits[msg.sender], "can't withdraw more than campaign balance");
-        delete credits[msg.sender];
         factoryContractAddress.transfer(msg.sender,credits[msg.sender]);
         factoryContractAddress.removeCampaignToClaim(msg.sender,address(this));
+        delete credits[msg.sender];
     }
 
     function getAllFilesInfo() public view returns(File[] memory){

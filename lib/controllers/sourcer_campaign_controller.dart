@@ -167,11 +167,12 @@ class _SourcerCampaignControllerState extends State<SourcerCampaignController> {
                                 }),
                             TextButton(
                                 child: const Text('Yes'),
-                                onPressed: () {
-                                  setState(() async {
+                                onPressed: () async {
+                                  String result =
+                                      await CloseCampaignModel.closeMyCampaign(
+                                          contractAddress);
+                                  setState(() {
                                     Navigator.of(ctx).pop(true);
-                                    String result = await CloseCampaignModel
-                                        .closeMyCampaign(contractAddress);
                                     if (result.contains("Campaign Closed")) {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(SnackBar(
@@ -187,7 +188,7 @@ class _SourcerCampaignControllerState extends State<SourcerCampaignController> {
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(SnackBar(
                                               content: Text(
-                                                result,
+                                        result,
                                         style: CustomTextStyle.spaceMonoWhite(
                                             context),
                                       )));

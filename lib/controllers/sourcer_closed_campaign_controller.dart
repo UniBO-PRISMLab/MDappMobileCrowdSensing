@@ -81,17 +81,16 @@ class _SourcerClosedCampaignControllerState extends State<SourcerClosedCampaignC
                               alignment: Alignment.topLeft,
 
                               child: Column(children: <Widget>[
-                                Row(children: <Widget>[
+                                FittedBox( fit: BoxFit.contain,child:
+                                    Row(children: <Widget>[
                                   //loop
-                                  (names.length !=
-                                      widget.contractAddress!
-                                          .length)
+                                  (names.length != widget.contractAddress!.length)
                                       ? GlobalText.loadingText(context)
                                       : Text(
                                     "Name: ${names[index]}",
                                     style: CustomTextStyle.spaceMono(context),
                                   ),
-                                ]),
+                                ])),
                                 Row(children: <Widget>[
                                   (latitude.length != widget.contractAddress!.length)
                                       ? GlobalText.loadingText(context)

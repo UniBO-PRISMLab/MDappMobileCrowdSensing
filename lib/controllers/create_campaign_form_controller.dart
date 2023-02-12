@@ -134,9 +134,9 @@ class _CreateCampaignFormControllerState
                         ),
                         Slider(
                           min: 0,
-                          max: 1000000000,
+                          max:  1000000000000000000,
                           divisions: 100,
-                          label: "${_howMuch.toInt()} wei",
+                          label: "${_howMuch.toInt()/1000000000000000000} MCScoin",
                           activeColor: CustomColors.blue900(context),
                           value: _howMuch,
                           onChanged: (newValue) {

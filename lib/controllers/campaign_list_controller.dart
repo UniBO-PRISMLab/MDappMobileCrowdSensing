@@ -98,7 +98,7 @@ class _CampaignListControllerState
                         contractAddress = current[7].toString();
                         readebleLocation = current[8];
                         isSubscribed = current[9];
-                        balance = "${current[10].toString()} wei";
+                        balance = "${(BigInt.parse(current[10].toString()).toDouble() /1000000000000000000)} MCScoin";
                         return GestureDetector(
                           onTap: () {
 

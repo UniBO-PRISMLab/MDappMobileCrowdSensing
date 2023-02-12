@@ -177,7 +177,7 @@ class _ClaimCampaignControllerState extends State<ClaimCampaignController> {
                                         style: CustomTextStyle.spaceMonoBold(context),
                                       ),
                                       Text(
-                                        reward,
+                                        "${BigInt.parse(reward).toDouble()/1000000000000000000} MCScoin",
                                         style: CustomTextStyle.spaceMono(context),
                                       )
                                     ])),
