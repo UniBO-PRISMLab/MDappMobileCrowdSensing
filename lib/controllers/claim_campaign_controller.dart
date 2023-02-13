@@ -1,3 +1,4 @@
+import 'package:big_dart/big_dart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_config/flutter_config.dart';
 import 'package:mobile_crowd_sensing/models/session_model.dart';
@@ -76,7 +77,7 @@ class _ClaimCampaignControllerState extends State<ClaimCampaignController> {
                       context: context,
                       builder: (ctx) => AlertDialog(
                         title: const Text('Want to Claim?'),
-                        content: Text('you will recive:\n$reward MCSCoin'),
+                        content: Text('you will recive:\n${(Big(reward.toString())/Big(1000000000000000000)).toString()} MCSCoin'),
                         actions: <Widget>[
                           TextButton(
                               child: const Text('No'),
@@ -177,7 +178,7 @@ class _ClaimCampaignControllerState extends State<ClaimCampaignController> {
                                         style: CustomTextStyle.spaceMonoBold(context),
                                       ),
                                       Text(
-                                        "${BigInt.parse(reward).toDouble()/1000000000000000000} MCScoin",
+                                        "${Big(reward).div(Big("1000000000000000000")).toString()} MCScoin",
                                         style: CustomTextStyle.spaceMono(context),
                                       )
                                     ])),

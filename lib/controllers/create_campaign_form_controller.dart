@@ -17,7 +17,7 @@ class _CreateCampaignFormControllerState
     extends State<CreateCampaignFormController> {
   final _formKey = GlobalKey<FormState>();
   String selectedValue = 'photo';
-  double _howMuch = 1000;
+  double _howMuch = 0;
   int _howFar = 100;
   final titleController = TextEditingController();
   String? address;

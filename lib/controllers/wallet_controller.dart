@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:big_dart/big_dart.dart';
+import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_crowd_sensing/models/session_model.dart';
 import '../models/wallet_model.dart';
@@ -77,12 +79,18 @@ class _WalletControllerState extends State<WalletController> {
         });
   }
 
+  bool isNumeric(String s) {
+    if(s == null) {
+      return false;
+    }
+    return double.tryParse(s) != null;
+  }
+
   Widget _formatBalance(String balance) {
-    double? parsed = double.tryParse(balance);
-    if (parsed != null && balance != "0") {
-      parsed = parsed / 1000000000000000000;
+    if (balance != "0" && isNumeric(balance)) {
+      Big res = Big(balance).div(Big("1000000000000000000"));
       return Text(
-        parsed.toString(),
+        res.toString(),
         style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
       );
     } else {

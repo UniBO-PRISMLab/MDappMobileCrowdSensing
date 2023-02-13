@@ -1,3 +1,4 @@
+import 'package:big_dart/big_dart.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_crowd_sensing/models/campaign_list_model.dart';
 import 'package:numberpicker/numberpicker.dart';
@@ -98,7 +99,8 @@ class _CampaignListControllerState
                         contractAddress = current[7].toString();
                         readebleLocation = current[8];
                         isSubscribed = current[9];
-                        balance = "${(BigInt.parse(current[10].toString()).toDouble() /1000000000000000000)} MCScoin";
+                        balance = "${(Big(current[10].toString()).div(Big("1000000000000000000"))).toString()} MCScoin";
+                        print("DEBUG::::::: $balance");
                         return GestureDetector(
                           onTap: () {
 

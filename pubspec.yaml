@@ -67,6 +67,7 @@ dependencies:
   connectivity: ^3.0.6
   flutter_isolate: ^2.0.4
   walletconnect_secure_storage: ^1.0.0
+  big_dart: ^1.0.1
 
 dev_dependencies:
   flutter_test:
