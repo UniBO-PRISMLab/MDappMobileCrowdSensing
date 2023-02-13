@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import '../models/geofence_model.dart';
 import '../models/upload_ipfs_model.dart';
 import '../utils/join_campaign_factory.dart';
 import '../utils/styles.dart';
@@ -23,6 +24,15 @@ class PhotoJoinCampaignViewState extends State<PhotoJoinCampaignView> {
   List<File> pictures = [];
   bool gate = true;
   bool visible = false;
+  late Geofence geo;
+
+
+  @override
+  void dispose() {
+    geo.stopGeofenceService();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     dynamic space = DeviceDimension.deviceWidth(context) * 0.05;
@@ -31,6 +41,10 @@ class PhotoJoinCampaignViewState extends State<PhotoJoinCampaignView> {
     parameters = ModalRoute.of(context)!.settings.arguments;
     campaignSelectedData = jsonDecode(jsonEncode(parameters));
     SessionModel sessionData = SessionModel();
+
+    geo = Geofence(campaignSelectedData['name'], campaignSelectedData['contractAddress'], campaignSelectedData['lat'], campaignSelectedData['lng'], campaignSelectedData['range']);
+    geo.geoFenceService(context);
+
     (pictures.isNotEmpty) ? visible = true : visible = false;
     return Scaffold(
       resizeToAvoidBottomInset: false,

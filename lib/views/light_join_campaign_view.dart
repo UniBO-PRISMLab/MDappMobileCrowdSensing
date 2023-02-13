@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:environment_sensors/environment_sensors.dart';
 import 'package:flutter/material.dart';
+import 'package:mobile_crowd_sensing/models/geofence_model.dart';
 import 'package:mobile_crowd_sensing/models/session_model.dart';
 import '../models/upload_ipfs_model.dart';
 import '../utils/join_campaign_factory.dart';
@@ -27,12 +28,22 @@ class LightJoinCampaignViewState extends State<LightJoinCampaignView> {
 
   List<double> lights = [];
   double averageRelevation = 0;
+  late Geofence geo;
+
+  @override
+  void dispose() {
+    geo.stopGeofenceService();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     parameters = ModalRoute.of(context)!.settings.arguments;
     campaignSelectedData = jsonDecode(jsonEncode(parameters));
     SessionModel sessionData = SessionModel();
+
+    geo = Geofence(campaignSelectedData['name'], campaignSelectedData['contractAddress'], campaignSelectedData['lat'], campaignSelectedData['lng'], campaignSelectedData['range']);
+    geo.geoFenceService(context);
 
     return Scaffold(
         resizeToAvoidBottomInset: false,

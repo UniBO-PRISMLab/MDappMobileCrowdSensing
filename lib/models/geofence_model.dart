@@ -1,10 +1,14 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:mobile_crowd_sensing/services/notification_channels.dart';
 import '../controllers/distance_controller.dart';
 import 'dart:async';
 import 'dart:ui';
+
+import '../utils/styles.dart';
 
 enum GeofenceEvent { init, enter, exit }
 
@@ -129,6 +133,99 @@ class Geofence {
                     ongoing: true,
                   ),
                 ));
+          } else {
+            if (kDebugMode) {
+              print('\x1B[31m $debugString status not changed \x1B[0m');
+            }
+          }
+          previous = event;
+          break;
+      }
+    });
+  }
+
+  geoFenceService(BuildContext context) async {
+    DartPluginRegistrant.ensureInitialized();
+
+    String debugString = "[GEOFENCE $title]";
+
+    if (kDebugMode) {
+      print('\x1B[31m [GEOFENCE SERVICE] geofence open for:'
+          '\n $title'
+          '\n $address'
+          '\n $lat '
+          '\n $lng '
+          '\n $radius \x1B[0m');
+    }
+
+    if (kDebugMode) {
+      print('\x1B[31m [GEOFENCE SERVICE] geofence open for:'
+          '\n $title'
+          '\n $address'
+          '\n $lat '
+          '\n $lng '
+          '\n $radius \x1B[0m');
+    }
+
+    await _startGeofenceService(
+        pointedLatitude: lat,
+        pointedLongitude: lng,
+        radiusMeter: radius, // TO CHANGE
+        eventPeriodInSeconds: 10);
+
+    GeofenceEvent? previous;
+
+    getGeofenceStream()?.listen((GeofenceEvent event) {
+      if (kDebugMode) {
+        print(event.toString());
+      }
+
+      if (previous == null || previous == GeofenceEvent.init) {
+        switch (event) {
+          case GeofenceEvent.enter:
+            previous = event;
+            break;
+          case GeofenceEvent.exit:
+            previous = event;
+            break;
+          default:
+            previous = event;
+            break;
+        }
+      }
+
+      switch (event) {
+        case GeofenceEvent.init:
+          if (kDebugMode) {
+            print('\x1B[31m $debugString status: Init\x1B[0m');
+          }
+          previous = event;
+          break;
+        case GeofenceEvent.enter:
+          if (kDebugMode) {
+            print('\x1B[31m $debugString status: Enter\x1B[0m');
+          }
+          if (previous != event) {
+          } else {
+            if (kDebugMode) {
+              print('\x1B[31m $debugString status not changed \x1B[0m');
+            }
+          }
+          previous = event;
+          break;
+        case GeofenceEvent.exit:
+          if (kDebugMode) {
+            print('\x1B[31m $debugString status: Exit\x1B[0m');
+          }
+          if (previous != event) {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text(
+              "Exit from the area",
+              style: CustomTextStyle.spaceMonoWhite(context),
+            )));
+            stopGeofenceService();
+            Navigator.of(context).pushNamedAndRemoveUntil(
+                '/home', (Route<dynamic> route) => false);
           } else {
             if (kDebugMode) {
               print('\x1B[31m $debugString status not changed \x1B[0m');
