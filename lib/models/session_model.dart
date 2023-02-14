@@ -119,6 +119,12 @@ class SessionModel {
     _initSession();
   }
 
+  Future<void> disconnect() async {
+    await dbSession.deleteSession(connector!.session.accounts[0]);
+    await connector!.killSession();
+    connector = null;
+    await ethClient.dispose();
+  }
 
   EthereumWalletConnectProvider getProvider(){
    return provider;

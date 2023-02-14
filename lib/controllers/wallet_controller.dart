@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:big_dart/big_dart.dart';
-import 'package:decimal/decimal.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_crowd_sensing/models/session_model.dart';
 import '../models/wallet_model.dart';

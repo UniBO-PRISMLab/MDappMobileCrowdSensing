@@ -125,6 +125,7 @@ contract Campaign is Ownable, Initializable {
 
     function closeCampaignAndPay() public payable {
         require(msg.sender == addressCrowdSourcer,'you are not the owner');
+        require(numberOfActiveVerifiers > 0, 'you cant close a campaign without verifier');
         isClosed = factoryContractAddress.closeCampaign();
         uint256 balance = getCampaignBalance();
         uint256 verifiesTotalReward = (balance * 50 / 100);

@@ -25,9 +25,6 @@ import 'package:mobile_crowd_sensing/views/validate_photo_view.dart';
 import 'package:mobile_crowd_sensing/views/wallet_view.dart';
 import 'dart:async';
 import 'package:connectivity/connectivity.dart';
-import 'package:walletconnect_dart/walletconnect_dart.dart';
-
-import 'models/db_session_model.dart';
 
 class LifecycleWatcher extends StatefulWidget {
   const LifecycleWatcher({super.key});

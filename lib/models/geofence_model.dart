@@ -285,9 +285,9 @@ class Geofence {
     }
   }
 
-  stopGeofenceService() {
+  Future<void> stopGeofenceService() async {
     if (_positionStream != null) {
-      _positionStream!.cancel();
+      await _positionStream!.cancel();
     }
   }
 }
