@@ -244,6 +244,7 @@ class PhotoJoinCampaignViewState extends State<PhotoJoinCampaignView> {
                                                 style: CustomTextStyle
                                                     .spaceMonoWhite(context),
                                               )));
+                                              geo.stopGeofenceService();
                                               Navigator.of(context).pushNamedAndRemoveUntil(
                                                   '/home', (Route<dynamic> route) => false);
                                             });

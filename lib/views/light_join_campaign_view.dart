@@ -195,6 +195,7 @@ class LightJoinCampaignViewState extends State<LightJoinCampaignView> {
                                                 style: CustomTextStyle
                                                     .spaceMonoWhite(context),
                                               )));
+                                              geo.stopGeofenceService();
                                               Navigator.of(context)
                                                   .pushNamedAndRemoveUntil(
                                                       '/home',
