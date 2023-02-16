@@ -92,9 +92,13 @@ class SessionModel {
           if (kDebugMode) {
             print('\x1B[31m[EVENT DISCONNECT] \x1B[0m');
           }
-          connector!.killSession();
-          connector = null;
-          ethClient.dispose();
+          try{
+            ethClient.dispose();
+            connector!.killSession();
+            connector = null;
+          } catch (e) {
+            print('\x1B[31m[EVENT DISCONNECT] ERROR: ${e.toString()} \x1B[0m');
+          }
         },
         onConnect: (SessionStatus session){
           if (kDebugMode) {

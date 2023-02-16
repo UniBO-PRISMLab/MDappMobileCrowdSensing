@@ -29,8 +29,8 @@ class WalletView extends StatelessWidget {
             Flexible(
                 flex: 1,
                 child: TextButton(
-                    onPressed: () {
-                      SessionModel().disconnect();
+                    onPressed: () async {
+                      await SessionModel().disconnect();
                       Future.delayed(Duration.zero, () {
                         Navigator.of(context)
                             .pushNamedAndRemoveUntil('/login', (Route<dynamic> route) => false);
