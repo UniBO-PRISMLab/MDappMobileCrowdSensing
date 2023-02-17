@@ -5,7 +5,7 @@ import '../../utils/join_campaign_factory.dart';
 import '../../utils/styles.dart';
 import '../models/validate_model.dart';
 import '../utils/spalsh_screens.dart';
-import '../views/dialog_view.dart';
+import 'light_sensor_controller.dart';
 
 class ValidateLightController extends JoinCampaignFactory {
   const ValidateLightController({super.key});
@@ -56,202 +56,49 @@ class ValidateLightControllerState extends State<ValidateLightController> {
         });
   }
 
-  Widget _buildPage(hash)
-  {
-    return ListView(shrinkWrap: false, children: [
-      Padding(
-          padding: const EdgeInsets.all(10),
-          child: Column(
-            children: [
-              Text(
-                'ipfs hash: ',
-                style: CustomTextStyle.spaceMonoBold(context),
-              ),
-              FittedBox(
-                  fit: BoxFit.fitWidth,
-                  child: Text(
-                    '${campaignSelectedData['ipfsHash']}',
-                    style: CustomTextStyle.inconsolata(context),
-                  )),
-              const SizedBox(
-                height: 20,
-              ),
-              Row(children: [
-                Text('Average Data Collected: ',
-                    style: CustomTextStyle.merriweatherBold(context)),
-                Text('$relevation ',
-                    style: CustomTextStyle.inconsolata(context)),
-              ]),
-              Row(children: [
-                Text('On: ', style: CustomTextStyle.merriweatherBold(context)),
-                Text('$time', style: CustomTextStyle.inconsolata(context)),
-              ]),
-              const SizedBox(
-                height: 20,
-              ),
-              Row(children: [
-                Text('Latitude: ',
-                    style: CustomTextStyle.merriweatherBold(context)),
-                Text('${double.parse(fileInfo[5].toString()) / 10000000}',
-                    style: CustomTextStyle.inconsolata(context)),
-              ]),
-              Row(children: [
-                Text('Longitude: ',
-                    style: CustomTextStyle.merriweatherBold(context)),
-                Text('${double.parse(fileInfo[6].toString()) / 10000000}',
-                    style: CustomTextStyle.inconsolata(context)),
-              ]),
-            ],
-          )),
-      const SizedBox(
-        height: 20,
-      ),
-      Center(
-          child: TextButton(
-              style: ButtonStyle(
-                backgroundColor:
-                    MaterialStateProperty.all(CustomColors.blue900(context)),
-                maximumSize: MaterialStateProperty.all(const Size(200, 40)),
-              ),
-              onPressed: () async {
-                bool lightAvailable = await environmentSensors
-                    .getSensorAvailable(SensorType.Light);
-                if (lightAvailable) {
-                  setState(() {
-                    activeSensor = true;
-                    sensorGate = !sensorGate;
-                    sum = 0;
-                    lights.clear();
-                    averageRelevation = 0;
-                  });
-                } else {
-                  setState(() {
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (BuildContext context) => const DialogView(
-                                message:
-                                    "This device doesn't integrate the appropriate sensor")));
-                  });
-                }
-              },
-              child: const Text('Check Data',
-                  style: TextStyle(color: Colors.white)))),
-      (activeSensor && sensorGate)
-          ? StreamBuilder<double>(
-              stream: environmentSensors.light,
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) {
-                  return const Center(child: CircularProgressIndicator());
-                } else {
-                  lights.add(snapshot.data!);
-                  sum += lights.last;
-                  averageRelevation =
-                      double.parse((sum / lights.length).toStringAsFixed(2));
-                  return Padding(
-                      padding: EdgeInsets.only(
-                        top: DeviceDimension.deviceHeight(context) * 0.15,
-                        left: DeviceDimension.deviceWidth(context) * 0.09,
-                      ),
-                      child: Wrap(
-                          alignment:
-                              WrapAlignment.spaceAround, // set your alignment
-                          children: [
-                            Row(children: [
-                              Text('Average Ambient Light: ',
-                                  style: CustomTextStyle.merriweatherBold(
-                                      context)),
-                              Text('$averageRelevation',
-                                  style: CustomTextStyle.inconsolata(context))
-                            ]),
-                            Row(children: [
-                              Text('Number of relevations: ',
-                                  style: CustomTextStyle.merriweatherBold(
-                                      context)),
-                              Text('${lights.length}',
-                                  style: CustomTextStyle.inconsolata(context))
-                            ]),
-                            const SizedBox(
-                              height: 50,
-                            ),
-                            FloatingActionButton(
-                                heroTag: "verified",
-                                onPressed: () async {
-                                  bool res = await ValidateModel.approveOrNot(
-                                      campaignSelectedData['contractAddress'],
-                                      hash,
-                                      true);
-                                  if (res) {
-                                    if (!mounted) {
-                                      return;
-                                    }
-                                    ScaffoldMessenger.of(context)
-                                        .showSnackBar(SnackBar(
-                                            content: Text(
-                                      'Data verified',
-                                      style: CustomTextStyle.spaceMonoWhite(
-                                          context),
-                                    )));
-                                    Navigator.of(context)
-                                        .pushNamedAndRemoveUntil('/home',
-                                            (Route<dynamic> route) => false);
-                                  } else {
-                                    if (!mounted) {
-                                      return;
-                                    }
-                                    ScaffoldMessenger.of(context)
-                                        .showSnackBar(SnackBar(
-                                            content: Text(
-                                      'An Error occurred',
-                                      style: CustomTextStyle.spaceMonoWhite(
-                                          context),
-                                    )));
-                                  }
-                                },
-                                backgroundColor: CustomColors.green600(context),
-                                child: const Icon(Icons.check)),
-                            FloatingActionButton(
-                                heroTag: "notVerified",
-                                onPressed: () async {
-                                  bool res = await ValidateModel.approveOrNot(
-                                      campaignSelectedData['contractAddress'],
-                                      hash,
-                                      false);
-                                  if (res) {
-                                    if (!mounted) {
-                                      return;
-                                    }
-                                    ScaffoldMessenger.of(context)
-                                        .showSnackBar(SnackBar(
-                                            content: Text(
-                                      'Data verified',
-                                      style: CustomTextStyle.spaceMonoWhite(
-                                          context),
-                                    )));
-                                    Navigator.of(context)
-                                        .pushNamedAndRemoveUntil('/home',
-                                            (Route<dynamic> route) => false);
-                                  } else {
-                                    if (!mounted) {
-                                      return;
-                                    }
-                                    ScaffoldMessenger.of(context)
-                                        .showSnackBar(SnackBar(
-                                            content: Text(
-                                      'An Error occurred',
-                                      style: CustomTextStyle.spaceMonoWhite(
-                                          context),
-                                    )));
-                                  }
-                                },
-                                backgroundColor: CustomColors.red600(context),
-                                child: const Icon(Icons.close)),
-                          ]));
-                }
-              })
-          : const Center(
+  Widget _buildPage(hash) {
+    return Padding(
+        padding: const EdgeInsets.all(10),
+        child: Column(children: [
+          Text(
+            'ipfs hash: ',
+            style: CustomTextStyle.spaceMonoBold(context),
+          ),
+          FittedBox(
+              fit: BoxFit.fitWidth,
               child: Text(
-                  "check data for get a relevation and compare the result"))
-    ]);
+                '${campaignSelectedData['ipfsHash']}',
+                style: CustomTextStyle.inconsolata(context),
+              )),
+          const SizedBox(
+            height: 20,
+          ),
+          Row(children: [
+            Text('Average Data Collected: ',
+                style: CustomTextStyle.merriweatherBold(context)),
+            Text('$relevation ', style: CustomTextStyle.inconsolata(context)),
+          ]),
+          Row(children: [
+            Text('On: ', style: CustomTextStyle.merriweatherBold(context)),
+            Text('$time', style: CustomTextStyle.inconsolata(context)),
+          ]),
+          const SizedBox(
+            height: 20,
+          ),
+          Row(children: [
+            Text('Latitude: ',
+                style: CustomTextStyle.merriweatherBold(context)),
+            Text('${double.parse(fileInfo[5].toString()) / 10000000}',
+                style: CustomTextStyle.inconsolata(context)),
+          ]),
+          Row(children: [
+            Text('Longitude: ',
+                style: CustomTextStyle.merriweatherBold(context)),
+            Text('${double.parse(fileInfo[6].toString()) / 10000000}',
+                style: CustomTextStyle.inconsolata(context)),
+          ]),
+          const LightSensorController()
+        ])
+    );
   }
 }

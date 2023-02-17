@@ -90,6 +90,10 @@ class LightJoinCampaignViewState extends State<LightJoinCampaignView> {
                             style: CustomTextStyle.merriweatherBold(context)),
                         Text('${campaignSelectedData['lat']}',
                             style: CustomTextStyle.inconsolata(context)),
+                      ],
+                    ),
+                    Row(
+                      children: [
                         Text('Longitude: ',
                             style: CustomTextStyle.merriweatherBold(context)),
                         Text(
@@ -237,7 +241,12 @@ class LightJoinCampaignViewState extends State<LightJoinCampaignView> {
                                 ]);
                               }
                             })
-                        : const Text("NO DATA FOR THE MOMENT")
+                        :  Center( child:
+                    Column( children: const [
+                           SizedBox(height: 20,),
+                          Text("NO DATA FOR THE MOMENT")
+                    ])
+                    )
                   ]))
         ])));
   }
