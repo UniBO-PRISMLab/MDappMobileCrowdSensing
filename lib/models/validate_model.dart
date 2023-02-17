@@ -8,8 +8,8 @@ import 'ipfs_client_model.dart';
 
 class ValidateModel {
   static downloadLightFiles(hashToDownload) async {
-    String? res =
-        await IpfsClientModel.downloadItemIPFS(hashToDownload, 'lights');
+    String? res = await IpfsClientModel.downloadItemIPFS(hashToDownload, 'lights');
+
     if (res != null) {
       List<String> value = res.split('/');
       return value;
