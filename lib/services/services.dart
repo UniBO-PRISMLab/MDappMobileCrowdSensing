@@ -125,10 +125,10 @@ class Services {
           ServicesController.statusBackgroundService = false;
           timer.cancel();
           for (var element in geoList) {
-            element.stopGeofenceService();
+            await element.stopGeofenceService();
           }
           geoList.clear();
-          service.stopSelf();
+          await service.stopSelf();
           if (kDebugMode) {
             print(
                 '\x1B[31m [CLOSED SERVICE] No campaigns to follow. stop the service.\x1B[0m');
