@@ -1,1 +1,0 @@
--keep class com.example.mobile_crowd_sensing.BuildConfig { *; }
